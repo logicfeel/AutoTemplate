@@ -32,13 +32,17 @@ class AutoTemplate {
         PART: '/',
         SRC: '/',
     };
+    TEMP_EXT = '.hbs';
+    defaultPublic = true;
 
     /*_______________________________________*/    
     // private
     #dir                = [];
     #event              = new Observer(this, this);
+    
     /*_______________________________________*/        
     // property
+    
     get dir() {
         let size = this.#dir.length;
         if (size === 0) throw new Error(' start [dir] request fail...');
@@ -52,10 +56,17 @@ class AutoTemplate {
     get dirs() {
         return this.#dir;
     }
+
+    /*_______________________________________*/        
+    // event property
+
     // 생성자
     constructor(dir) {
         this.dir = dir;     // Automation 설정시 사용
     }
+
+    /*_______________________________________*/        
+    // public method
 
     init() {
         this.helper.addPath(this.AREA.HELPER);
@@ -67,11 +78,134 @@ class AutoTemplate {
     build() {
         // 초기화
         this.init();
+
     }
 
-    import(template, alias) {}
+    import(alias, template) {
+        
+        // const outer = template.export();
+        // this.outer.add(alias, outer);
+        this.outer.add(alias, template);
+    }
 
-    export() {}
+    // export(alias) {
+        
+    //     let _this = this;
+    //     let obj = {};
+    //     let key = '';
+    //     let delmiter = '';
+
+    //     for (let i = 0; i < this.part.count; i++) {
+    //         if (this.part[i].isPublic == true) {
+    //             delmiter = this.DELIMITER.PART;
+    //             key = 'part' + delmiter + this.part.propertyOf(i);
+    //             obj[key] = function(data, hb) {
+    //                 let localData = {};
+    //                 for (let prop in data) {
+    //                     if (!data._parent[prop]) localData[prop] = data[prop];
+    //                 }
+    //                 var template = _this.wax.compile(_this.src+ key);
+    //                 return template(localData);
+    //             }
+    //         }
+    //     }
+    //     for (let i = 0; i < this.helper.count; i++) {
+    //         if (this.helper[i].isPublic == true) {
+    //             delmiter = this.DELIMITER.HELPER;
+    //             key = 'helper' + delmiter + this.helper.propertyOf(i);
+    //             obj[key] = this.helper[i].content;
+    //         }
+    //     }
+    //     for (let i = 0; i < this.part.count; i++) {
+    //         if (this.part[i].isPublic == true) {
+    //             delmiter = this.DELIMITER.HELPER;
+    //             key = 'data' + delmiter + this.part.propertyOf(i);
+    //             obj[key] = function(data, hb) {
+    //                 let localData = {};
+    //                 for (let prop in data) {
+    //                     if (!data._parent[prop]) localData[prop] = data[prop];
+    //                 }
+    //                 var template = _this.wax.compile(_this.src+ key);
+    //                 return template(localData);
+    //             }
+    //         }
+    //     }
+
+    //     return obj;
+    // }
+
+    /*_______________________________________*/        
+    // protected method
+    _getOuterScope() {
+
+        let obj = {};
+        let key = '';
+        let delmiter = '';
+        let template;
+        let alias;
+
+        for(let i = 0; i < this.outer.count; i++) {
+            template = this.outer[i];
+            alias + this.outer.propertyOf(i);
+            for (let ii = 0; ii < template.part.count; ii++) {
+                if (template.part[i].isPublic == true) {
+                    delmiter = template.DELIMITER.PART;
+                    key = alias + delmiter + template.part.alias;
+                    obj['part'][key] = function(data, hb) {
+                        let localData = {};
+                        for (let prop in data) {
+                            if (!data._parent[prop]) localData[prop] = data[prop];
+                        }
+                        var template = _this.wax.compile(_this.src+ key);
+                        return template(localData);
+                    }
+                }
+            }
+        }
+        for(let i = 0; i < this.outer.count; i++) {
+            template = this.outer[i];
+            alias + this.outer.propertyOf(i);
+            for (let ii = 0; ii < template.helper.count; ii++) {
+                if (template.helper[i].isPublic == true) {
+                    delmiter = template.DELIMITER.PART;
+                    key = alias + delmiter + template.helper.alias;
+                    obj['helper'][key] = template.helper[i].content;
+                }
+            }
+        }
+        for(let i = 0; i < this.outer.count; i++) {
+            template = this.outer[i];
+            alias + this.outer.propertyOf(i);
+            for (let ii = 0; ii < template.data.count; ii++) {
+                if (template.data[i].isPublic == true) {
+                    delmiter = template.DELIMITER.PART;
+                    key = alias + delmiter + template.data.alias;
+                    obj['data'][key] = template.data[i].content;
+                }
+            }
+        }
+        return obj;
+    }
+
+    _getLocalScope() {
+        
+        let obj = {};
+        let alias;
+
+        for (let i = 0; i < this.part.count; i++) {
+            alias + this.part.propertyOf(i);
+            obj['part'][alias] =  this.part.content;
+        }
+        for (let i = 0; i < this.helper.count; i++) {
+            alias + this.helper.propertyOf(i);
+            obj['helper'][alias] =  this.helper.content;
+        }
+        for (let i = 0; i < this.data.count; i++) {
+            alias + this.data.propertyOf(i);
+            obj['data'][alias] =  this.data.content;
+        }
+        return obj;
+    }
 }
 
 /**

@@ -7,10 +7,72 @@ const { PropertyCollection, Observer } = require('entitybind');
  */
 class TemplateSource {
     
+    /*_______________________________________*/        
+    // public
     isPublic = true;    // export기 노출 여부
-    
-    constructor() {
+    content = null;
+
+
+    /*_______________________________________*/        
+    // protected
+    _owner = null;
+
+    /*_______________________________________*/        
+    // private
+    #fullPath = '';
+    #area = '';
+    #alias = '';
+    #name = '';
+
+    /*_______________________________________*/        
+    // property
+    get fullPath() {
+        return this.#fullPath;
+    }
+    get alias() {
+        return this.#alias;
+    }
+    get subDir() {
+        return path.dirname(this.subPath);
+    }
+    get subPath() {
+        const dir = this._owner.dir;
+        return path.relative(dir + path.sep + this.area, this.fullPath); 
+    }
+    get name() {
+        return this.#name;
+    }
+
+
+    constructor(owner, fullPath, area) {
         
+        let fileName = '';
+        let delmiter;
+        
+        this._owner = owner;
+        this.#fullPath = fullPath;
+        this.#area = area;
+        this.isPublic = this._owner.defaultPublic;
+        fileName = path.basename(fullPath, owner.TEMP_EXT);
+        if (area === this._owner.AREA.DATA || area === this._owner.AREA.HELPER) {
+            delmiter = this._owner.DELIMITER[area]
+            fileName =  path.parse(fileName).name;          // 확장자 제거
+            this.#name = fileName.replace(/\./, delmiter);  // 점(.) 구분자 변경
+        } else {
+            this.#name = fileName;
+        }
+        this.#alias = this.#makeAlias();
+    }
+
+    /*_______________________________________*/        
+    // private method
+    #makeAlias() {
+        
+        let alias;
+        let delmiter = this._owner.DELIMITER[this.area];
+
+        alias = this.subDir.replace(/\//g, delmiter);    // 구분 문자 변경
+        return alias + delmiter + this.name;
     }
 }
 
@@ -27,7 +89,13 @@ class TemplateCollection extends PropertyCollection {
     }
     /*_______________________________________*/
     // public method
-    add()
+    _add(fullPath, area) {
+        let obj  = new TemplateSource(this._owner, fullPath, area);
+        let alias = obj.alias;
+
+        super.add(alias, obj);
+    }
+
     addPath(area) {
 
         const _this = this;
@@ -48,6 +116,7 @@ class TemplateCollection extends PropertyCollection {
                 arrPath.forEach(val => {
                     // _this.add(val);
                     // STOP
+                    _this._add(val, area);
                 });
             }
         }
