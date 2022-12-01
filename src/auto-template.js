@@ -8,17 +8,23 @@ const { CompileSource, CompileCollection } = require('./source-compile');
 class AutoTemplate {
     /*_______________________________________*/
     // public
-    outer   = new OuterCollection(this);
-    helper  = new TemplateSource(this);
-    data    = new TemplateSource(this);
-    part    = new CompileCollection(this);
-    src     = new CompileCollection(this);
-
     AREA = {
         HELPER: 'helper',
         DATA: 'data',
         PART: 'part',
         SRC: 'src',
+    };
+    PATH = {
+        HELPER: 'template/helper',
+        DATA: 'template/data',
+        PART: 'template/part',
+        SRC: 'src',
+    }
+    DELIMITER = {
+        HELPER: '-',
+        DATA: '.',
+        PART: '/',
+        SRC: '/',
     };
     GLOB = {
         HELPER: 'template/helper/**/*.js',
@@ -26,16 +32,16 @@ class AutoTemplate {
         PART: 'template/part/**/*.{hbs,js}',
         SRC: 'src/**/*.hbs',
     };
-    DELIMITER = {
-        HELPER: '-',
-        DATA: '.',
-        PART: '/',
-        SRC: '/',
-    };
     TEMP_EXT = '.hbs';
     defaultPublic = true;
-
-    /*_______________________________________*/    
+    isFinal         = false;    // 상속 금지 설정
+    
+    outer   = null;
+    helper  = null;
+    data    = null;
+    part    = null;
+    src     = null;
+    /*_______________________________________*/
     // private
     #dir                = [];
     #event              = new Observer(this, this);
@@ -63,21 +69,36 @@ class AutoTemplate {
     // 생성자
     constructor(dir) {
         this.dir = dir;     // Automation 설정시 사용
+
+        this.outer   = new OuterCollection(this);
+        this.helper  = new TemplateCollection(this, this.AREA.HELPER);
+        this.data    = new TemplateCollection(this, this.AREA.DATA);
+        this.part    = new CompileCollection(this, this.AREA.PART);
+        this.src     = new CompileCollection(this, this.AREA.SRC);
     }
 
     /*_______________________________________*/        
     // public method
 
     init() {
-        this.helper.addPath(this.AREA.HELPER);
-        this.data.addPath(this.AREA.DATA);
-        this.part.addPath(this.AREA.PART);
-        this.src.addPath(this.AREA.SRC);
+        // this.helper.addPath(this.AREA.HELPER);
+        // this.data.addPath(this.AREA.DATA);
+        // this.part.addPath(this.AREA.PART);
+        // this.src.addPath(this.AREA.SRC);
+        this.helper.addGlob(this.GLOB.HELPER);
+        this.data.addGlob(this.GLOB.DATA);
+        this.part.addGlob(this.GLOB.PART);
+        this.src.addGlob(this.GLOB.SRC);
+
     }
 
     build() {
         // 초기화
         this.init();
+
+        for (let i = 0; i < this.src.count; i++) {
+            this.src[i].compile();
+        }
 
     }
 
@@ -146,7 +167,7 @@ class AutoTemplate {
 
         for(let i = 0; i < this.outer.count; i++) {
             template = this.outer[i];
-            alias + this.outer.propertyOf(i);
+            alias = this.outer.propertyOf(i);
             for (let ii = 0; ii < template.part.count; ii++) {
                 if (template.part[i].isPublic == true) {
                     delmiter = template.DELIMITER.PART;
@@ -164,7 +185,7 @@ class AutoTemplate {
         }
         for(let i = 0; i < this.outer.count; i++) {
             template = this.outer[i];
-            alias + this.outer.propertyOf(i);
+            alias = this.outer.propertyOf(i);
             for (let ii = 0; ii < template.helper.count; ii++) {
                 if (template.helper[i].isPublic == true) {
                     delmiter = template.DELIMITER.PART;
@@ -175,7 +196,7 @@ class AutoTemplate {
         }
         for(let i = 0; i < this.outer.count; i++) {
             template = this.outer[i];
-            alias + this.outer.propertyOf(i);
+            alias = this.outer.propertyOf(i);
             for (let ii = 0; ii < template.data.count; ii++) {
                 if (template.data[i].isPublic == true) {
                     delmiter = template.DELIMITER.PART;
@@ -189,20 +210,20 @@ class AutoTemplate {
 
     _getLocalScope() {
         
-        let obj = {};
+        let obj = { part: {}, helper: {}, data: {} };
         let alias;
 
         for (let i = 0; i < this.part.count; i++) {
-            alias + this.part.propertyOf(i);
-            obj['part'][alias] =  this.part.content;
+            alias = this.part[i].alias;
+            obj['part'][alias] =  this.part[i].content;
         }
         for (let i = 0; i < this.helper.count; i++) {
-            alias + this.helper.propertyOf(i);
-            obj['helper'][alias] =  this.helper.content;
+            alias = this.helper[i].alias;
+            obj['helper'][alias] =  this.helper[i].content;
         }
         for (let i = 0; i < this.data.count; i++) {
-            alias + this.data.propertyOf(i);
-            obj['data'][alias] =  this.data.content;
+            alias = this.data[i].alias;
+            obj['data'][alias] =  this.data[i].content;
         }
         return obj;
     }
@@ -212,8 +233,8 @@ class AutoTemplate {
  *  외부(오토템플릿)컬렉션 클래스
  */
 class OuterCollection extends PropertyCollection {
-    constructor() {
-        
+    constructor(owner) {
+        super(owner);
     }
     /*_______________________________________*/
     // public method

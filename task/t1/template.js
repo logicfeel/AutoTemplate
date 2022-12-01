@@ -8,5 +8,7 @@ class Template extends AutoTemplate {
 }
 
 
-let t1 = new Template();
-t1.build();
+// let t1 = new Template();
+// t1.build();
+
+module.exports = Template;
