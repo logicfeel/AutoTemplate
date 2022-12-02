@@ -18,6 +18,24 @@
                 "<node_internals>/**"
             ],
             "program": "${file}"
-        },        
+        },   
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "t1 build",
+            "program": "${workspaceFolder}/task/t1/test_build.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "t2 import",
+            "program": "${workspaceFolder}/task/t2/test_import.js"
+        },     
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "t3 extends",
+            "program": "${workspaceFolder}/task/t3/test_extends.js"
+        },     
     ]
 }

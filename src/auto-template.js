@@ -32,15 +32,15 @@ class AutoTemplate {
         PART: 'template/part/**/*.{hbs,js}',
         SRC: 'src/**/*.hbs',
     };
-    TEMP_EXT = '.hbs';
-    defaultPublic = true;
+    TEMP_EXT        = '.hbs';
+    defaultPublic   = true;
     isFinal         = false;    // 상속 금지 설정
-    
     outer   = null;
     helper  = null;
     data    = null;
     part    = null;
     src     = null;
+    
     /*_______________________________________*/
     // private
     #dir                = [];
@@ -48,26 +48,24 @@ class AutoTemplate {
     
     /*_______________________________________*/        
     // property
-    
     get dir() {
         let size = this.#dir.length;
         if (size === 0) throw new Error(' start [dir] request fail...');
         return this.#dir[size - 1];
     }
     set dir(val) {
-        if (this.isFinal === true && this.#dir.length > 0) throw new Error('최종 오토 (상속금지)는 dir 설정할 수 없습니다.');
+        if (this.isFinal === true && this.#dir.length > 0) throw new Error('마지막 클래스(상속금지)는 dir 설정할 수 없습니다.');
         this.#dir.push(val);
         // this.#loadDir(val);
     }
-    get dirs() {
-        return this.#dir;
-    }
+    get dirs() { return this.#dir; }
 
     /*_______________________________________*/        
     // event property
 
     // 생성자
     constructor(dir) {
+
         this.dir = dir;     // Automation 설정시 사용
 
         this.outer   = new OuterCollection(this);
@@ -81,15 +79,10 @@ class AutoTemplate {
     // public method
 
     init() {
-        // this.helper.addPath(this.AREA.HELPER);
-        // this.data.addPath(this.AREA.DATA);
-        // this.part.addPath(this.AREA.PART);
-        // this.src.addPath(this.AREA.SRC);
         this.helper.addGlob(this.GLOB.HELPER);
         this.data.addGlob(this.GLOB.DATA);
         this.part.addGlob(this.GLOB.PART);
         this.src.addGlob(this.GLOB.SRC);
-
     }
 
     build() {
@@ -106,6 +99,7 @@ class AutoTemplate {
         
         // const outer = template.export();
         // this.outer.add(alias, outer);
+        template.init();
         this.outer.add(alias, template);
     }
 
@@ -159,49 +153,62 @@ class AutoTemplate {
     // protected method
     _getOuterScope() {
 
-        let obj = {};
+        let obj = { part: {}, helper: {}, data: {} };
         let key = '';
         let delmiter = '';
-        let template;
-        let alias;
+        let outTemplate;
+        let alias, outAlias;
+        // let template;
+        // let compileSrc;
+        // let content;
 
         for(let i = 0; i < this.outer.count; i++) {
-            template = this.outer[i];
+            outTemplate = this.outer[i];
             alias = this.outer.propertyOf(i);
-            for (let ii = 0; ii < template.part.count; ii++) {
-                if (template.part[i].isPublic == true) {
-                    delmiter = template.DELIMITER.PART;
-                    key = alias + delmiter + template.part.alias;
+            for (let ii = 0; ii < outTemplate.part.count; ii++) {
+                if (outTemplate.part[ii].isPublic == true) {
+                    delmiter = outTemplate.DELIMITER.PART;
+                    key = alias + delmiter + outTemplate.part[ii].alias;
                     obj['part'][key] = function(data, hb) {
                         let localData = {};
+                        let compileSrc = outTemplate.part[ii];
+                        let content;
                         for (let prop in data) {
                             if (!data._parent[prop]) localData[prop] = data[prop];
                         }
-                        var template = _this.wax.compile(_this.src+ key);
-                        return template(localData);
+                        content = compileSrc.compile(localData, false);
+                        return content + '\n';
                     }
                 }
             }
         }
         for(let i = 0; i < this.outer.count; i++) {
-            template = this.outer[i];
+            outTemplate = this.outer[i];
             alias = this.outer.propertyOf(i);
-            for (let ii = 0; ii < template.helper.count; ii++) {
-                if (template.helper[i].isPublic == true) {
-                    delmiter = template.DELIMITER.PART;
-                    key = alias + delmiter + template.helper.alias;
-                    obj['helper'][key] = template.helper[i].content;
+            for (let ii = 0; ii < outTemplate.helper.count; ii++) {
+                if (outTemplate.helper[ii].isPublic == true) {
+                    delmiter = outTemplate.DELIMITER.HELPER;
+                    key = alias + delmiter + outTemplate.helper[ii].alias;
+                    obj['helper'][key] = outTemplate.helper[ii].content;
                 }
             }
         }
         for(let i = 0; i < this.outer.count; i++) {
-            template = this.outer[i];
+            outTemplate = this.outer[i];
             alias = this.outer.propertyOf(i);
-            for (let ii = 0; ii < template.data.count; ii++) {
-                if (template.data[i].isPublic == true) {
-                    delmiter = template.DELIMITER.PART;
-                    key = alias + delmiter + template.data.alias;
-                    obj['data'][key] = template.data[i].content;
+            for (let ii = 0; ii < outTemplate.data.count; ii++) {
+                if (outTemplate.data[ii].isPublic == true) {
+                    delmiter = outTemplate.DELIMITER.DATA;
+                    outAlias = outTemplate.data[ii].alias;
+                    key = alias + delmiter + outAlias;
+                    if (delmiter !== '.') { 
+                        obj['data'][key] = outTemplate.data[ii].content;
+                    } else {    // 객체형으로 리턴
+                        obj['data'][alias] = {};
+                        obj['data'][alias][outAlias] = outTemplate.data[ii].content;
+                    }
+                    
+                    
                 }
             }
         }
@@ -241,8 +248,8 @@ class OuterCollection extends PropertyCollection {
 
     /*_______________________________________*/
     // private method
-    #loadDir(dir) {
-    }
+    // #loadDir(dir) {
+    // }
 }
 
 exports.AutoTemplate = AutoTemplate;

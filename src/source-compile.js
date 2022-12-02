@@ -29,6 +29,10 @@ class CompileSource extends TemplateSource {
 
     }
     get savePath() {
+        const dir = this._owner.dir;    // 상속한 경우 최종 
+        const sfullPath = this.fullPath;
+
+
         return this.#savePath === null ? this.fullPath.replace('.hbs','') : this.#savePath;
     }
     set savePath(val) {
@@ -53,7 +57,7 @@ class CompileSource extends TemplateSource {
         this.#data.push({glob: obj, opt: opt});
     }
 
-    compile(data) {
+    compile(data = {}, isSave = true) {
 
         let _this = this;
         let template;
@@ -76,14 +80,14 @@ class CompileSource extends TemplateSource {
         this.#helper.forEach(val => this.wax.helpers(val.glob, val.opt));
         this.#data.forEach(val => this.wax.data(val.glob, val.opt));
 
+        // 템플릿 컴파일
         template = this.wax.compile(this.content);
-
-        // content = template(data);
-        content = template({});
+        content = template(data);
         
         // 파일저장
-        fs.writeFileSync(this.savePath, content, 'utf8');
+        if (isSave === true) fs.writeFileSync(this.savePath, content, 'utf8');
 
+        return content;
     }
 
     /*_______________________________________*/
@@ -135,23 +139,35 @@ class CompileCollection extends TemplateCollection {
         
         const _this = this;
         const sep = path.sep;
-        const dirs = this._onwer.dirs;
         const delmiter = this._owner.DELIMITER[this.area.toUpperCase()];
+        let dirs = [];
         let arrPath = [];
         let localPattern, alias;
         let content;
         let areaDir = this._owner.PATH[this.area.toUpperCase()];
         let subPath;
+        let idx;
+
+        // src 의 경우 단일 경로 에서 로딩
+        if (this.area === this._owner.AREA.SRC) dirs.push(this._onwer.dir);
+        else dirs = dirs.concat(this._onwer.dirs);
 
         for (let i = 0; i < dirs.length; i++) {
             localPattern = dirs[i] + sep + pattern;
             arrPath = glob.sync(localPattern);
             arrPath.forEach(val => { 
-                // TODO:: 경로정보는 단축해야함
                 subPath = path.relative(dirs[i] + sep + areaDir, val)
                 alias = _this._makeAlias(subPath);
                 content = fs.readFileSync(val,'utf-8');
-                _this.add(alias, content, val);
+                
+                idx = _this.indexOfName(alias);  // 중복이름 검사
+                // 중복 검사
+                if (idx > -1) {
+                    _this[idx] = new CompileSource(_this._owner, this.area, alias, val);
+                    _this[idx].content = content;
+                } else {
+                    _this.add(alias, content, val);
+                }
             });
         }
     }
