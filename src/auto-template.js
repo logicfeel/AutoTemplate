@@ -1,6 +1,6 @@
 const { PropertyCollection, Observer } = require('entitybind');
-const { TemplateSource, TemplateCollection } = require('./source-template');
-const { CompileSource, CompileCollection } = require('./source-compile');
+const { TemplateCollection } = require('./source-template');
+const { CompileCollection } = require('./source-compile');
 
 /**
  * 오토템플릿 클래스
@@ -35,11 +35,11 @@ class AutoTemplate {
     TEMP_EXT        = '.hbs';
     defaultPublic   = true;
     isFinal         = false;    // 상속 금지 설정
-    outer   = null;
-    helper  = null;
-    data    = null;
-    part    = null;
-    src     = null;
+    outer           = null;
+    helper          = null;
+    data            = null;
+    part            = null;
+    src             = null;
     
     /*_______________________________________*/
     // private
@@ -56,18 +56,17 @@ class AutoTemplate {
     set dir(val) {
         if (this.isFinal === true && this.#dir.length > 0) throw new Error('마지막 클래스(상속금지)는 dir 설정할 수 없습니다.');
         this.#dir.push(val);
-        // this.#loadDir(val);
     }
     get dirs() { return this.#dir; }
 
     /*_______________________________________*/        
     // event property
+    // TODO::
 
-    // 생성자
+    /*_______________________________________*/
+    // constructor method
     constructor(dir) {
-
         this.dir = dir;     // Automation 설정시 사용
-
         this.outer   = new OuterCollection(this);
         this.helper  = new TemplateCollection(this, this.AREA.HELPER);
         this.data    = new TemplateCollection(this, this.AREA.DATA);
@@ -77,7 +76,6 @@ class AutoTemplate {
 
     /*_______________________________________*/        
     // public method
-
     init() {
         this.helper.addGlob(this.GLOB.HELPER);
         this.data.addGlob(this.GLOB.DATA);
@@ -88,79 +86,27 @@ class AutoTemplate {
     build() {
         // 초기화
         this.init();
-
+        
+        // 소스 컴파일
         for (let i = 0; i < this.src.count; i++) {
             this.src[i].compile();
         }
-
     }
 
     import(alias, template) {
-        
-        // const outer = template.export();
-        // this.outer.add(alias, outer);
+        // 외부 템플릿 초기화
         template.init();
+        
+        // 외부 템플릿 등록
         this.outer.add(alias, template);
     }
-
-    // export(alias) {
-        
-    //     let _this = this;
-    //     let obj = {};
-    //     let key = '';
-    //     let delmiter = '';
-
-    //     for (let i = 0; i < this.part.count; i++) {
-    //         if (this.part[i].isPublic == true) {
-    //             delmiter = this.DELIMITER.PART;
-    //             key = 'part' + delmiter + this.part.propertyOf(i);
-    //             obj[key] = function(data, hb) {
-    //                 let localData = {};
-    //                 for (let prop in data) {
-    //                     if (!data._parent[prop]) localData[prop] = data[prop];
-    //                 }
-    //                 var template = _this.wax.compile(_this.src+ key);
-    //                 return template(localData);
-    //             }
-    //         }
-    //     }
-    //     for (let i = 0; i < this.helper.count; i++) {
-    //         if (this.helper[i].isPublic == true) {
-    //             delmiter = this.DELIMITER.HELPER;
-    //             key = 'helper' + delmiter + this.helper.propertyOf(i);
-    //             obj[key] = this.helper[i].content;
-    //         }
-    //     }
-    //     for (let i = 0; i < this.part.count; i++) {
-    //         if (this.part[i].isPublic == true) {
-    //             delmiter = this.DELIMITER.HELPER;
-    //             key = 'data' + delmiter + this.part.propertyOf(i);
-    //             obj[key] = function(data, hb) {
-    //                 let localData = {};
-    //                 for (let prop in data) {
-    //                     if (!data._parent[prop]) localData[prop] = data[prop];
-    //                 }
-    //                 var template = _this.wax.compile(_this.src+ key);
-    //                 return template(localData);
-    //             }
-    //         }
-    //     }
-
-    //     return obj;
-    // }
 
     /*_______________________________________*/        
     // protected method
     _getOuterScope() {
 
         let obj = { part: {}, helper: {}, data: {} };
-        let key = '';
-        let delmiter = '';
-        let outTemplate;
-        let alias, outAlias;
-        // let template;
-        // let compileSrc;
-        // let content;
+        let key, delmiter, outTemplate, alias, outAlias;
 
         for(let i = 0; i < this.outer.count; i++) {
             outTemplate = this.outer[i];
@@ -207,8 +153,6 @@ class AutoTemplate {
                         obj['data'][alias] = {};
                         obj['data'][alias][outAlias] = outTemplate.data[ii].content;
                     }
-                    
-                    
                 }
             }
         }
@@ -243,13 +187,6 @@ class OuterCollection extends PropertyCollection {
     constructor(owner) {
         super(owner);
     }
-    /*_______________________________________*/
-    // public method
-
-    /*_______________________________________*/
-    // private method
-    // #loadDir(dir) {
-    // }
 }
 
 exports.AutoTemplate = AutoTemplate;

@@ -8,6 +8,8 @@ class Template extends AutoTemplate {
         super(__dirname);
 
         this.import('temp1', t1);
+
+        console.log(1)
     }
 }
 

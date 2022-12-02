@@ -1,69 +1,64 @@
-const fs                    = require('fs');
-const path                  = require('path');
-const glob                  = require('glob');
-const handlebars            = require('handlebars');
-const handlebarsWax         = require('handlebars-wax');
-// const { PropertyCollection, Observer } = require('entitybind');
-const { TemplateSource, TemplateCollection } = require('./source-template');
+const fs                        = require('fs');
+const path                      = require('path');
+const glob                      = require('glob');
+const handlebars                = require('handlebars');
+const handlebarsWax             = require('handlebars-wax');
+const { PropertyCollection }    = require('entitybind');
+const { TemplateSource }        = require('./source-template');
 
 /**
  * 컴파일소스 클래스
  */
 class CompileSource extends TemplateSource {
     
+    /*_______________________________________*/        
+    // public
     wax = null;
     
     /*_______________________________________*/        
     // private
-    #part = [];
-    #helper = [];
-    #data = [];
-    #savePath = null;
+    #part       = [];
+    #helper     = [];
+    #data       = [];
+    #savePath   = '';
 
     /*_______________________________________*/        
     // property
-    get saveName() {
-
-    }
-    get saveDir() {
-
-    }
+    get saveName() { return path.basename(this.savePath); }
+    get saveDir() { return path.dirname(this.savePath); }
     get savePath() {
         const dir = this._owner.dir;    // 상속한 경우 최종 
-        const sfullPath = this.fullPath;
-
-
-        return this.#savePath === null ? this.fullPath.replace('.hbs','') : this.#savePath;
+        const fullPath = dir + path.sep + this.localPath;
+        return this.#savePath === '' ? fullPath.replace('.hbs','') : this.#savePath;
     }
-    set savePath(val) {
-        this.#savePath = val;
-    }
-
+    set savePath(val) { this.#savePath = val; }
+    
+    /*_______________________________________*/
+    // constructor method
     constructor(owner, area, alias, fullPath = null) {
         super(owner, area, alias, fullPath);
         this.wax = handlebarsWax(handlebars.create());
     }
     /*_______________________________________*/
     // public method
-    partials(obj, opt) {
-        this.#part.push({glob: obj, opt: opt});
+    partials(pattern, opt) {
+        this.#part.push({glob: pattern, opt: opt});
     }
 
-    helpers(obj, opt) {
-        this.#helper.push({glob: obj, opt: opt});
+    helpers(pattern, opt) {
+        this.#helper.push({glob: pattern, opt: opt});
     }
 
-    data(obj, opt) {
-        this.#data.push({glob: obj, opt: opt});
+    data(pattern, opt) {
+        this.#data.push({glob: pattern, opt: opt});
     }
 
     compile(data = {}, isSave = true) {
 
         let _this = this;
-        let template;
+        let template, content;
         let outerScope = this._owner._getOuterScope();
         let localScope = this._owner._getLocalScope();
-        let content;
 
         // 외부 스코프
         this.wax.partials(outerScope.part);
@@ -89,27 +84,35 @@ class CompileSource extends TemplateSource {
 
         return content;
     }
-
-    /*_______________________________________*/
-    // protected method
-
-
 }
 
 
 /**
  * 컴파일컬렉션 클래스
  */
-class CompileCollection extends TemplateCollection {
+class CompileCollection extends PropertyCollection {
     
-    
+    area = null;
+    _owner = null;
+
+    /*_______________________________________*/
+    // constructor method
     constructor(owner, area) {
-        super(owner, area);
+        super(owner);
+        this.area = area;
+        this._owner = owner;
     }
 
     /*_______________________________________*/
     // public method
 
+    /**
+     * 컬렉션에 객체를 생성하여 추가
+     * @param {*} alias 별칭
+     * @param {function | object | CompileSource} obj  대상
+     * @param {*} fullPath glob를 통해서 입력한 경우만 
+     * @override 
+     */
     add(alias, obj, fullPath) {
         
         let tarSrc, dir, localDir;
@@ -132,8 +135,9 @@ class CompileCollection extends TemplateCollection {
     }
 
     /**
-     * 
-     * @param {*} pattern js, json
+     * glob 패턴으로 복수의 경로의 파일을 컬렉션에 추가히기
+     * @param {*} pattern js, hbs
+     * @param {*} opt TODO:: glob 옵션으로 활용
      */
      addGlob(pattern, opt) {
         
@@ -174,16 +178,12 @@ class CompileCollection extends TemplateCollection {
 
     /*_______________________________________*/
     // protected method
-    _add(fullPath, area) {
-        let obj  = new CompileSource(this._owner, fullPath, area);
-        let alias = obj.alias;
-
-        super.add(alias, obj);
-    }
 
     /**
+     * subPath를 입력받이서 별칭로 만들기
      * .hbs만 제거
      * @param {*} subPath 
+     * @returns {string} 별칭
      */
     _makeAlias(subPath) {
 
@@ -197,7 +197,6 @@ class CompileCollection extends TemplateCollection {
         return dir + fileName;
     }
 }
-
 
 exports.CompileSource = CompileSource;
 exports.CompileCollection = CompileCollection;
