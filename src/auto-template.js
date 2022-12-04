@@ -35,7 +35,7 @@ class AutoTemplate {
     TEMP_EXT        = '.hbs';
     defaultPublic   = true;
     isFinal         = false;    // 상속 금지 설정
-    outer           = null;
+    namespace       = null;
     helper          = null;
     data            = null;
     part            = null;
@@ -66,12 +66,12 @@ class AutoTemplate {
     /*_______________________________________*/
     // constructor method
     constructor(dir) {
-        this.dir = dir;     // Automation 설정시 사용
-        this.outer   = new OuterCollection(this);
-        this.helper  = new TemplateCollection(this, this.AREA.HELPER);
-        this.data    = new TemplateCollection(this, this.AREA.DATA);
-        this.part    = new CompileCollection(this, this.AREA.PART);
-        this.src     = new CompileCollection(this, this.AREA.SRC);
+        this.dir        = dir;     // Automation 설정시 사용
+        this.namespace  = new NamespaceCollection(this);
+        this.helper     = new TemplateCollection(this, this.AREA.HELPER);
+        this.data       = new TemplateCollection(this, this.AREA.DATA);
+        this.part       = new CompileCollection(this, this.AREA.PART);
+        this.src        = new CompileCollection(this, this.AREA.SRC);
     }
 
     /*_______________________________________*/        
@@ -98,7 +98,7 @@ class AutoTemplate {
         template.init();
         
         // 외부 템플릿 등록
-        this.outer.add(alias, template);
+        this.namespace.add(alias, template);
     }
 
     /*_______________________________________*/        
@@ -108,9 +108,9 @@ class AutoTemplate {
         let obj = { part: {}, helper: {}, data: {} };
         let key, delmiter, outTemplate, alias, outAlias;
 
-        for(let i = 0; i < this.outer.count; i++) {
-            outTemplate = this.outer[i];
-            alias = this.outer.propertyOf(i);
+        for(let i = 0; i < this.namespace.count; i++) {
+            outTemplate = this.namespace[i];
+            alias = this.namespace.propertyOf(i);
             for (let ii = 0; ii < outTemplate.part.count; ii++) {
                 if (outTemplate.part[ii].isPublic == true) {
                     delmiter = outTemplate.DELIMITER.PART;
@@ -128,9 +128,9 @@ class AutoTemplate {
                 }
             }
         }
-        for(let i = 0; i < this.outer.count; i++) {
-            outTemplate = this.outer[i];
-            alias = this.outer.propertyOf(i);
+        for(let i = 0; i < this.namespace.count; i++) {
+            outTemplate = this.namespace[i];
+            alias = this.namespace.propertyOf(i);
             for (let ii = 0; ii < outTemplate.helper.count; ii++) {
                 if (outTemplate.helper[ii].isPublic == true) {
                     delmiter = outTemplate.DELIMITER.HELPER;
@@ -139,9 +139,9 @@ class AutoTemplate {
                 }
             }
         }
-        for(let i = 0; i < this.outer.count; i++) {
-            outTemplate = this.outer[i];
-            alias = this.outer.propertyOf(i);
+        for(let i = 0; i < this.namespace.count; i++) {
+            outTemplate = this.namespace[i];
+            alias = this.namespace.propertyOf(i);
             for (let ii = 0; ii < outTemplate.data.count; ii++) {
                 if (outTemplate.data[ii].isPublic == true) {
                     delmiter = outTemplate.DELIMITER.DATA;
@@ -183,7 +183,7 @@ class AutoTemplate {
 /**
  *  외부(오토템플릿)컬렉션 클래스
  */
-class OuterCollection extends PropertyCollection {
+class NamespaceCollection extends PropertyCollection {
     constructor(owner) {
         super(owner);
     }
