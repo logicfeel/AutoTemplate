@@ -40,6 +40,10 @@ class AutoTemplate {
     data            = null;
     part            = null;
     src             = null;
+
+    /*_______________________________________*/
+    // protected
+    _auto = null
     
     /*_______________________________________*/
     // private
@@ -61,12 +65,16 @@ class AutoTemplate {
 
     /*_______________________________________*/        
     // event property
-    // TODO::
+    set onInit(fn) { this.#event.subscribe(fn, 'init') }        // 초기화 전
+    set onInited(fn) { this.#event.subscribe(fn, 'inited') }    // 초기화 전
+    set onBuild(fn) { this.#event.subscribe(fn, 'build') }      // 빌드 전
+    set onBuilded(fn) { this.#event.subscribe(fn, 'builded') }  // 빌드 전
 
     /*_______________________________________*/
     // constructor method
-    constructor(dir) {
-        this.dir        = dir;     // Automation 설정시 사용
+    constructor(dir, auto) {
+        this.dir        = dir;      // Automation 설정시 사용
+        this._auto      = auto;     // Automation 설정시 사용
         this.namespace  = new NamespaceCollection(this);
         this.helper     = new TemplateCollection(this, this.AREA.HELPER);
         this.data       = new TemplateCollection(this, this.AREA.DATA);
@@ -76,27 +84,44 @@ class AutoTemplate {
 
     /*_______________________________________*/        
     // public method
+    ready() {/** 가상함수 */}
+
     init() {
+        // 이벤트 발생
+        this._onInit(this, this._auto);
+
         this.helper.addGlob(this.GLOB.HELPER);
         this.data.addGlob(this.GLOB.DATA);
         this.part.addGlob(this.GLOB.PART);
         this.src.addGlob(this.GLOB.SRC);
+
+        // 이벤트 발생
+        this._onInited(this, this._auto);
+
+        // 사옹자 정의 초기화 호출
+        this.ready();
+
     }
 
     build() {
         // 초기화
         this.init();
         
+        // 이벤트 발생
+        this._onBuild(this, this._auto);
+
         // 소스 컴파일
         for (let i = 0; i < this.src.count; i++) {
             this.src[i].compile();
         }
+
+        // 이벤트 발생
+        this._onBuilded(this, this._auto);
     }
 
     import(alias, template) {
         // 외부 템플릿 초기화
         template.init();
-        
         // 외부 템플릿 등록
         this.namespace.add(alias, template);
     }
@@ -178,6 +203,22 @@ class AutoTemplate {
         }
         return obj;
     }
+
+    /*_______________________________________*/
+    // event caller
+    _onInit(template, auto) {
+        this.#event.publish('init', template, auto);
+    }
+    _onInited(template, auto) {
+        this.#event.publish('inited', template, auto);
+    }
+    _onBuild(template, auto) {
+        this.#event.publish('build', template, auto);
+    }
+    _onBuilded(template, auto) {
+        this.#event.publish('builded', template, auto);
+    }
+    
 }
 
 /**

@@ -1,10 +1,10 @@
-const fs                        = require('fs');
-const path                      = require('path');
-const glob                      = require('glob');
-const handlebars                = require('handlebars');
-const handlebarsWax             = require('handlebars-wax');
-const { PropertyCollection }    = require('entitybind');
-const { TemplateSource }        = require('./source-template');
+const fs                                = require('fs');
+const path                              = require('path');
+const glob                              = require('glob');
+const handlebars                        = require('handlebars');
+const handlebarsWax                     = require('handlebars-wax');
+const { PropertyCollection, Observer }  = require('entitybind');
+const { TemplateSource }                = require('./source-template');
 
 /**
  * 컴파일소스 클래스
@@ -21,6 +21,7 @@ class CompileSource extends TemplateSource {
     #helper     = [];
     #data       = [];
     #savePath   = '';
+    #event      = new Observer(this, this);
 
     /*_______________________________________*/        
     // property
@@ -33,6 +34,11 @@ class CompileSource extends TemplateSource {
     }
     set savePath(val) { this.#savePath = val; }
     
+    /*_______________________________________*/        
+    // event property
+    set onCompile(fn) { this.#event.subscribe(fn, 'compile') }      // 컴파일 전
+    set onCompiled(fn) { this.#event.subscribe(fn, 'compiled') }    // 컴파일 전
+
     /*_______________________________________*/
     // constructor method
     constructor(owner, area, alias, fullPath = null) {
@@ -54,6 +60,9 @@ class CompileSource extends TemplateSource {
     }
 
     compile(data = {}, isSave = true) {
+
+        // 이벤트 발생
+        this._onCompile(this);
 
         let _this = this;
         let template, content;
@@ -82,10 +91,21 @@ class CompileSource extends TemplateSource {
         // 파일저장
         if (isSave === true) fs.writeFileSync(this.savePath, content, 'utf8');
 
+        // 이벤트 발생
+        this._onCompiled(this);
+
         return content;
     }
+    
+    /*_______________________________________*/
+    // event caller
+    _onCompile(source) {
+        this.#event.publish('compile', source);
+    }
+    _onCompiled(source) {
+        this.#event.publish('compiled', source);
+    }
 }
-
 
 /**
  * 컴파일컬렉션 클래스
@@ -146,11 +166,8 @@ class CompileCollection extends PropertyCollection {
         const delmiter = this._owner.DELIMITER[this.area.toUpperCase()];
         let dirs = [];
         let arrPath = [];
-        let localPattern, alias;
-        let content;
         let areaDir = this._owner.PATH[this.area.toUpperCase()];
-        let subPath;
-        let idx;
+        let localPattern, alias, content, subPath, idx;
 
         // src 의 경우 단일 경로 에서 로딩
         if (this.area === this._owner.AREA.SRC) dirs.push(this._onwer.dir);

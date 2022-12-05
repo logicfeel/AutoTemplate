@@ -21,7 +21,6 @@ class TemplateSource {
     #fullPath = '';
     #area = '';
     #alias = '';
-    // #name = '';
 
     /*_______________________________________*/        
     // property
@@ -102,10 +101,8 @@ class TemplateCollection extends PropertyCollection {
         const dirs = this._onwer.dirs;
         const delmiter = this._owner.DELIMITER[this.area.toUpperCase()];
         let arrPath = [];
-        let localPattern, alias;
-        let content;
         let areaDir = this._owner.PATH[this.area.toUpperCase()];
-        let subPath;
+        let localPattern, alias, content, subPath;
 
         for (let i = 0; i < dirs.length; i++) {
             localPattern = dirs[i] + sep + pattern;

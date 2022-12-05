@@ -36,6 +36,12 @@
             "request": "launch",
             "name": "t3 extends",
             "program": "${workspaceFolder}/task/t3/test_extends.js"
-        },     
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "t4 event",
+            "program": "${workspaceFolder}/task/t4/test_event.js"
+        },
     ]
 }
