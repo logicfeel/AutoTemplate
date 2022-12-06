@@ -16,8 +16,8 @@ class Template extends T1 {
     }
     // 오버라이딩
     ready() {
-        this.src['page-one.html'].onCompile = (s) => {console.log('onCompile src 이벤트'+s.saveName )};
-        this.src['page-one.html'].onCompiled = (s) => {console.log('onCompiled src 이벤트'+s.saveName )};
+        this.src['page-one.html'].onCompile = (s) => { console.log('onCompile src 이벤트'+s.saveName) };
+        this.src['page-one.html'].onCompiled = (s) => { console.log('onCompiled src 이벤트'+s.saveName) };
     }
 }
 
