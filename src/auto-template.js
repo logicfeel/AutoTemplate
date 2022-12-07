@@ -70,8 +70,11 @@ class AutoTemplate {
     set onBuild(fn) { this.#event.subscribe(fn, 'build') }      // 빌드 전
     set onBuilded(fn) { this.#event.subscribe(fn, 'builded') }  // 빌드 전
 
-    /*_______________________________________*/
-    // constructor method
+    /**
+     * 오토템플릿 생성자
+     * @param {string} dir 시작경로
+     * @param {Automation?} auto 소속된 오토메이션
+     */
     constructor(dir, auto) {
         this.dir        = dir;      // Automation 설정시 사용
         this._auto      = auto;     // Automation 설정시 사용
@@ -84,8 +87,17 @@ class AutoTemplate {
 
     /*_______________________________________*/        
     // public method
+    
+    /**
+     * 템플릿 파일을 불러오고 준비가 된 상태, overriding 으로 사용함
+     * @virtual
+     */
     ready() {/** 가상함수 */}
 
+    /**
+     * 초기화한다, 
+     * 설정된 glob 정보로 파일을 컬렉션에 등록한다.
+     */
     init() {
         // 이벤트 발생
         this._onInit(this, this._auto);
@@ -103,6 +115,9 @@ class AutoTemplate {
 
     }
 
+    /**
+     * src 에 등록된 소스를 빌드한다.(템플릿을 컴파일한다.)
+     */
     build() {
         // 초기화
         this.init();
@@ -119,6 +134,12 @@ class AutoTemplate {
         this._onBuilded(this, this._auto);
     }
 
+    /**
+     * 외부 AutoTemplate 의 part, helper, data 를 가져온다.
+     * src는 제외
+     * @param {string} alias 별칭
+     * @param {AutoTemplate} template 
+     */
     import(alias, template) {
         // 외부 템플릿 초기화
         template.init();
@@ -128,6 +149,35 @@ class AutoTemplate {
 
     /*_______________________________________*/        
     // protected method
+
+    /**
+     * 테플릿의 지역범위의 객체를 리턴한다.
+     * @returns {object} {part:{..}, helper: {..}, data: {..}}
+     */
+    _getLocalScope() {
+        
+        let obj = { part: {}, helper: {}, data: {} };
+        let alias;
+
+        for (let i = 0; i < this.part.count; i++) {
+            alias = this.part[i].alias;
+            obj['part'][alias] =  this.part[i].content;
+        }
+        for (let i = 0; i < this.helper.count; i++) {
+            alias = this.helper[i].alias;
+            obj['helper'][alias] =  this.helper[i].content;
+        }
+        for (let i = 0; i < this.data.count; i++) {
+            alias = this.data[i].alias;
+            obj['data'][alias] =  this.data[i].content;
+        }
+        return obj;
+    }
+
+    /**
+     * 테플릿의 외부범위(import)의 객체를 리턴한다.
+     * @returns {object} {part:{..}, helper: {..}, data: {..}}
+     */
     _getOuterScope() {
 
         let obj = { part: {}, helper: {}, data: {} };
@@ -172,34 +222,14 @@ class AutoTemplate {
                     delmiter = outTemplate.DELIMITER.DATA;
                     outAlias = outTemplate.data[ii].alias;
                     key = alias + delmiter + outAlias;
-                    if (delmiter !== '.') { 
-                        obj['data'][key] = outTemplate.data[ii].content;
-                    } else {    // 객체형으로 리턴
+                    if (delmiter === '.') { // 객체형으로 리턴
                         obj['data'][alias] = {};
                         obj['data'][alias][outAlias] = outTemplate.data[ii].content;
+                    } else {    
+                        obj['data'][key] = outTemplate.data[ii].content;
                     }
                 }
             }
-        }
-        return obj;
-    }
-
-    _getLocalScope() {
-        
-        let obj = { part: {}, helper: {}, data: {} };
-        let alias;
-
-        for (let i = 0; i < this.part.count; i++) {
-            alias = this.part[i].alias;
-            obj['part'][alias] =  this.part[i].content;
-        }
-        for (let i = 0; i < this.helper.count; i++) {
-            alias = this.helper[i].alias;
-            obj['helper'][alias] =  this.helper[i].content;
-        }
-        for (let i = 0; i < this.data.count; i++) {
-            alias = this.data[i].alias;
-            obj['data'][alias] =  this.data[i].content;
         }
         return obj;
     }
@@ -218,13 +248,16 @@ class AutoTemplate {
     _onBuilded(template, auto) {
         this.#event.publish('builded', template, auto);
     }
-    
 }
 
 /**
  *  외부(오토템플릿)컬렉션 클래스
  */
 class NamespaceCollection extends PropertyCollection {
+    /**
+     * 네임스페이스컬렉션, import한 외부 Tempalate들
+     * @param {AutoTemplate} owner 오토템플릿
+     */
     constructor(owner) {
         super(owner);
     }

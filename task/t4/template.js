@@ -8,7 +8,6 @@ class Template extends T1 {
         super();
         this.dir = __dirname;
         // this.import('temp1', t1);
-
         this.onInit = (t, a) => {console.log('onInit 이벤트 '+ t.dir)};
         this.onInited = (t, a) => {console.log('onInited 이벤트 '+ t.dir)};
         this.onBuild = (t, a) => {console.log('onBuild 이벤트 '+ t.dir)};
@@ -18,6 +17,8 @@ class Template extends T1 {
     ready() {
         this.src['page-one.html'].onCompile = (s) => { console.log('onCompile src 이벤트'+s.saveName) };
         this.src['page-one.html'].onCompiled = (s) => { console.log('onCompiled src 이벤트'+s.saveName) };
+
+        this.src['page-one.html'].savePath = this.dir +'/page-save.html';
     }
 }
 

@@ -37,8 +37,13 @@ class TemplateSource {
     get localPath() { return this.areaDir + path.sep + this.subPath; }
     get name() { return path.basename(this.fullPath); }
 
-    /*_______________________________________*/
-    // constructor method
+    /**
+     * 템플릿소스 생성자
+     * @param {AutoTemplate} owner 소속된 템플릿
+     * @param {*} area 구역코드
+     * @param {*} alias 별칭
+     * @param {*?} fullPath 전체경로(최상위부터)
+     */
     constructor(owner, area, alias, fullPath = null) {
         this._owner = owner;
         this.#area = area;
@@ -58,13 +63,17 @@ class TemplateCollection extends PropertyCollection {
     area = null;
     _owner = null;
 
-    /*_______________________________________*/
-    // constructor method
+    /**
+     * 템플릿컬렉션 생성자
+     * @param {AutoTemplate} owner 소유자
+     * @param {string} area 구역코드
+     */
     constructor(owner, area) {
         super(owner);
         this.area = area;
         this._owner = owner;
     }
+    
     /*_______________________________________*/
     // public method
 
@@ -73,7 +82,7 @@ class TemplateCollection extends PropertyCollection {
      * @param {*} alias 별칭
      * @param {function | object | TemplateSource} obj  대상
      * @param {*} fullPath glob를 통해서 입력한 경우만 
-     * @override
+     * @overloading 상위 add(..) 호출함
      */
     add(alias, obj, fullPath) {
         

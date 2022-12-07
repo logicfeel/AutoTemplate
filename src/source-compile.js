@@ -115,8 +115,11 @@ class CompileCollection extends PropertyCollection {
     area = null;
     _owner = null;
 
-    /*_______________________________________*/
-    // constructor method
+    /**
+     * 컴파일컬렉션 생성자
+     * @param {AutoTemplate} owner 소유자
+     * @param {string} area 구역코드
+     */
     constructor(owner, area) {
         super(owner);
         this.area = area;
@@ -125,13 +128,12 @@ class CompileCollection extends PropertyCollection {
 
     /*_______________________________________*/
     // public method
-
     /**
      * 컬렉션에 객체를 생성하여 추가
      * @param {*} alias 별칭
      * @param {function | object | CompileSource} obj  대상
      * @param {*} fullPath glob를 통해서 입력한 경우만 
-     * @override 
+     * @overloading 상위 add(..) 호출함
      */
     add(alias, obj, fullPath) {
         
