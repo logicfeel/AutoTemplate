@@ -61,14 +61,15 @@ class CompileSource extends TemplateSource {
 
     compile(data = {}, isSave = true) {
 
-        // 이벤트 발생
-        this._onCompile(this);
-
+        
         let _this = this;
         let template, content;
         let outerScope = this._owner._getOuterScope();
         let localScope = this._owner._getLocalScope();
-
+        
+        // 이벤트 발생
+        this._onCompile(this);
+        
         // 외부 스코프
         this.wax.partials(outerScope.part);
         this.wax.helpers(outerScope.helper);
