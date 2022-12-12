@@ -38,6 +38,7 @@ class CompileSource extends TemplateSource {
     // event property
     set onCompile(fn) { this.#event.subscribe(fn, 'compile') }      // 컴파일 전
     set onCompiled(fn) { this.#event.subscribe(fn, 'compiled') }    // 컴파일 전
+    set onSave(fn) { this.#event.subscribe(fn, 'save') }    // 컴파일 전
 
     /*_______________________________________*/
     // constructor method
@@ -61,12 +62,11 @@ class CompileSource extends TemplateSource {
 
     compile(data = {}, isSave = true) {
 
-        
         let _this = this;
         let template, content;
         let outerScope = this._owner._getOuterScope();
         let localScope = this._owner._getLocalScope();
-        
+
         // 이벤트 발생
         this._onCompile(this);
         
@@ -89,13 +89,29 @@ class CompileSource extends TemplateSource {
         template = this.wax.compile(this.content);
         content = template(data);
         
+        
         // 파일저장
-        if (isSave === true) fs.writeFileSync(this.savePath, content, 'utf8');
+        if (isSave === true) {
+            fs.writeFileSync(this.savePath, content, 'utf8');
+
+            // 빌드 파일 추가
+            this._owner._addBuildFile(this.savePath, 'publish')
+
+            // 이벤트 발생
+            this._onSave(this, this.savePath);
+        }
 
         // 이벤트 발생
         this._onCompiled(this);
 
         return content;
+    }
+
+    build(data) {
+        // 컴파일
+        this.compile(data, true);
+        // 빌드 파일 저장
+        this._owner._saveBuildFile();
     }
     
     /*_______________________________________*/
@@ -105,6 +121,9 @@ class CompileSource extends TemplateSource {
     }
     _onCompiled(source) {
         this.#event.publish('compiled', source);
+    }
+    _onSave(source) {
+        this.#event.publish('save', source);
     }
 }
 

@@ -13,12 +13,14 @@ class AutoTemplate {
         DATA: 'data',
         PART: 'part',
         SRC: 'src',
+        PUB: 'pub',
     };
     PATH = {
         HELPER: 'template/helper',
         DATA: 'template/data',
         PART: 'template/part',
         SRC: 'src',
+        PUB: 'src',
     }
     DELIMITER = {
         HELPER: '-',
@@ -32,6 +34,9 @@ class AutoTemplate {
         PART: 'template/part/**/*.{hbs,js}',
         SRC: 'src/**/*.hbs',
     };
+    FILE = {
+        BUILD: '__BuildFile.json'
+    };
     TEMP_EXT        = '.hbs';
     defaultPublic   = true;
     isFinal         = false;    // 상속 금지 설정
@@ -40,10 +45,14 @@ class AutoTemplate {
     data            = null;
     part            = null;
     src             = null;
-
+    
     /*_______________________________________*/
     // protected
     _auto = null
+    _buildFile = {
+        conver: [],
+        publish: [],
+    }
     
     /*_______________________________________*/
     // private
@@ -99,6 +108,9 @@ class AutoTemplate {
      * 설정된 glob 정보로 파일을 컬렉션에 등록한다.
      */
     init() {
+        
+        let buildFile;
+        
         // 이벤트 발생
         this._onInit(this, this._auto);
 
@@ -110,9 +122,14 @@ class AutoTemplate {
         // 이벤트 발생
         this._onInited(this, this._auto);
 
+        if (fs.existsSync(this.dir + path.sep + this.FILE.BUILD)) {
+            buildFile = require(this.FILE.BUILD);
+            this._buildFile['conver'] = buildFile.conver;
+            this._buildFile['publish'] = buildFile.publish;
+        }
+
         // 사옹자 정의 초기화 호출
         this.ready();
-
     }
 
     /**
@@ -146,6 +163,8 @@ class AutoTemplate {
         // 외부 템플릿 등록
         this.namespace.add(alias, template);
     }
+
+    
 
     /*_______________________________________*/        
     // protected method
@@ -234,6 +253,60 @@ class AutoTemplate {
         return obj;
     }
 
+    _addBuildFile(savePath, type) {
+        if (type === 'conver' && this._buildFile['cover'].indexOf(savePath) < 0) {
+            this._buildFile['cover'].push(savePath);
+        } else if (type === 'publish' && this._buildFile['publish'].indexOf(savePath) < 0) {
+            this._buildFile['publish'].push(savePath);
+        }
+    }
+
+    _saveBuildFile(buildFile) {
+        
+        let savePath, data;
+
+        savePath = buildFile ? this.dir + path.sep + buildFile : this.dir + path.sep + this.FILE.BUILD;
+        data = JSON.stringify(this._batchFile, null, '\t');
+
+        fs.writeFileSync(savePath, data, 'utf8');
+    }
+
+    /**
+     * 부모의 객체를 가져와 파일로 쓰다
+     *  helper, data, part, src
+     */
+    _writeParentObject() {
+        // console.log('보모 객체 및 파일 덮어쓰기');
+
+        let _this = this;
+        let data, dirname;
+
+        function copySource(collection, dir) {
+            
+            let  fullPath, savePath;
+            
+            for (let i = 0; i < collection.count; i++) {
+                fullPath = collection[i].fullPath;
+                savePath = dir + path.sep + collection[i].localPath;
+                if (!fs.existsSync(savePath)) {
+                    dirname = path.dirname(savePath);   
+                    if(!fs.existsSync(dirname)) {
+                        fs.mkdirSync(dirname, {recursive: true} );  // 디렉토리 만들기
+                    }
+                    fs.copyFileSync(fullPath, savePath);
+                    // cover 빌르 파일 [로그]
+                    _this._addBuildFile(savePath, 'cover');
+                }
+            }    
+        }
+
+        // helper, data, part, src 가져오기
+        copySource(this.helper, this.dir);
+        copySource(this.data, this.dir);        
+        copySource(this.part, this.dir);        
+        copySource(this.src, this.dir);        
+    }
+    
     /*_______________________________________*/
     // event caller
     _onInit(template, auto) {
@@ -262,5 +335,6 @@ class NamespaceCollection extends PropertyCollection {
         super(owner);
     }
 }
+
 
 exports.AutoTemplate = AutoTemplate;
