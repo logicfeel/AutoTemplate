@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
-const { SourceBatch } = require('./source-batch');
-const { Observer } = require('entitybind');
+const fs                = require('fs');
+const path              = require('path');
+const { Observer }      = require('entitybind');
+// const { SourceBatch }   = require('./source-batch');
 
 /**
  * 오토태스크 클래스
@@ -12,8 +12,7 @@ class AutoTask {
     entry = null;
     batch = null;
     cursor = '';
-    FILE = {     // location
-        RELATION: '__Relation.json',
+    FILE = {
         TEMPLATE: 'template.js',
     };
     
@@ -24,12 +23,12 @@ class AutoTask {
     /*_______________________________________*/        
     // private
     #dir = null;
-    #event              = new Observer(this, this);
+    #event = new Observer(this, this);
     
     /*_______________________________________*/        
     // event property
-    // set onLoad(fun) {
-    //     this.#event.subscribe(fun, 'load');
+    // set onLoad(fn) {
+    //     this.#event.subscribe(fn, 'load');
     // }
     // set onSave(fun) {
     //     this.#event.subscribe(fun, 'save');
@@ -39,8 +38,8 @@ class AutoTask {
     // }
 
     constructor() {
-        this.batch = SourceBatch.getInstance();
-        this.batch._task = this;
+        // this.batch = SourceBatch.getInstance();
+        // this.batch._task = this;
     }
 
     /*_______________________________________*/
@@ -77,7 +76,7 @@ class AutoTask {
         // 로딩
         this._load();
         // 빌드
-        this.entry.build();
+        this.entry.buildSource();
     }
 
     /**
@@ -88,9 +87,8 @@ class AutoTask {
         this.cursor = 'COVER';
         // 로딩
         this._load();
-
-        // 부모 가져오기
-        template._writeParentObject();
+        // 부모 파일 쓰기
+        this.entry._writeParentObject();
     }
 
     /**
@@ -101,32 +99,13 @@ class AutoTask {
         let dir, entry, delPath;
 
         this.cursor = 'CLEAR';
-        // // 로딩
-        // this._load();
-        // // 배치 파일 삭제
-        // this.batch.clear();
-        // this.#event.unsubscribeAll();
-        
-        // // 디렉토리 삭제        
-        // entry = this.entry;
-        // dir = entry.dir;
-        // // dir = __dirname;
 
-        // delPath = dir +path.sep+ entry.LOC.DIS;
-        // if (fs.existsSync(delPath)) fs.rmSync(delPath, { recursive: true });
-        // delPath = dir +path.sep+ entry.LOC.DEP;
-        // if (fs.existsSync(delPath)) fs.rmSync(delPath, { recursive: true });
-        // delPath = dir +path.sep+ entry.LOC.INS;
-        // if (fs.existsSync(delPath)) fs.rmSync(delPath, { recursive: true });
-        // delPath = dir +path.sep+ entry.LOC.PUB;
-        // if (fs.existsSync(delPath)) fs.rmSync(delPath, { recursive: true });
-
-        // // 대상 오토 조회
-        // let list = this.entry._getAllList(true);
-        // for (let i = 0; i < list.length; i++) {
-        //     delPath = list[i].dir +path.sep+ entry.LOC.DIS;
-        //     if (fs.existsSync(delPath)) fs.rmSync(delPath, { recursive: true });
-        // }
+        // 로딩
+        this._load();
+        // 빌드 파일 삭제
+        this.entry.clear();
+        // 이벤트 초기화
+        this.#event.unsubscribeAll();
     }
 
     /*_______________________________________*/
@@ -135,11 +114,11 @@ class AutoTask {
     /**
      * 앤트리 오토 조회 및 적재
      */
-    _load(entryFile) {        
+    _load(entry) {        
         // 현재 폴더의 auto.js 파일 로딩
-        let entryFile  = entryFile ? this.#dir +path.sep+ entryFile : this.#dir + this.FILE.TEMPLATE;
+        let entryFile  = entry ? this.#dir + path.sep + entry : this.#dir + path.sep + this.FILE.TEMPLATE;
         // 다양한 조건에 예외조건을 수용해야함
-        const EntryAuto = require(entryFile);
+        const EntryTemplate = require(entryFile);
         // 타입 검사해야함
         this.entry = new EntryTemplate();
         // 초기화
@@ -153,17 +132,17 @@ class AutoTask {
     // event call
 
     // 오토 객체 생성후 호출 이벤트
-    _onLoad() {
-        this.#event.publish('load', this.cursor, this.entry);
-    }
-    // 저장전 호출 이벤트
-    _onSave() {
-        this.#event.publish('save', this.cursor, this.entry);
-    }
-    // 저장후 호출 이벤트
-    _onSaved() {
-        this.#event.publish('saved', this.cursor, this.entry); 
-    }
+    // _onLoad() {
+    //     this.#event.publish('load', this.cursor, this.entry);
+    // }
+    // // 저장전 호출 이벤트
+    // _onSave() {
+    //     this.#event.publish('save', this.cursor, this.entry);
+    // }
+    // // 저장후 호출 이벤트
+    // _onSaved() {
+    //     this.#event.publish('saved', this.cursor, this.entry); 
+    // }
 
 }
 

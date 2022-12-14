@@ -1,6 +1,8 @@
-const { PropertyCollection, Observer } = require('entitybind');
-const { TemplateCollection } = require('./source-template');
-const { CompileCollection } = require('./source-compile');
+const fs                                = require('fs');
+const path                              = require('path');
+const { PropertyCollection, Observer }  = require('entitybind');
+const { TemplateCollection }            = require('./source-template');
+const { CompileCollection }             = require('./source-compile');
 
 /**
  * 오토템플릿 클래스
@@ -50,7 +52,7 @@ class AutoTemplate {
     // protected
     _auto = null
     _buildFile = {
-        conver: [],
+        cover: [],
         publish: [],
     }
     
@@ -123,9 +125,9 @@ class AutoTemplate {
         this._onInited(this, this._auto);
 
         if (fs.existsSync(this.dir + path.sep + this.FILE.BUILD)) {
-            buildFile = require(this.FILE.BUILD);
-            this._buildFile['conver'] = buildFile.conver;
-            this._buildFile['publish'] = buildFile.publish;
+            buildFile = require(this.dir + path.sep + this.FILE.BUILD);
+            if (buildFile.cover) this._buildFile['cover'] = buildFile.cover;
+            if (buildFile.publish) this._buildFile['publish'] = buildFile.publish;
         }
 
         // 사옹자 정의 초기화 호출
@@ -133,11 +135,38 @@ class AutoTemplate {
     }
 
     /**
+     * 깨끗이 지운다. 생성파일을 삭제한다.
+     */
+    clear() {
+
+        const buildFile = this.dir + path.sep + this.FILE.BUILD;
+        let filePath;
+
+        // 파일 삭제
+        for (let i = 0; i < this._buildFile['cover'].length; i++) {
+            filePath = this._buildFile['cover'][i];
+            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        }
+        for (let i = 0; i < this._buildFile['publish'].length; i++) {
+            filePath = this._buildFile['publish'][i];
+            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        }
+        if (fs.existsSync(buildFile)) fs.unlinkSync(buildFile);
+        
+        // 속성 초기화
+        this._batchFile = {
+            cover: [],
+            publish: [],
+        };
+
+    }
+
+    /**
      * src 에 등록된 소스를 빌드한다.(템플릿을 컴파일한다.)
      */
-    build() {
+    buildSource() {
         // 초기화
-        this.init();
+        // this.init();
         
         // 이벤트 발생
         this._onBuild(this, this._auto);
@@ -146,7 +175,9 @@ class AutoTemplate {
         for (let i = 0; i < this.src.count; i++) {
             this.src[i].compile();
         }
-
+        // 빌드 파일 저장
+        this._saveBuildFile();
+        
         // 이벤트 발생
         this._onBuilded(this, this._auto);
     }
@@ -254,7 +285,7 @@ class AutoTemplate {
     }
 
     _addBuildFile(savePath, type) {
-        if (type === 'conver' && this._buildFile['cover'].indexOf(savePath) < 0) {
+        if (type === 'cover' && this._buildFile['cover'].indexOf(savePath) < 0) {
             this._buildFile['cover'].push(savePath);
         } else if (type === 'publish' && this._buildFile['publish'].indexOf(savePath) < 0) {
             this._buildFile['publish'].push(savePath);
@@ -266,7 +297,7 @@ class AutoTemplate {
         let savePath, data;
 
         savePath = buildFile ? this.dir + path.sep + buildFile : this.dir + path.sep + this.FILE.BUILD;
-        data = JSON.stringify(this._batchFile, null, '\t');
+        data = JSON.stringify(this._buildFile, null, '\t');
 
         fs.writeFileSync(savePath, data, 'utf8');
     }
@@ -305,6 +336,10 @@ class AutoTemplate {
         copySource(this.data, this.dir);        
         copySource(this.part, this.dir);        
         copySource(this.src, this.dir);        
+
+        // 빌드 파일 저장
+        this._saveBuildFile();
+
     }
     
     /*_______________________________________*/

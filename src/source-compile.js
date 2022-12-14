@@ -42,8 +42,8 @@ class CompileSource extends TemplateSource {
 
     /*_______________________________________*/
     // constructor method
-    constructor(owner, area, alias, fullPath = null) {
-        super(owner, area, alias, fullPath);
+    constructor(owner, dir, area, alias, fullPath = null) {
+        super(owner, dir, area, alias, fullPath);
         this.wax = handlebarsWax(handlebars.create());
     }
     /*_______________________________________*/
@@ -155,21 +155,20 @@ class CompileCollection extends PropertyCollection {
      * @param {*} fullPath glob를 통해서 입력한 경우만 
      * @overloading 상위 add(..) 호출함
      */
-    add(alias, obj, fullPath) {
+    add(alias, obj, fullPath = null, dir = this._owner.dir) {
         
-        let tarSrc, dir, localDir;
+        let tarSrc, localDir;
         
         // alias 에 .이 있고
         if (typeof fullPath === 'undefined') {
             // fullPath = this._makeSubPath(alias);
-            dir = this._owner.dir;
             localDir = this._owner.AREA[this.area];
             fullPath = dir + path.sep + localDir + path.sep + alias;
         }
         if (obj instanceof CompileSource) {
             tarSrc = obj;
         } else {
-            tarSrc = new CompileSource(this._owner, this.area, alias, fullPath);
+            tarSrc = new CompileSource(this._owner, dir, this.area, alias, fullPath);
             tarSrc.content = obj;
         }
 
@@ -206,10 +205,10 @@ class CompileCollection extends PropertyCollection {
                 idx = _this.indexOfName(alias);  // 중복이름 검사
                 // 중복 검사
                 if (idx > -1) {
-                    _this[idx] = new CompileSource(_this._owner, this.area, alias, val);
+                    _this[idx] = new CompileSource(_this._owner, dirs[i], this.area, alias, val);
                     _this[idx].content = content;
                 } else {
-                    _this.add(alias, content, val);
+                    _this.add(alias, content, val, dirs[i]);
                 }
             });
         }

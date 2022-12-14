@@ -40,6 +40,18 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "t3 cover",
+            "program": "${workspaceFolder}/task/t3/test_cover.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "t3 clear",
+            "program": "${workspaceFolder}/task/t3/test_clear.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "t4 event",
             "program": "${workspaceFolder}/task/t4/test_event.js"
         },
