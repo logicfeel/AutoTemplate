@@ -284,6 +284,11 @@ class AutoTemplate {
         return obj;
     }
 
+    /**
+     * 빌드파일 추가
+     * @param {string} savePath 저장파일 경로
+     * @param {string} type cover: 부모, 출판
+     */
     _addBuildFile(savePath, type) {
         if (type === 'cover' && this._buildFile['cover'].indexOf(savePath) < 0) {
             this._buildFile['cover'].push(savePath);
@@ -292,6 +297,10 @@ class AutoTemplate {
         }
     }
 
+    /**
+     * 
+     * @param {string?} buildFile 빌드파일들 저장 경로
+     */
     _saveBuildFile(buildFile) {
         
         let savePath, data;
