@@ -185,9 +185,9 @@ class CompileCollection extends PropertyCollection {
         const _this = this;
         const sep = path.sep;
         const delmiter = this._owner.DELIMITER[this.area.toUpperCase()];
+        const areaDir = this._owner.PATH[this.area.toUpperCase()];
         let dirs = [];
         let arrPath = [];
-        let areaDir = this._owner.PATH[this.area.toUpperCase()];
         let localPattern, alias, content, subPath, idx;
 
         // src 의 경우 단일 경로 에서 로딩
