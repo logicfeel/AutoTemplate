@@ -157,22 +157,47 @@ class CompileCollection extends PropertyCollection {
      */
     add(alias, obj, fullPath = null, dir = this._owner.dir) {
         
-        let tarSrc, localDir;
+        const delimiter = this._owner.DELIMITER[this.area];
+        const sep = path.sep;
+        const localDir = this._owner.AREA[this.area];
+        let tarSrc;
         
-        // alias 에 .이 있고
-        if (typeof fullPath === 'undefined') {
-            // fullPath = this._makeSubPath(alias);
-            localDir = this._owner.AREA[this.area];
-            fullPath = dir + path.sep + localDir + path.sep + alias;
+        // 유효성 검사
+        if (typeof alias !== 'string' || alias.length === 0) {
+            throw new Error('alias에 string 만 지정할 수 있습니다.');
         }
+        if (typeof obj === 'undefined' || obj === null) {
+            throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');
+        }
+        
+        // 생성
         if (obj instanceof CompileSource) {
+            fullPath = obj.fullPath ?? dir + sep + localDir + sep + obj.subPath;
+            tarSrc = new TemplateSource(this._owner, dir, this.area, alias, fullPath);
+            tarSrc.content = obj.content;
             tarSrc = obj;
         } else {
+            fullPath = fullPath ?? dir + sep + localDir + sep + alias.replaceAll(delimiter, sep);
             tarSrc = new CompileSource(this._owner, dir, this.area, alias, fullPath);
             tarSrc.content = obj;
         }
 
+        // 추가
         super.add(alias, tarSrc);
+    }
+
+    /**
+     * 컬렉션 타입 추가하기
+     * @param {*} collection 
+     */
+    addCollection(collection) {
+        
+        let alias;
+        
+        for (let i = 0; i < collection.count; i++) {
+            alias = collection.propertyOf(i);
+            this.add(alias, collection[i]);
+        }
     }
 
     /**
@@ -192,12 +217,12 @@ class CompileCollection extends PropertyCollection {
 
         // src 의 경우 단일 경로 에서 로딩
         if (this.area === this._owner.AREA.SRC) dirs.push(this._onwer.dir);
-        else dirs = dirs.concat(this._onwer.dirs);
+        else dirs = [...dirs, ...this._onwer.dirs];
 
         for (let i = 0; i < dirs.length; i++) {
             localPattern = dirs[i] + sep + pattern;
             arrPath = glob.sync(localPattern);
-            arrPath.forEach(val => { 
+            arrPath.forEach(val => {
                 subPath = path.relative(dirs[i] + sep + areaDir, val)
                 alias = _this._makeAlias(subPath);
                 content = fs.readFileSync(val,'utf-8');
@@ -233,6 +258,28 @@ class CompileCollection extends PropertyCollection {
         dir = dir.replace(/\//g, delmiter);                   // 구분 문자 변경
         dir = dir.length > 0 ? dir + delmiter : dir;
         return dir + fileName;
+    }
+
+    /**
+     * setter 에서 CompileSource 타입만 받음
+     * setter 타입에 따라서 등록위치가 달라짐
+     * @param {*} idx 
+     * @returns
+     * @override 
+     */
+    _getPropDescriptor(idx) {
+        return {
+            get: function() { return this._element[idx]; },
+            set: function(val) {
+                if (val instanceof CompileSource) {
+                    this._element[idx].content = val.content;
+                } else {
+                    throw new Error('CompileSource 타입만 설정할 수 있습니다.');
+                }
+            },
+            enumerable: true,
+            configurable: true
+        };
     }
 }
 

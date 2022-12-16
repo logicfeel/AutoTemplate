@@ -86,16 +86,42 @@ class TemplateCollection extends PropertyCollection {
      */
     add(alias, obj, fullPath = null, dir = this._owner.dir) {
         
+        const localDir = this._owner.AREA[this.area];
         let tarSrc;
+
+        // 유효성 검사
+        if (typeof alias !== 'string' || alias.length === 0) {
+            throw new Error('alias에 string 만 지정할 수 있습니다.');
+        }
+        if (typeof obj === 'undefined' || obj === null) {
+            throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');
+        }
         
+        // TODO: this.add('별칭', out.part['sss'] 삽입시)
         if (obj instanceof TemplateSource) {
-            tarSrc = obj;
+            fullPath = obj.fullPath ?? dir + path.sep + localDir + path.sep + obj.subPath;
+            tarSrc = new TemplateSource(this._owner, dir, this.area, alias, fullPath);
+            tarSrc.content = obj.content;
         } else {
             tarSrc = new TemplateSource(this._owner, dir, this.area, alias, fullPath);
             tarSrc.content = obj;
         }
 
         super.add(alias, tarSrc);
+    }
+
+    /**
+     * 컬렉션 타입 추가하기
+     * @param {*} collection 
+     */
+    addCollection(collection) {
+        
+        let alias;
+        
+        for (let i = 0; i < collection.count; i++) {
+            alias = collection.propertyOf(i);
+            this.add(alias, collection[i]);
+        }
     }
 
     /**
@@ -124,7 +150,7 @@ class TemplateCollection extends PropertyCollection {
             });
         }
     }
-    
+
     /*_______________________________________*/
     // protected method
 
@@ -135,14 +161,36 @@ class TemplateCollection extends PropertyCollection {
      */
     _makeAlias(subPath) {
         
-        let fileName, delmiter, dir;
+        const delmiter = this._owner.DELIMITER[this.area.toUpperCase()];
+        let fileName, dir;
         
-        delmiter = this._owner.DELIMITER[this.area.toUpperCase()];
         fileName = path.parse(subPath).name;
         dir = path.parse(subPath).dir;
         dir = dir.replace(/\//g, delmiter);       // 구분 문자 변경
         dir = dir.length > 0 ? dir + delmiter : dir;
         return dir + fileName;
+    }
+
+    /**
+     * setter 에서 TemplateSource 타입만 받음
+     * setter 타입에 따라서 등록위치가 달라짐
+     * @param {*} idx 
+     * @returns
+     * @override 
+     */
+    _getPropDescriptor(idx) {
+        return {
+            get: function() { return this._element[idx]; },
+            set: function(val) {
+                if (val instanceof TemplateSource) {
+                    this._element[idx].content = val.content;
+                } else {
+                    throw new Error('TemplateSource 타입만 설정할 수 있습니다.');
+                }
+            },
+            enumerable: true,
+            configurable: true
+        };
     }
 }
 

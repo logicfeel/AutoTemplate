@@ -42,11 +42,11 @@ class AutoTemplate {
     TEMP_EXT        = '.hbs';
     defaultPublic   = true;
     isFinal         = false;    // 상속 금지 설정
-    namespace       = null;
-    helper          = null;
-    data            = null;
-    part            = null;
-    src             = null;
+    // namespace       = null;
+    // helper          = null;
+    // data            = null;
+    // part            = null;
+    // src             = null;
     
     /*_______________________________________*/
     // protected
@@ -60,6 +60,11 @@ class AutoTemplate {
     // private
     #dir                = [];
     #event              = new Observer(this, this);
+    #namespace          = null;
+    #helper             = null;
+    #part               = null;
+    #data               = null;
+    #src                = null;
     
     /*_______________________________________*/        
     // property
@@ -70,9 +75,30 @@ class AutoTemplate {
     }
     set dir(val) {
         if (this.isFinal === true && this.#dir.length > 0) throw new Error('마지막 클래스(상속금지)는 dir 설정할 수 없습니다.');
-        this.#dir.push(val);
+        if (this.#dir.indexOf(val) < 0) this.#dir.push(val);
     }
     get dirs() { return this.#dir; }
+    get namespace() { return this.#namespace }
+    get helper() { return this.#helper }
+    set helper(val) {
+        if (val instanceof TemplateCollection) this.#helper.addCollectoin(val);
+        else throw new Error('TemplateCollection 타입만 설정할 수 있습니다.');
+    }
+    get part() { return this.#part }
+    set part(val) {
+        if (val instanceof CompileCollection) this.#part.addCollectoin(val);
+        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+    }
+    get data() { return this.#data }
+    set data(val) {
+        if (val instanceof TemplateCollection) this.#data.addCollectoin(val);
+        else throw new Error('TemplateCollection 타입만 설정할 수 있습니다.');
+    }
+    get src() { return this.#src }
+    set src(val) {
+        if (val instanceof CompileCollection) this.#src.addCollectoin(val);
+        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+    }
 
     /*_______________________________________*/        
     // event property
@@ -89,11 +115,11 @@ class AutoTemplate {
     constructor(dir, auto) {
         this.dir        = dir;      // Automation 설정시 사용
         this._auto      = auto;     // Automation 설정시 사용
-        this.namespace  = new NamespaceCollection(this);
-        this.helper     = new TemplateCollection(this, this.AREA.HELPER);
-        this.data       = new TemplateCollection(this, this.AREA.DATA);
-        this.part       = new CompileCollection(this, this.AREA.PART);
-        this.src        = new CompileCollection(this, this.AREA.SRC);
+        this.#namespace = new NamespaceCollection(this);
+        this.#helper    = new TemplateCollection(this, this.AREA.HELPER);
+        this.#data      = new TemplateCollection(this, this.AREA.DATA);
+        this.#part      = new CompileCollection(this, this.AREA.PART);
+        this.#src       = new CompileCollection(this, this.AREA.SRC);
     }
 
     /*_______________________________________*/        
@@ -116,6 +142,12 @@ class AutoTemplate {
         // 이벤트 발생
         this._onInit(this, this._auto);
 
+        // 네임스페이스 초기화
+        for (let i = 0; i< this.namespace.count; i++) {
+            this.namespace[i].init();
+        }
+        
+        // 지역 초기화
         this.helper.addGlob(this.GLOB.HELPER);
         this.data.addGlob(this.GLOB.DATA);
         this.part.addGlob(this.GLOB.PART);
@@ -190,7 +222,7 @@ class AutoTemplate {
      */
     import(alias, template) {
         // 외부 템플릿 초기화
-        template.init();
+        // template.init();
         // 외부 템플릿 등록
         this.namespace.add(alias, template);
     }
@@ -321,7 +353,7 @@ class AutoTemplate {
         let _this = this;
         let data, dirname;
 
-        function copySource(collection, dir) {
+        function __copySource(collection, dir) {
             
             let  fullPath, savePath;
             
@@ -341,10 +373,10 @@ class AutoTemplate {
         }
 
         // helper, data, part, src 가져오기
-        copySource(this.helper, this.dir);
-        copySource(this.data, this.dir);        
-        copySource(this.part, this.dir);        
-        copySource(this.src, this.dir);        
+        __copySource(this.helper, this.dir);
+        __copySource(this.data, this.dir);        
+        __copySource(this.part, this.dir);        
+        __copySource(this.src, this.dir);        
 
         // 빌드 파일 저장
         this._saveBuildFile();

@@ -4,6 +4,7 @@
     // 자세한 내용을 보려면 https://go.microsoft.com/fwlink/?linkid=830387을(를) 방문하세요.
     "version": "0.2.0",
     "configurations": [
+
         {
             "type": "node",
             "request": "launch",
@@ -28,8 +29,20 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "t1 clear",
+            "program": "${workspaceFolder}/task/t1/test_clear.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "t2 import",
             "program": "${workspaceFolder}/task/t2/test_import.js"
+        },    
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "t2 clear",
+            "program": "${workspaceFolder}/task/t2/test_clear.js"
         },     
         {
             "type": "node",

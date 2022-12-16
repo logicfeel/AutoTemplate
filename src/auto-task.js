@@ -48,11 +48,15 @@ class AutoTask {
     /**
      * taask 생성
      */
-    static create(dir) {
+    static create(dir, entry) {
         if (typeof dir !== 'string' || dir.length === 0) {
             throw new Error(' start [dir] request fail...');
         }
         this._instance = new this();
+        // template.js 기본파일 변경시
+        if (typeof entry === 'string' && entry.length > 0) {
+            this._instance.FILE.TEMPLATE = entry;
+        }
         this._instance.#dir = dir;
         return this._instance;
     }
@@ -74,7 +78,7 @@ class AutoTask {
     do_publish() {
         this.cursor = 'PUBLISH';
         // 로딩
-        this._load();
+        this.#load();
         // 빌드
         this.entry.buildSource();
     }
@@ -86,7 +90,7 @@ class AutoTask {
     do_cover(template = this.entry) {
         this.cursor = 'COVER';
         // 로딩
-        this._load();
+        this.#load();
         // 부모 파일 쓰기
         this.entry._writeParentObject();
     }
@@ -101,7 +105,7 @@ class AutoTask {
         this.cursor = 'CLEAR';
 
         // 로딩
-        this._load();
+        this.#load();
         // 빌드 파일 삭제
         this.entry.clear();
         // 이벤트 초기화
@@ -114,9 +118,9 @@ class AutoTask {
     /**
      * 앤트리 오토 조회 및 적재
      */
-    _load(entry) {        
+    #load(entry) {        
         // 현재 폴더의 auto.js 파일 로딩
-        let entryFile  = entry ? this.#dir + path.sep + entry : this.#dir + path.sep + this.FILE.TEMPLATE;
+        const entryFile  = entry ? this.#dir + path.sep + entry : this.#dir + path.sep + this.FILE.TEMPLATE;
         // 다양한 조건에 예외조건을 수용해야함
         const EntryTemplate = require(entryFile);
         // 타입 검사해야함

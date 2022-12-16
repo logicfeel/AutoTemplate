@@ -9,6 +9,8 @@ class Template extends AutoTemplate {
 
         this.import('temp1', t1);
 
+        this.dir = __dirname;   // 중복 등록
+
         console.log(1)
     }
 }
