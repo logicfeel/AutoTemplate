@@ -157,8 +157,47 @@ Hint: Some lines were ellipsized, use -l to show in full.
 
 
 ******************************************************************
+[mac ssh 설정]
+
+[참조]
+https://app-developer.tistory.com/191
+
 ******************************************************************
 [공개키]
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPvKUaiQzl0i0rsQG2QS0t5p+E/8B10djHYNZdCBbobLYtwLN5zlWnKEazTrYWjJhvP1gCNuM4fWuy9RwJpFZwd0Xhylh0CDDLfim4zcXNZ6ouyp9rOO7jElib9DiNoOjpUUtFa3nEcybrbjOA87XKw9l3jKXF12CC/V2TArFMrmKdYa/Ob1XrXVZuGoWaWfxshchS+LCSBJsOPx6k199+gh17gtAhF3ye+AAl/MTSCWrWpKSDFEgcEmbLSqF6h4g8/UqhMjMfAkRjf07IaAOjVLTZlxDn4ZFmAdA6Kq5GgBdiH9z4uusbHOIP6OGuJgmoTiD5o6pq5giq10tMqUrN logic@Kimui-MacBookAir.local
 
+vi /etc/ssh/sshd_config
+[passwd 접근금지]
+sudo vi /etc/ssh/sshd_config
+주석풀고
+PasswordAuthentication 을 no 로 변경하면 패스워드 접근을 차단합니다.
 
+[참조]
+https://shanepark.tistory.com/255
+
+
+******************************************************************
+[도커 설치]
+sudo wget -qO- http://get.docker.com/ | sh
+
+// 버전확인
+sudo docker version
+
+[참조]
+https://www.leafcats.com/153
+******************************************************************
+[다운로드]
+sudo docker pull mcr.microsoft.com/mssql/server:2019-latest
+
+sudo docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Logicfeel123!" \
+   -v sqlvolume:/var/opt/mssql
+   -p 1433:1433 --name sql1 --hostname sql1 \
+   -d \
+   mcr.microsoft.com/mssql/server:2022-latest
+
+******************************************************************
+sudo docker exec -it sql1 /opt/mssql-tools/bin/sqlcmd -S > localhost -U SA -P '<yourNewPAssword1!>' -Q 'ALTER LOGIN SA WITH PASSWORD="<yourNewPAssword1!>"'
+******************************************************************
+******************************************************************
+******************************************************************
+******************************************************************
