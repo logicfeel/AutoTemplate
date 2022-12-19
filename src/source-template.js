@@ -96,7 +96,13 @@ class TemplateCollection extends PropertyCollection {
         if (typeof obj === 'undefined' || obj === null) {
             throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');
         }
-        
+        if (this.area === 'data' && !(typeof obj === 'function' || typeof obj === 'object')) {
+            throw new Error('area[data] 가능한 타입 : object(null 제외), function');
+        }
+        if (this.area === 'helper' && !(typeof obj === 'function')) {
+            throw new Error('area[helper] 가능한 타입 : function');
+        }
+
         // TODO: this.add('별칭', out.part['sss'] 삽입시)
         if (obj instanceof TemplateSource) {
             fullPath = obj.fullPath ?? dir + path.sep + localDir + path.sep + obj.subPath;

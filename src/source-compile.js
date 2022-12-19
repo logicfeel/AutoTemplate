@@ -169,6 +169,12 @@ class CompileCollection extends PropertyCollection {
         if (typeof obj === 'undefined' || obj === null) {
             throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');
         }
+        if (this.area === 'part' && !(typeof obj === 'function' || typeof obj === 'string')) {
+            throw new Error('area[part] 가능한 타입 : string, function');
+        }
+        if (this.area === 'src' && !(typeof obj === 'function' || typeof obj === 'string')) {
+            throw new Error('area[src] 가능한 타입 : string, function');
+        }
         
         // 생성
         if (obj instanceof CompileSource) {
