@@ -208,5 +208,81 @@ sudo curl -L "https://github.com/docker/compose/releases/download/2.14.1/docker-
 ******************************************************************
 [도커로그 확인]
 sudo docker logs sql1
+
+******************************************************************
+[파티션 화인]
+sudo df -h
+
+******************************************************************
+[docker sudo 권한 추가 ]
+cmd : sudo usermod -aG docker [user_name]
+sudo usermod -aG docker logic
+
+******************************************************************
+[참조사이트 ras mssql 설치방법]
+https://hevodata.com/learn/sql-server-on-raspberry-pi/
+
+******************************************************************
+[docker 설치]: XXXX
+
+// 패키지 업그레이드
+sudo apt-get upgrade
+sudo apt-get update
+
+// 스크립트 다운로드
+curl -fsSL https://get.docker.com -o get-docker.sh
+
+// 스크립트 실행
+sudo sh get-docker.sh
+
+// 도커 권한 추가 (logic)
+sudo usermod -aG docker logic
+
+// docker 버전확인 
+docker version
+
+// docker 정보확인
+docker info
+
+******************************************************************
+[docker 삭제]
+
+아래로 삭제할 패키지 리스트 확인
+
+dpkg -l | grep -i docker
+ 
+// 패키지 삭제
+sudo apt-get purge -y docker-engine docker docker.io docker-ce docker-ce-cli docker-compose-plugin docker-buildx-plugin
+sudo apt-get autoremove -y --purge docker-engine docker docker.io docker-ce docker-compose-plugin 
+
+// 남은 파일들 삭제
+sudo rm -rf /var/lib/docker /etc/docker
+sudo rm /etc/apparmor.d/docker
+sudo groupdel docker
+sudo rm -rf /var/run/docker.sock
+sudo rm -rf /usr/local/bin/docker-compose
+sudo rm -rf /etc/docker
+sudo rm -rf ~/.docker
+
+******************************************************************
+[docker 설치 ]
+curl -sSL https://get.docker.com | sh
+
+******************************************************************
+(for developer edition)
+sudo docker run --cap-add SYS_PTRACE -e 'ACCEPT_EULA=1' -e 'MSSQL_SA_PASSWORD=yourStrong(!)Password' -p 1433:1433 --name azuresqledge -d mcr.microsoft.com/azure-sql-edge
+
+(for premium edition)
+sudo docker run --cap-add SYS_PTRACE -e 'ACCEPT_EULA=1' -e 'MSSQL_SA_PASSWORD=yourStrong(!)Password' -e 'MSSQL_PID=Premium' -p 1433:1433 --name azuresqledge -d mcr.microsoft.com/azure-sql-edge
+
+
+******************************************************************
+******************************************************************
+******************************************************************
+******************************************************************
+******************************************************************
+******************************************************************
+******************************************************************
+******************************************************************
 ******************************************************************
 ******************************************************************
