@@ -195,9 +195,18 @@ sudo docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Logicfeel123!" \
    -d \
    mcr.microsoft.com/mssql/server:2022-latest
 
+sudo docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Logicfeel123!" \
+   -p 1433:1433 --name sql1 --hostname sql1 \
+   -d mcr.microsoft.com/mssql/server:2022-latest   
+
+
+
 ******************************************************************
 sudo docker exec -it sql1 /opt/mssql-tools/bin/sqlcmd -S > localhost -U SA -P '<yourNewPAssword1!>' -Q 'ALTER LOGIN SA WITH PASSWORD="<yourNewPAssword1!>"'
 ******************************************************************
+sudo curl -L "https://github.com/docker/compose/releases/download/2.14.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 ******************************************************************
+[도커로그 확인]
+sudo docker logs sql1
 ******************************************************************
 ******************************************************************
