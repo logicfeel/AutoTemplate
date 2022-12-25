@@ -277,7 +277,32 @@ sudo docker run --cap-add SYS_PTRACE -e 'ACCEPT_EULA=1' -e 'MSSQL_SA_PASSWORD=yo
 
 
 ******************************************************************
+1433 : mssql
+1521 : oracle
+8000 : asp.net
+8080 : jsp
+
 ******************************************************************
+[aspnet 6.0 실행 - 빌드제공]
+docker run -it --name aspnetcore -p 8000:80 mcr.microsoft.com/dotnet/aspnet
+
+
+docker run -it --name aspnetcore -p 8000:80 -v ${cmd}:/home  mcr.microsoft.com/dotnet/aspnet
+
+docker run -it --name aspnetcore -p 8000:80 -v /Users/logic/Projects/testRazor/testRazor:/home  mcr.microsoft.com/dotnet/aspnet
+
+
+docker run -it --name aspnetcore -p 8000:80 -v /Users/logic/Projects/testRazor/testRazor:/home  mcr.microsoft.com/dotnet/aspnet
+
+
+docker run -it -p:8000:80  mcr.microsoft.com/dotnet/sdk:7.0
+
+docker run -it -p:8000:80 -v `cmd`:/home/app mcr.microsoft.com/dotnet/sdk:7.0
+
+docker run -it -p:8000:80 -v /Users/logic/Projects/clone:/home --urls=http://0.0.0.0:8000 mcr.microsoft.com/dotnet/sdk:7.0
+
+ dotnet run --urls=http://0.0.0.0:8000
+
 ******************************************************************
 ******************************************************************
 ******************************************************************
