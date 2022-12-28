@@ -3,13 +3,21 @@
     temp1/includes/footer 없음
 {{/temp1/includes/footer }}
 
-{{#> temp1/includes/hero param='PARAM' params=['10', '20'] }}
+    {{#*inline "includes/contents"}}
+        인라인된 컨텐츠
+    {{/inline}}
+
+
+{{#> temp1/includes/hero param='PARAM' params='[\'10\', \'20\']' }}
+
+
     temp1/includes/hero 없음
 {{/temp1/includes/hero }}
 <!-- 외부 data -->
 temp1.entity.AA = {{ temp1.entity.AA }}
 <!-- 외부 helper -->
 {{#temp1-bold }} 블럭핼버 {{/temp1-bold}}
+
 <!-- 내부 -->
 {{#> t2-part-page }}
     t2-part-page 없음
