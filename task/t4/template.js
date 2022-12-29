@@ -19,6 +19,13 @@ class Template extends T1 {
         this.src['page-one.html'].onCompiled = (s) => { console.log('onCompiled src 이벤트'+s.saveName) };
 
         this.src['page-one.html'].savePath = this.dir +'/page-save.html';
+
+        // this.part.add('ns', ''); // 오류가 발생해야함
+        this.src.add('ns', '');
+        // this.part.add('ns/', '');
+        this.part.add('/ns', '');
+        // this.part.add('ns/', '');
+
     }
 }
 

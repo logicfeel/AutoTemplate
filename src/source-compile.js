@@ -133,7 +133,12 @@ class CompileSource extends TemplateSource {
 class CompileCollection extends PropertyCollection {
     
     area = null;
+    
+    /*_______________________________________*/        
+    // private
     _owner = null;
+    // ns, page, group 시작 예약어
+    _partSymbol = [/^ns$/, /^group$/, /^page$/, /^[/\\]?ns[^\w]/, /^[/\\]?group[^\w]/, /^[/\\]?page[^\w]/];
 
     /**
      * 컴파일컬렉션 생성자
@@ -157,9 +162,9 @@ class CompileCollection extends PropertyCollection {
      */
     add(alias, obj, fullPath = null, dir = this._owner.dir) {
         
-        const delimiter = this._owner.DELIMITER[this.area];
+        const delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
         const sep = path.sep;
-        const localDir = this._owner.AREA[this.area];
+        const areaDir = this._owner.PATH[this.area.toUpperCase()];
         let tarSrc;
         
         // 유효성 검사
@@ -175,15 +180,25 @@ class CompileCollection extends PropertyCollection {
         if (this.area === 'src' && !(typeof obj === 'function' || typeof obj === 'string')) {
             throw new Error('area[src] 가능한 타입 : string, function');
         }
+
+        // part 심볼검사
+        if (this.area === 'part') {
+            this._partSymbol.forEach(val => {
+                if ((val instanceof RegExp && val.test(alias)) || 
+                    (typeof val === 'string' && val === alias)) {
+                    throw new Error('[part]에 예약어를 입력할 수 없습니다. : ns, page, group ');
+                }
+            });
+        }
         
         // 생성
         if (obj instanceof CompileSource) {
-            fullPath = obj.fullPath ?? dir + sep + localDir + sep + obj.subPath;
+            fullPath = obj.fullPath ?? dir + sep + areaDir + sep + obj.subPath;
             tarSrc = new TemplateSource(this._owner, dir, this.area, alias, fullPath);
             tarSrc.content = obj.content;
             tarSrc = obj;
         } else {
-            fullPath = fullPath ?? dir + sep + localDir + sep + alias.replaceAll(delimiter, sep);
+            fullPath = fullPath ?? dir + sep + areaDir + sep + alias.replaceAll(delimiter, sep);
             tarSrc = new CompileSource(this._owner, dir, this.area, alias, fullPath);
             tarSrc.content = obj;
         }
@@ -215,7 +230,7 @@ class CompileCollection extends PropertyCollection {
         
         const _this = this;
         const sep = path.sep;
-        const delmiter = this._owner.DELIMITER[this.area.toUpperCase()];
+        const delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
         const areaDir = this._owner.PATH[this.area.toUpperCase()];
         let dirs = [];
         let arrPath = [];
@@ -256,13 +271,13 @@ class CompileCollection extends PropertyCollection {
      */
     _makeAlias(subPath) {
 
-        let fileName, delmiter, dir;
+        let fileName, delimiter, dir;
         
-        delmiter = this._owner.DELIMITER[this.area.toUpperCase()];
+        delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
         fileName = path.basename(subPath, this._owner.TEMP_EXT);    // .hbs 제거
         dir = path.parse(subPath).dir;
-        dir = dir.replace(/\//g, delmiter);                   // 구분 문자 변경
-        dir = dir.length > 0 ? dir + delmiter : dir;
+        dir = dir.replace(/\//g, delimiter);                   // 구분 문자 변경
+        dir = dir.length > 0 ? dir + delimiter : dir;
         return dir + fileName;
     }
 
