@@ -64,21 +64,19 @@ class CompileSource extends TemplateSource {
 
         let _this = this;
         let template, content;
-        let outerScope = this._owner._getOuterScope();
-        let localScope = this._owner._getLocalScope();
 
         // 이벤트 발생
         this._onCompile(this);
         
         // 외부 스코프
-        this.wax.partials(outerScope.part);
-        this.wax.helpers(outerScope.helper);
-        this.wax.data(outerScope.data);
+        this.wax.partials(this._owner._outerScope.part);
+        this.wax.helpers(this._owner._outerScope.helper);
+        this.wax.data(this._owner._outerScope.data);
 
         // 지역 스코프
-        this.wax.partials(localScope.part);
-        this.wax.helpers(localScope.helper);
-        this.wax.data(localScope.data);
+        this.wax.partials(this._owner._localScope.part);
+        this.wax.helpers(this._owner._localScope.helper);
+        this.wax.data(this._owner._localScope.data);
 
         // 내부 스코프
         this.#part.forEach(val => this.wax.partials(val.glob, val.opt));
@@ -88,7 +86,6 @@ class CompileSource extends TemplateSource {
         // 템플릿 컴파일
         template = this.wax.compile(this.content);
         content = template(data);
-        
         
         // 파일저장
         if (isSave === true) {
@@ -138,7 +135,7 @@ class CompileCollection extends PropertyCollection {
     // private
     _owner = null;
     // ns, page, group 시작 예약어
-    _partSymbol = [/^ns$/, /^group$/, /^page$/, /^[/\\]?ns[^\w]/, /^[/\\]?group[^\w]/, /^[/\\]?page[^\w]/];
+    _partSymbol = [/^[\\\/]?ns([\\\/]|$)/, /^[\\\/]?page([\\\/]|$)/, /^[\\\/]?group([\\\/]|$)/];
 
     /**
      * 컴파일컬렉션 생성자
@@ -156,7 +153,7 @@ class CompileCollection extends PropertyCollection {
     /**
      * 컬렉션에 객체를 생성하여 추가
      * @param {*} alias 별칭
-     * @param {function | object | CompileSource} obj  대상
+     * @param {function | object | CompileSource | string} obj  대상
      * @param {*} fullPath glob를 통해서 입력한 경우만 
      * @overloading 상위 add(..) 호출함
      */
@@ -181,7 +178,7 @@ class CompileCollection extends PropertyCollection {
             throw new Error('area[src] 가능한 타입 : string, function');
         }
 
-        // part 심볼검사
+        // 별칭 규칙 검사
         if (this.area === 'part') {
             this._partSymbol.forEach(val => {
                 if ((val instanceof RegExp && val.test(alias)) || 

@@ -14,6 +14,7 @@ class AutoTemplate {
         HELPER: 'helper',
         DATA: 'data',
         PART: 'part',
+        PAGE: 'page',
         SRC: 'src',
         PUB: 'pub',
     };
@@ -21,6 +22,7 @@ class AutoTemplate {
         HELPER: 'template/helper',
         DATA: 'template/data',
         PART: 'template/part',
+        PAGE: 'template/page',
         SRC: 'src',
         PUB: 'src',
     }
@@ -28,12 +30,14 @@ class AutoTemplate {
         HELPER: '-',
         DATA: '.',
         PART: '/',
+        PAGE: '/',
         SRC: '/',
     };
     GLOB = {
         HELPER: 'template/helper/**/*.js',
         DATA: 'template/data/**/*.{js,json}',
         PART: 'template/part/**/*.{hbs,js}',
+        PAGE: 'template/page/**/*.{hbs,js}',
         SRC: 'src/**/*.hbs',
     };
     FILE = {
@@ -55,7 +59,9 @@ class AutoTemplate {
         cover: [],
         publish: [],
     }
-    
+    _localScope = null;
+    _outerScope = null;
+
     /*_______________________________________*/
     // private
     #dir                = [];
@@ -65,6 +71,7 @@ class AutoTemplate {
     #part               = null;
     #data               = null;
     #src                = null;
+    #page               = null;
     
     /*_______________________________________*/        
     // property
@@ -99,6 +106,11 @@ class AutoTemplate {
         if (val instanceof CompileCollection) this.#src.addCollectoin(val);
         else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
+    get page() { return this.#page }
+    set page(val) {
+        if (val instanceof CompileCollection) this.#page.addCollectoin(val);
+        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+    }
 
     /*_______________________________________*/        
     // event property
@@ -120,6 +132,7 @@ class AutoTemplate {
         this.#data      = new TemplateCollection(this, this.AREA.DATA);
         this.#part      = new CompileCollection(this, this.AREA.PART);
         this.#src       = new CompileCollection(this, this.AREA.SRC);
+        this.#page      = new CompileCollection(this, this.AREA.PAGE);
     }
 
     /*_______________________________________*/        
@@ -152,6 +165,11 @@ class AutoTemplate {
         this.data.addGlob(this.GLOB.DATA);
         this.part.addGlob(this.GLOB.PART);
         this.src.addGlob(this.GLOB.SRC);
+        this.page.addGlob(this.GLOB.PAGE);
+
+        // 빌드 스코스 설정
+        this._localScope = this._getLocalScope();
+        this._outerScope = this._getOuterScope();
 
         // 이벤트 발생
         this._onInited(this, this._auto);
@@ -238,12 +256,42 @@ class AutoTemplate {
      */
     _getLocalScope() {
         
+        const _this = this;
         let obj = { part: {}, helper: {}, data: {} };
-        let alias;
+        let alias, delimiter, key;
 
         for (let i = 0; i < this.part.count; i++) {
             alias = this.part[i].alias;
             obj['part'][alias] =  this.part[i].content;
+        }
+        for (let i = 0; i < this.page.count; i++) {
+            
+            // page 를 내부에 삽입하는 경우 가능하지만 막는것이 맞다.
+            // alias = this.page[i].alias;
+            // obj['part']['page'+ this.DELIMITER.PAGE + alias] =  this.page[i].content;
+
+            delimiter = this.DELIMITER.PAGE;
+            alias = this.page[i].alias;
+            key = this.AREA.PAGE + delimiter + alias;
+            
+            obj['part'][key] = function(data, hb) {
+                let localData = {};
+                let compileSrc = _this.page[i];
+                let content, isSave;
+                
+                for (let prop in data) {
+                    if (!data._parent[prop]) localData[prop] = data[prop];
+                }
+                // savePath 경로르 변경 : dir 지정 시 파일별도생성
+                isSave = typeof localData.dir === 'undefined' ? false : true;
+                // 단독저장의 경우 파일경로를 수정함
+                if (isSave) {
+                    compileSrc.savePath = _this.dir + path.sep + _this.PATH.SRC + path.sep + compileSrc.subPath.replace('.hbs','');
+                }
+                content = compileSrc.compile(localData, isSave);
+                
+                return isSave === true ? '' : content + '\n';
+            }
         }
         for (let i = 0; i < this.helper.count; i++) {
             alias = this.helper[i].alias;
@@ -263,15 +311,15 @@ class AutoTemplate {
     _getOuterScope() {
 
         let obj = { part: {}, helper: {}, data: {} };
-        let key, delmiter, outTemplate, alias, outAlias;
+        let key, delimiter, outTemplate, alias, outAlias;
 
         for(let i = 0; i < this.namespace.count; i++) {
             outTemplate = this.namespace[i];
             alias = this.namespace.propertyOf(i);
             for (let ii = 0; ii < outTemplate.part.count; ii++) {
                 if (outTemplate.part[ii].isPublic == true) {
-                    delmiter = outTemplate.DELIMITER.PART;
-                    key = alias + delmiter + outTemplate.part[ii].alias;
+                    delimiter = outTemplate.DELIMITER.PART;
+                    key = alias + delimiter + outTemplate.part[ii].alias;
                     obj['part'][key] = function(data, hb) {
                         let localData = {};
                         let compileSrc = outTemplate.part[ii];
@@ -290,8 +338,8 @@ class AutoTemplate {
             alias = this.namespace.propertyOf(i);
             for (let ii = 0; ii < outTemplate.helper.count; ii++) {
                 if (outTemplate.helper[ii].isPublic == true) {
-                    delmiter = outTemplate.DELIMITER.HELPER;
-                    key = alias + delmiter + outTemplate.helper[ii].alias;
+                    delimiter = outTemplate.DELIMITER.HELPER;
+                    key = alias + delimiter + outTemplate.helper[ii].alias;
                     obj['helper'][key] = outTemplate.helper[ii].content;
                 }
             }
@@ -301,10 +349,10 @@ class AutoTemplate {
             alias = this.namespace.propertyOf(i);
             for (let ii = 0; ii < outTemplate.data.count; ii++) {
                 if (outTemplate.data[ii].isPublic == true) {
-                    delmiter = outTemplate.DELIMITER.DATA;
+                    delimiter = outTemplate.DELIMITER.DATA;
                     outAlias = outTemplate.data[ii].alias;
-                    key = alias + delmiter + outAlias;
-                    if (delmiter === '.') { // 객체형으로 리턴
+                    key = alias + delimiter + outAlias;
+                    if (delimiter === '.') { // 객체형으로 리턴
                         obj['data'][alias] = {};
                         obj['data'][alias][outAlias] = outTemplate.data[ii].content;
                     } else {    

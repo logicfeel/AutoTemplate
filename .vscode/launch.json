@@ -68,5 +68,11 @@
             "name": "t4 event",
             "program": "${workspaceFolder}/task/t4/test_event.js"
         },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "t5 page",
+            "program": "${workspaceFolder}/task/t5/test_page.js"
+        },
     ]
 }
