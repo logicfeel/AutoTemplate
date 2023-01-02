@@ -132,7 +132,7 @@ class CompileCollection extends PropertyCollection {
     area = null;
     
     /*_______________________________________*/        
-    // private
+    // protected
     _owner = null;
     // ns, page, group 시작 예약어
     _partSymbol = [/^[\\\/]?ns([\\\/]|$)/, /^[\\\/]?page([\\\/]|$)/, /^[\\\/]?group([\\\/]|$)/];

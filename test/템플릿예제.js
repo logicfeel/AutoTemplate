@@ -20,8 +20,8 @@
  * 
  * [ready() 내부]
  * this.group.add('spring', [ 
- *  {page: 'aaa.c', page: '{0}inc/fileA{1}'},   // A 그룹설정
- *  {page: 'bbb.c', page: '{0}inc/fileB{1}'},   // B 그룹설정
+ *  {page: 'aaa.c', context: '{0}inc/fileA{1}'},   // A 그룹설정
+ *  {page: 'bbb.c', context: '{0}inc/fileB{1}'},   // B 그룹설정
  * ],
  * ['A','B']);  // 접두접미사의 기본값
  * this.src.add('저장할경로', this.page['기존경로'])             :: 페이지 추가함

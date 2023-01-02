@@ -72,7 +72,7 @@ class AutoTemplate {
     #data               = null;
     #src                = null;
     #page               = null;
-    
+    #group              = null;
     /*_______________________________________*/        
     // property
     get dir() {
@@ -259,17 +259,14 @@ class AutoTemplate {
         const _this = this;
         let obj = { part: {}, helper: {}, data: {} };
         let alias, delimiter, key;
-
+        
+        // part 로딩
         for (let i = 0; i < this.part.count; i++) {
             alias = this.part[i].alias;
             obj['part'][alias] =  this.part[i].content;
         }
+        // part.page 로딩
         for (let i = 0; i < this.page.count; i++) {
-            
-            // page 를 내부에 삽입하는 경우 가능하지만 막는것이 맞다.
-            // alias = this.page[i].alias;
-            // obj['part']['page'+ this.DELIMITER.PAGE + alias] =  this.page[i].content;
-
             delimiter = this.DELIMITER.PAGE;
             alias = this.page[i].alias;
             key = this.AREA.PAGE + delimiter + alias;
@@ -293,10 +290,13 @@ class AutoTemplate {
                 return isSave === true ? '' : content + '\n';
             }
         }
+        
+        // heler 로딩
         for (let i = 0; i < this.helper.count; i++) {
             alias = this.helper[i].alias;
             obj['helper'][alias] =  this.helper[i].content;
         }
+        // data 로딩
         for (let i = 0; i < this.data.count; i++) {
             alias = this.data[i].alias;
             obj['data'][alias] =  this.data[i].content;
@@ -319,7 +319,7 @@ class AutoTemplate {
             for (let ii = 0; ii < outTemplate.part.count; ii++) {
                 if (outTemplate.part[ii].isPublic == true) {
                     delimiter = outTemplate.DELIMITER.PART;
-                    key = alias + delimiter + outTemplate.part[ii].alias;
+                    key = 'ns' + delimiter + alias + delimiter + outTemplate.part[ii].alias;
                     obj['part'][key] = function(data, hb) {
                         let localData = {};
                         let compileSrc = outTemplate.part[ii];
@@ -339,7 +339,7 @@ class AutoTemplate {
             for (let ii = 0; ii < outTemplate.helper.count; ii++) {
                 if (outTemplate.helper[ii].isPublic == true) {
                     delimiter = outTemplate.DELIMITER.HELPER;
-                    key = alias + delimiter + outTemplate.helper[ii].alias;
+                    key = 'ns' + delimiter + alias + delimiter + outTemplate.helper[ii].alias;
                     obj['helper'][key] = outTemplate.helper[ii].content;
                 }
             }
@@ -351,10 +351,11 @@ class AutoTemplate {
                 if (outTemplate.data[ii].isPublic == true) {
                     delimiter = outTemplate.DELIMITER.DATA;
                     outAlias = outTemplate.data[ii].alias;
-                    key = alias + delimiter + outAlias;
+                    key = 'ns' + delimiter + alias + delimiter + outAlias;
                     if (delimiter === '.') { // 객체형으로 리턴
-                        obj['data'][alias] = {};
-                        obj['data'][alias][outAlias] = outTemplate.data[ii].content;
+                        obj['data']['ns'] = {};
+                        obj['data']['ns'][alias] = {};
+                        obj['data']['ns'][alias][outAlias] = outTemplate.data[ii].content;
                     } else {    
                         obj['data'][key] = outTemplate.data[ii].content;
                     }
@@ -458,6 +459,203 @@ class NamespaceCollection extends PropertyCollection {
     constructor(owner) {
         super(owner);
     }
+}
+
+/**
+ *  구룹컬렉션 클래스
+ */
+class GroupCollection extends PropertyCollection {
+    
+    
+    /*_______________________________________*/        
+    // protected
+    _owner = null;
+    // all 예약어
+    _groupSymbol = [/^[\\\/]?all([\\\/]|$)/];
+
+    /**
+     * 네임스페이스컬렉션, import한 외부 Tempalate들
+     * @param {AutoTemplate} owner 오토템플릿
+     */
+    constructor(owner) {
+        super(owner);
+        this._owner = owner;
+    }
+
+    // * this.group.add('spring', [ 
+    // *  {page: 'aaa.c', page: '{0}inc/fileA{1}'},   // A 그룹설정
+    // *  {page: 'bbb.c', page: '{0}inc/fileB{1}'},   // B 그룹설정
+    // * ],
+    // * ['A','B']);  // 접두접미사의 기본값
+
+    /**
+     * 페이지 그룹 추가
+     * @param {string} alias 
+     * @param {array<object>} pages 
+     * @param {array<string>} defaltFix 
+     */
+    add(alias, pages, defaltFix) {
+
+        let pageGroup = null;
+
+        // 유효성 검사
+        if (typeof alias !== 'string' || alias.length === 0) {
+            throw new Error('alias에 string 만 지정할 수 있습니다.');
+        }
+        if (!Array.isArray(pages)) {
+            throw new Error('pages array<object> 만 지정할 수 있습니다.');
+        }
+        if (!Array.isArray(defaltFix)) {
+            throw new Error('alias에 array<object> 만 지정할 수 있습니다.');
+        }
+
+        // 별칭 규칙 검사
+        this._groupSymbol.forEach(val => {
+            if ((val instanceof RegExp && val.test(alias)) || 
+                (typeof val === 'string' && val === alias)) {
+                throw new Error('[group]에 예약어를 입력할 수 없습니다. : all');
+            }
+        });
+
+        pageGroup = new PageGroup(this._owner, alias, pages, defaltFix);
+
+        super.add(alias, pageGroup);
+    }
+
+    _setAllPage() {
+
+        const pageGroup = new PageGroup(this._owner, 'all', pages, defaltFix);
+
+
+    }
+}
+
+class PageGroup{
+
+    pages = [];
+    fixs = [];
+
+    argsFix = [];
+    prefix = null;
+    suffix = null;
+
+    // pages = {
+    //     context: '',
+    //     src: null
+    // };
+
+    /*_______________________________________*/
+    // protecrted
+    _auto = null;
+    _alias = null;
+    _force = false;
+
+    /*_______________________________________*/
+    // private
+    // #pages = [];
+    // #fixs = [];
+
+    /*_______________________________________*/        
+    // property
+    // get pages() { return this.#pages };
+    // set pages(val) {
+
+    // }
+
+    
+    constructor(auto, alias, pages, fixs, force = false) {
+        
+        
+        if (typeof fixs !== 'undefined' && !Array.isArray(pages)) {
+            throw new Error('alias에 array<object> 만 지정할 수 있습니다.');
+        }
+        // for (let i = 0; i < pages.length; i++) {
+        //     this.pages.push(this.#createPage(pages[i]));
+        // }
+        this._auto = auto;
+        this._alias = alias;
+        this.pages = [...pages];
+        this.fixs = [...fixs];
+        this._force = force;
+        // page 의 CompileSoruce 와 연결 => 이건 필수모드가 맞을듯
+        if (this._force !== true) {
+            this.#linkSource();
+        }
+    }
+
+    addPage(obj) {
+        
+        const alias = obj['page'] || '';
+        const src = this._auto.page[alias] || null;
+        let context = obj['context'];
+        let subPath;
+
+        if (src === null){
+            throw new Error(`page에  ${alias} 존재하지 않습니다.`);
+        }
+
+        if (typeof context !== 'string' || context.length === 0) {
+            context = src.subPath;  // REVIEW: 이름 매칭 확인필요!
+        }
+
+        this._pages.push({            
+            page: alias,
+            context: context,
+            src: src
+
+        });
+    }
+
+    _setPage(page) {
+        // if (!Array.isArray(pages)) {
+        //     throw new Error('alias에 array<object> 만 지정할 수 있습니다.');
+        // }
+        
+        // for(let i = 0; i < pages.length; i++) {
+
+        // }
+        
+        
+    }
+
+    _setFix(fix) {
+
+    }
+    
+    _makePath(context) {
+        for (let i = 0; i < this._fixs.length; i++) {
+            context += context.replaceAll(`{${i}}`, this._fixs[i]);
+        }
+        return context;
+    }
+    
+    // #createPage(obj) {
+        
+    //     const alias = obj['page'];
+    //     const context = obj['context'];
+    //     const src = this._auto.group[alias] || null;
+        
+    //     return {
+    //         page: alias,
+    //         context: context,
+    //         src: src
+    //     }
+    // }
+
+    #linkSource() {
+        
+        let src = null;
+
+        for (let i = 0; i < this._pages.length; i++) {
+            src = this._auto.page[this._pages[i]] || null;
+            if (src === null){
+                throw new Error(`page에  ${alias} 존재하지 않습니다. build 시점에 로딩이 필요한 경우 생성자 (,,true) 설정하세요.`);
+            }
+            this._pages[i]['src'] = src;
+        }
+    }
+
+
 }
 
 
