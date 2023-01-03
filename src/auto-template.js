@@ -496,7 +496,7 @@ class GroupCollection extends PropertyCollection {
      */
     add(alias, pages, defaltFix) {
 
-        let pageGroup = null;
+        let pg = null;
 
         // 유효성 검사
         if (typeof alias !== 'string' || alias.length === 0) {
@@ -517,27 +517,42 @@ class GroupCollection extends PropertyCollection {
             }
         });
 
-        pageGroup = new PageGroup(this._owner, alias, pages, defaltFix);
+        pg = new PageGroup(this._owner, alias);
+        pg.addPage(pages);
+        pg.argFix = defaltFix;
+        // pg.fixs = ['aa', 'Aa'];
+        // pg.prefix = 'aa';
+        // pg.suffix = 'BB';
 
-        super.add(alias, pageGroup);
+        super.add(alias, pg);
     }
 
     _setAllPage() {
 
-        const pageGroup = new PageGroup(this._owner, 'all', pages, defaltFix);
+        // const pg = new PageGroup(this._owner, 'all', pages, defaltFix);
+        const pg = new PageGroup(this._owner, 'all');
+        let alias;
 
+        for (let i = 0; i < this._owner.page.count; i++) {
+            alias = this.this._owner.page.propertyOf(i);
+            pg.addPage({ 
+                page: alias,
+                context: this._owner.page.subPath
+            });
+        }
+        // pg.setFix('');
 
     }
 }
 
 class PageGroup{
 
-    pages = [];
-    fixs = [];
+    // pages = [];
+    // fixs = [];
 
-    argsFix = [];
-    prefix = null;
-    suffix = null;
+    // argsFix = [];
+    // prefix = null;
+    // suffix = null;
 
     // pages = {
     //     context: '',
@@ -548,62 +563,82 @@ class PageGroup{
     // protecrted
     _auto = null;
     _alias = null;
-    _force = false;
+    _pages = [];
+    // _force = false;
 
     /*_______________________________________*/
     // private
-    // #pages = [];
-    // #fixs = [];
+    #argFixs = [];
+    #prefix = '';
+    #suffix = '';
 
     /*_______________________________________*/        
     // property
-    // get pages() { return this.#pages };
-    // set pages(val) {
-
-    // }
+    get argFixs() { return this.#argFixs };
+    set argFixs(val) {
+        if (!Array.isArray(val)) throw new Error('argFixs 가능한 타입 : array ');
+        this.#argsFix = val;
+    }
+    get prefix() { return this.#prefix };
+    set prefix(val) {
+        if (typeof val !== 'string') throw new Error('prefix 가능한 타입 : string ');
+        this.#prefix = val;
+    }
 
     
-    constructor(auto, alias, pages, fixs, force = false) {
+    constructor(auto, alias) {
         
-        
-        if (typeof fixs !== 'undefined' && !Array.isArray(pages)) {
-            throw new Error('alias에 array<object> 만 지정할 수 있습니다.');
-        }
+        // if (typeof fixs !== 'undefined' && !Array.isArray(pages)) {
+        //     throw new Error('alias에 array<object> 만 지정할 수 있습니다.');
+        // }
         // for (let i = 0; i < pages.length; i++) {
         //     this.pages.push(this.#createPage(pages[i]));
         // }
         this._auto = auto;
         this._alias = alias;
-        this.pages = [...pages];
-        this.fixs = [...fixs];
-        this._force = force;
+        // this.pages = [...pages];
+        // this.fixs = [...fixs];
+        // this._force = force;
         // page 의 CompileSoruce 와 연결 => 이건 필수모드가 맞을듯
-        if (this._force !== true) {
-            this.#linkSource();
-        }
+        // if (this._force !== true) {
+        //     this.#linkSource();
+        // }
     }
 
+    /**
+     * 페이지 개체를 설정한다.
+     * @param {object | array} obj 배열 또는 객체
+     */
     addPage(obj) {
         
-        const alias = obj['page'] || '';
-        const src = this._auto.page[alias] || null;
-        let context = obj['context'];
-        let subPath;
+        let arr = [];
+        let pageObj, src, alias, context;
 
-        if (src === null){
-            throw new Error(`page에  ${alias} 존재하지 않습니다.`);
+        if (Array.isArray(obj)) arr = [...obj];
+        else arr.push(obj);
+
+        for (let i = 0; i < arr.length; i++) {
+            
+            pageObj = arr[i];
+            alias = pageObj['page'];
+            context = pageObj['context'];
+            src = this._auto.page[alias] || null;
+
+            if (src === null){
+                throw new Error(`page에  ${alias} 존재하지 않습니다.`);
+            }
+    
+            if (typeof context !== 'string' || context.length === 0) {
+                context = src.subPath;  // REVIEW: 이름 매칭 확인필요!
+            }
+    
+            this._pages.push({            
+                page: alias,
+                context: context,
+                src: src
+            });
         }
 
-        if (typeof context !== 'string' || context.length === 0) {
-            context = src.subPath;  // REVIEW: 이름 매칭 확인필요!
-        }
-
-        this._pages.push({            
-            page: alias,
-            context: context,
-            src: src
-
-        });
     }
 
     _setPage(page) {
