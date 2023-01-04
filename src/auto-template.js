@@ -1,8 +1,9 @@
-const fs                                = require('fs');
-const path                              = require('path');
-const { PropertyCollection, Observer }  = require('entitybind');
-const { TemplateCollection }            = require('./source-template');
-const { CompileCollection }             = require('./source-compile');
+const fs                                        = require('fs');
+const path                                      = require('path');
+const { PropertyCollection, Observer }          = require('entitybind');
+const { TemplateCollection }                    = require('./source-template');
+const { CompileCollection, SourceCollection }   = require('./source-compile');
+const { GroupCollection, PageGroup }            = require('./page-group');
 
 /**
  * 오토템플릿 클래스
@@ -16,6 +17,7 @@ class AutoTemplate {
         PART: 'part',
         PAGE: 'page',
         SRC: 'src',
+        GROUP: 'group',
         PUB: 'pub',
     };
     PATH = {
@@ -61,6 +63,7 @@ class AutoTemplate {
     }
     _localScope = null;
     _outerScope = null;
+    _group = [];
 
     /*_______________________________________*/
     // private
@@ -73,6 +76,7 @@ class AutoTemplate {
     #src                = null;
     #page               = null;
     #group              = null;
+    
     /*_______________________________________*/        
     // property
     get dir() {
@@ -93,22 +97,27 @@ class AutoTemplate {
     }
     get part() { return this.#part }
     set part(val) {
-        if (val instanceof CompileCollection) this.#part.addCollectoin(val);
+        if (val instanceof CompileCollection) this.#part.addCollectoin(val);    // TODO:
         else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
     get data() { return this.#data }
     set data(val) {
-        if (val instanceof TemplateCollection) this.#data.addCollectoin(val);
+        if (val instanceof TemplateCollection) this.#data.addCollectoin(val);   // TODO:
         else throw new Error('TemplateCollection 타입만 설정할 수 있습니다.');
     }
     get src() { return this.#src }
     set src(val) {
-        if (val instanceof CompileCollection) this.#src.addCollectoin(val);
-        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+        if (val instanceof SourceCollection) this.#src.addCollectoin(val); // TODO:
+        else throw new Error('SourceCollection 타입만 설정할 수 있습니다.');
     }
     get page() { return this.#page }
     set page(val) {
-        if (val instanceof CompileCollection) this.#page.addCollectoin(val);
+        if (val instanceof CompileCollection) this.#page.addCollectoin(val); // TODO:
+        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+    }
+    get group() { return this.#group }
+    set group(val) {
+        if (val instanceof GroupCollection) this.#group.addCollectoin(val); // TODO:
         else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
 
@@ -131,8 +140,9 @@ class AutoTemplate {
         this.#helper    = new TemplateCollection(this, this.AREA.HELPER);
         this.#data      = new TemplateCollection(this, this.AREA.DATA);
         this.#part      = new CompileCollection(this, this.AREA.PART);
-        this.#src       = new CompileCollection(this, this.AREA.SRC);
+        this.#src       = new SourceCollection(this);
         this.#page      = new CompileCollection(this, this.AREA.PAGE);
+        this.#group     = new GroupCollection(this);
     }
 
     /*_______________________________________*/        
@@ -166,6 +176,7 @@ class AutoTemplate {
         this.part.addGlob(this.GLOB.PART);
         this.src.addGlob(this.GLOB.SRC);
         this.page.addGlob(this.GLOB.PAGE);
+        this.group._setAllPage();   // group.all 컬렉션 추가
 
         // 빌드 스코스 설정
         this._localScope = this._getLocalScope();
@@ -214,7 +225,11 @@ class AutoTemplate {
     /**
      * src 에 등록된 소스를 빌드한다.(템플릿을 컴파일한다.)
      */
-    buildSource() {
+    build() {
+        
+        let group = null;
+        let prefix, suffix, args;
+
         // 초기화
         // this.init();
         
@@ -223,8 +238,33 @@ class AutoTemplate {
 
         // 소스 컴파일
         for (let i = 0; i < this.src.count; i++) {
-            this.src[i].compile();
+            this.src[i]._compile();
         }
+
+        // 그룹 빌드 
+        for (let i = 0; i < this._group.length; i++) {
+            group = this._group[i];
+            prefix = group.prefix;
+            suffix = group.suffix;
+            args = group.args;
+            group.pageGroup.build(prefix, suffix, args);
+        }
+
+        // for (let i = 0; i < this.src._group.length; i++) {
+        //     this.src._group[i].pageGroup.build();
+        // }
+
+        // page 그룹 컴파일
+        // for (let i = 0; i < this.src._group.length; i++) {
+        //     group = this.src._group[i];
+        //     for (let ii = 0; ii < group.length; ii++) {
+        //         group[ii].pageGroup
+        //     }
+            
+            
+        //     this.src._group[i].compile();
+        // }
+
         // 빌드 파일 저장
         this._saveBuildFile();
         
@@ -245,7 +285,33 @@ class AutoTemplate {
         this.namespace.add(alias, template);
     }
 
-    
+    /**
+     * 빌드대상 소스에 page 구룹 추가
+     * @param {*} alias 
+     * @param {*} prefix 
+     * @param {*} suffix 
+     * @param {*} agrs 
+     */
+    attachGroup(alias, prefix = '', suffix = '', args = []) {
+        
+        let group = null;
+        
+        // 유효성 검사
+        if (typeof alias !== 'string' || alias.length === 0) {
+            throw new Error('[필수] alias에 string 만 지정할 수 있습니다.');
+        }
+        
+        group = this.group[alias] || null;
+
+        // TODO: group 유효성 검사
+
+        this._group.push({
+            pageGroup: group,
+            prefix: prefix,
+            suffix: suffix,
+            args: args
+        });
+    }
 
     /*_______________________________________*/        
     // protected method
@@ -265,7 +331,7 @@ class AutoTemplate {
             alias = this.part[i].alias;
             obj['part'][alias] =  this.part[i].content;
         }
-        // part.page 로딩
+        // page 로딩 (part)
         for (let i = 0; i < this.page.count; i++) {
             delimiter = this.DELIMITER.PAGE;
             alias = this.page[i].alias;
@@ -285,9 +351,40 @@ class AutoTemplate {
                 if (isSave) {
                     compileSrc.savePath = _this.dir + path.sep + _this.PATH.SRC + path.sep + compileSrc.subPath.replace('.hbs','');
                 }
-                content = compileSrc.compile(localData, isSave);
+                content = compileSrc._compile(localData, isSave);
                 
                 return isSave === true ? '' : content + '\n';
+            }
+        }
+        // group 로딩 (part)
+        for (let i = 0; i < this.group.count; i++) {
+            delimiter = this.DELIMITER.PAGE;
+            alias = this.group[i]._alias;
+            key = this.AREA.GROUP + delimiter + alias;
+            
+            obj['part'][key] = function(data, hb) {
+                let localData = {};
+                let pageSrc = _this.group[i];
+                let prefix, suffix, args;
+                
+                for (let prop in data) {
+                    if (!data._parent[prop]) localData[prop] = data[prop];
+                }
+                // savePath 경로르 변경 : dir 지정 시 파일별도생성
+                // isSave = typeof localData.dir === 'undefined' ? false : true;
+                // 단독저장의 경우 파일경로를 수정함
+                // if (isSave) {
+                //     compileSrc.savePath = _this.dir + path.sep + _this.PATH.SRC + path.sep + compileSrc.subPath.replace('.hbs','');
+                // }
+                
+                // TODO: dir, path 받아서 적용해야함
+                prefix = localData.prefix;
+                suffix = localData.suffix;
+                args = localData.args ? JSON.parse(localData.args) : [];
+
+                pageSrc.build(prefix, suffix, args);
+                
+                // return isSave === true ? '' : content + '\n';
             }
         }
         
@@ -327,7 +424,7 @@ class AutoTemplate {
                         for (let prop in data) {
                             if (!data._parent[prop]) localData[prop] = data[prop];
                         }
-                        content = compileSrc.compile(localData, false);
+                        content = compileSrc._compile(localData, false);
                         return content + '\n';
                     }
                 }
@@ -459,238 +556,6 @@ class NamespaceCollection extends PropertyCollection {
     constructor(owner) {
         super(owner);
     }
-}
-
-/**
- *  구룹컬렉션 클래스
- */
-class GroupCollection extends PropertyCollection {
-    
-    
-    /*_______________________________________*/        
-    // protected
-    _owner = null;
-    // all 예약어
-    _groupSymbol = [/^[\\\/]?all([\\\/]|$)/];
-
-    /**
-     * 네임스페이스컬렉션, import한 외부 Tempalate들
-     * @param {AutoTemplate} owner 오토템플릿
-     */
-    constructor(owner) {
-        super(owner);
-        this._owner = owner;
-    }
-
-    // * this.group.add('spring', [ 
-    // *  {page: 'aaa.c', page: '{0}inc/fileA{1}'},   // A 그룹설정
-    // *  {page: 'bbb.c', page: '{0}inc/fileB{1}'},   // B 그룹설정
-    // * ],
-    // * ['A','B']);  // 접두접미사의 기본값
-
-    /**
-     * 페이지 그룹 추가
-     * @param {string} alias 
-     * @param {array<object>} pages 
-     * @param {array<string>} defaltFix 
-     */
-    add(alias, pages, defaltFix) {
-
-        let pg = null;
-
-        // 유효성 검사
-        if (typeof alias !== 'string' || alias.length === 0) {
-            throw new Error('alias에 string 만 지정할 수 있습니다.');
-        }
-        if (!Array.isArray(pages)) {
-            throw new Error('pages array<object> 만 지정할 수 있습니다.');
-        }
-        if (!Array.isArray(defaltFix)) {
-            throw new Error('alias에 array<object> 만 지정할 수 있습니다.');
-        }
-
-        // 별칭 규칙 검사
-        this._groupSymbol.forEach(val => {
-            if ((val instanceof RegExp && val.test(alias)) || 
-                (typeof val === 'string' && val === alias)) {
-                throw new Error('[group]에 예약어를 입력할 수 없습니다. : all');
-            }
-        });
-
-        pg = new PageGroup(this._owner, alias);
-        pg.addPage(pages);
-        pg.argFix = defaltFix;
-        // pg.fixs = ['aa', 'Aa'];
-        // pg.prefix = 'aa';
-        // pg.suffix = 'BB';
-
-        super.add(alias, pg);
-    }
-
-    _setAllPage() {
-
-        // const pg = new PageGroup(this._owner, 'all', pages, defaltFix);
-        const pg = new PageGroup(this._owner, 'all');
-        let alias;
-
-        for (let i = 0; i < this._owner.page.count; i++) {
-            alias = this.this._owner.page.propertyOf(i);
-            pg.addPage({ 
-                page: alias,
-                context: this._owner.page.subPath
-            });
-        }
-        // pg.setFix('');
-
-    }
-}
-
-class PageGroup{
-
-    // pages = [];
-    // fixs = [];
-
-    // argsFix = [];
-    // prefix = null;
-    // suffix = null;
-
-    // pages = {
-    //     context: '',
-    //     src: null
-    // };
-
-    /*_______________________________________*/
-    // protecrted
-    _auto = null;
-    _alias = null;
-    _pages = [];
-    // _force = false;
-
-    /*_______________________________________*/
-    // private
-    #argFixs = [];
-    #prefix = '';
-    #suffix = '';
-
-    /*_______________________________________*/        
-    // property
-    get argFixs() { return this.#argFixs };
-    set argFixs(val) {
-        if (!Array.isArray(val)) throw new Error('argFixs 가능한 타입 : array ');
-        this.#argsFix = val;
-    }
-    get prefix() { return this.#prefix };
-    set prefix(val) {
-        if (typeof val !== 'string') throw new Error('prefix 가능한 타입 : string ');
-        this.#prefix = val;
-    }
-
-    
-    constructor(auto, alias) {
-        
-        // if (typeof fixs !== 'undefined' && !Array.isArray(pages)) {
-        //     throw new Error('alias에 array<object> 만 지정할 수 있습니다.');
-        // }
-        // for (let i = 0; i < pages.length; i++) {
-        //     this.pages.push(this.#createPage(pages[i]));
-        // }
-        this._auto = auto;
-        this._alias = alias;
-        // this.pages = [...pages];
-        // this.fixs = [...fixs];
-        // this._force = force;
-        // page 의 CompileSoruce 와 연결 => 이건 필수모드가 맞을듯
-        // if (this._force !== true) {
-        //     this.#linkSource();
-        // }
-    }
-
-    /**
-     * 페이지 개체를 설정한다.
-     * @param {object | array} obj 배열 또는 객체
-     */
-    addPage(obj) {
-        
-        let arr = [];
-        let pageObj, src, alias, context;
-
-        if (Array.isArray(obj)) arr = [...obj];
-        else arr.push(obj);
-
-        for (let i = 0; i < arr.length; i++) {
-            
-            pageObj = arr[i];
-            alias = pageObj['page'];
-            context = pageObj['context'];
-            src = this._auto.page[alias] || null;
-
-            if (src === null){
-                throw new Error(`page에  ${alias} 존재하지 않습니다.`);
-            }
-    
-            if (typeof context !== 'string' || context.length === 0) {
-                context = src.subPath;  // REVIEW: 이름 매칭 확인필요!
-            }
-    
-            this._pages.push({            
-                page: alias,
-                context: context,
-                src: src
-            });
-        }
-
-    }
-
-    _setPage(page) {
-        // if (!Array.isArray(pages)) {
-        //     throw new Error('alias에 array<object> 만 지정할 수 있습니다.');
-        // }
-        
-        // for(let i = 0; i < pages.length; i++) {
-
-        // }
-        
-        
-    }
-
-    _setFix(fix) {
-
-    }
-    
-    _makePath(context) {
-        for (let i = 0; i < this._fixs.length; i++) {
-            context += context.replaceAll(`{${i}}`, this._fixs[i]);
-        }
-        return context;
-    }
-    
-    // #createPage(obj) {
-        
-    //     const alias = obj['page'];
-    //     const context = obj['context'];
-    //     const src = this._auto.group[alias] || null;
-        
-    //     return {
-    //         page: alias,
-    //         context: context,
-    //         src: src
-    //     }
-    // }
-
-    #linkSource() {
-        
-        let src = null;
-
-        for (let i = 0; i < this._pages.length; i++) {
-            src = this._auto.page[this._pages[i]] || null;
-            if (src === null){
-                throw new Error(`page에  ${alias} 존재하지 않습니다. build 시점에 로딩이 필요한 경우 생성자 (,,true) 설정하세요.`);
-            }
-            this._pages[i]['src'] = src;
-        }
-    }
-
-
 }
 
 

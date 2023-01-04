@@ -55,12 +55,19 @@ class CompileSource extends TemplateSource {
     helpers(pattern, opt) {
         this.#helper.push({glob: pattern, opt: opt});
     }
-
+    
     data(pattern, opt) {
         this.#data.push({glob: pattern, opt: opt});
     }
+    
+    build(data) {
+        // 컴파일
+        this._compile(data, true);
+        // 빌드 파일 저장
+        this._owner._saveBuildFile();
+    }
 
-    compile(data = {}, isSave = true) {
+    _compile(data = {}, isSave = true) {
 
         let _this = this;
         let template, content;
@@ -104,12 +111,6 @@ class CompileSource extends TemplateSource {
         return content;
     }
 
-    build(data) {
-        // 컴파일
-        this.compile(data, true);
-        // 빌드 파일 저장
-        this._owner._saveBuildFile();
-    }
     
     /*_______________________________________*/
     // event caller
@@ -301,5 +302,20 @@ class CompileCollection extends PropertyCollection {
     }
 }
 
+class SourceCollection extends CompileCollection {
+    
+    constructor(owner) {
+        super(owner, 'src');
+    }
+
+    // buildGroup() {
+
+    //     for (let i = 0; i < this._group.length; i++) {
+    //         this._group[i].pageGroup.build();
+    //     }
+    // }
+}
+
 exports.CompileSource = CompileSource;
 exports.CompileCollection = CompileCollection;
+exports.SourceCollection = SourceCollection;

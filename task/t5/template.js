@@ -5,6 +5,11 @@ class Template extends AutoTemplate {
     constructor() {
         super(__dirname);
     }
+
+    ready() {
+        // 전체 page 출판
+        // this.attachGroup('all', '_', '__');
+    }
 }
 
 

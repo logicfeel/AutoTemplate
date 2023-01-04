@@ -80,7 +80,7 @@ class AutoTask {
         // 로딩
         this.#load();
         // 빌드
-        this.entry.buildSource();
+        this.entry.build();
     }
 
     /**

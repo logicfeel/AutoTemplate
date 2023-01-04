@@ -16,17 +16,29 @@
  * {{> ns/view1/page/first path='...' }}                    :: 네임스페이스의 페이지파일(first) 생성하기 (별도 생성)
  * {{> ns/view2/header }}
  * {{> ns/view2/group/web dir='app' }}
+ * {{> ns/view2/group/web args='["A", "B"]' }}
  * {{> ns/view2/page/first.c dir='app' path='st.c' }}
  * 
  * [ready() 내부]
  * this.group.add('spring', [ 
  *  {page: 'aaa.c', context: '{0}inc/fileA{1}'},   // A 그룹설정
  *  {page: 'bbb.c', context: '{0}inc/fileB{1}'},   // B 그룹설정
- * ],
- * ['A','B']);  // 접두접미사의 기본값
+ *  ],
+ *  ['A','B']);  // 접두접미사의 기본값
+ * 
  * this.src.add('저장할경로', this.page['기존경로'])             :: 페이지 추가함
  * this.src.addGroup('spring', '0', '1', '2'...)            :: {0}, {1}, {2}.. 인가지 주입됨 <group/spring>
  * this.src.addGroup('all', 'prefix', 'suffix')             :: {0}, {1} 만 자동생성됨 <group/all>
+ * 
+ * // 순서 : alias, pre, suf, args
+ * this.src.addGroup('spring', '', '', ['0', '1', '2'...]) 
+ * this.src.addGroup('all', 'prefix', 'suffix')
+ * 
+ * REVIEW:  생성하겠다는 의미의 메소드명과 위치를 잘 정해야함
+ * 
+ * this.src.addGroup('spring', ['0', '1', '2'...]) 
+ * this.src.addGroup('all', null, 'prefix', 'suffix')
+ * this.src.addGroup('all', [], 'prefix', 'suffix')
  * 
  * 정리
  *  - group 에서는 파일명을 새로 지정할 수 있고, 
