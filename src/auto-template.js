@@ -4,6 +4,7 @@ const { PropertyCollection, Observer }          = require('entitybind');
 const { TemplateCollection }                    = require('./source-template');
 const { CompileCollection, SourceCollection }   = require('./source-compile');
 const { GroupCollection, PageGroup }            = require('./page-group');
+const { template } = require('handlebars');
 
 /**
  * 오토템플릿 클래스
@@ -61,10 +62,8 @@ class AutoTemplate {
         cover: [],
         publish: [],
     }
-    _localScope = null;
-    _outerScope = null;
     _group = [];
-
+    
     /*_______________________________________*/
     // private
     #dir                = [];
@@ -75,7 +74,9 @@ class AutoTemplate {
     #data               = null;
     #src                = null;
     #page               = null;
-    #group              = null;
+    #group              = null;     // REVIEW: group _group 이름 중복 이슈
+    #localScope         = null;
+    #outerScope         = null;
     
     /*_______________________________________*/        
     // property
@@ -119,6 +120,14 @@ class AutoTemplate {
     set group(val) {
         if (val instanceof GroupCollection) this.#group.addCollectoin(val); // TODO:
         else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+    }
+    get localScope() { 
+        if (this.#localScope === null) this.#localScope = this._getLocalScope();
+        return this.#localScope;
+    }
+    get outerScope() { 
+        if (this.#outerScope === null) this.#outerScope = this._getOuterScope();
+        return this.#outerScope;
     }
 
     /*_______________________________________*/        
@@ -178,9 +187,9 @@ class AutoTemplate {
         this.page.addGlob(this.GLOB.PAGE);
         this.group._setAllPage();   // group.all 컬렉션 추가
 
-        // 빌드 스코스 설정
-        this._localScope = this._getLocalScope();
-        this._outerScope = this._getOuterScope();
+        // // 빌드 스코스 설정
+        // this._localScope = this._getLocalScope();
+        // this._outerScope = this._getOuterScope();
 
         // 이벤트 발생
         this._onInited(this, this._auto);
@@ -233,6 +242,10 @@ class AutoTemplate {
         // 초기화
         // this.init();
         
+        // 빌드 스코스 설정
+        this._localScope = this._getLocalScope();
+        this._outerScope = this._getOuterScope();
+
         // 이벤트 발생
         this._onBuild(this, this._auto);
 
@@ -247,7 +260,12 @@ class AutoTemplate {
             prefix = group.prefix;
             suffix = group.suffix;
             args = group.args;
-            group.pageGroup.build(prefix, suffix, args);
+            // group.pageGroup.build(prefix, suffix, args);
+            group.pageGroup.build({
+                prefix: group.prefix,
+                suffix: group.suffix,
+                args: group.args
+            });
         }
 
         // for (let i = 0; i < this.src._group.length; i++) {
@@ -338,6 +356,7 @@ class AutoTemplate {
             key = this.AREA.PAGE + delimiter + alias;
             
             obj['part'][key] = function(data, hb) {
+                
                 let localData = {};
                 let compileSrc = _this.page[i];
                 let content, isSave;
@@ -352,7 +371,6 @@ class AutoTemplate {
                     compileSrc.savePath = _this.dir + path.sep + _this.PATH.SRC + path.sep + compileSrc.subPath.replace('.hbs','');
                 }
                 content = compileSrc._compile(localData, isSave);
-                
                 return isSave === true ? '' : content + '\n';
             }
         }
@@ -365,7 +383,7 @@ class AutoTemplate {
             obj['part'][key] = function(data, hb) {
                 let localData = {};
                 let pageSrc = _this.group[i];
-                let prefix, suffix, args;
+                let args;
                 
                 for (let prop in data) {
                     if (!data._parent[prop]) localData[prop] = data[prop];
@@ -378,12 +396,22 @@ class AutoTemplate {
                 // }
                 
                 // TODO: dir, path 받아서 적용해야함
-                prefix = localData.prefix;
-                suffix = localData.suffix;
-                args = localData.args ? JSON.parse(localData.args) : [];
+                // prefix = localData.prefix;
+                // suffix = localData.suffix;
+                // TODO: 'a,b,c' 이런형식으로 전달 'a b c'
+                // args = localData.args ? JSON.parse(localData.args) : [];
 
-                pageSrc.build(prefix, suffix, args);
+                if (typeof localData['args'] === 'string') {
+                    // args = 
+                    args = localData['args'].split(',');
+                    args = args.map(val => val.trim()); // 문자열 공백 제거
+                    localData['args'] = args;
+                }
+
+                // pageSrc.build(prefix, suffix, args);
+                pageSrc.build(localData);
                 
+                return '';
                 // return isSave === true ? '' : content + '\n';
             }
         }
@@ -407,12 +435,14 @@ class AutoTemplate {
      */
     _getOuterScope() {
 
+        const _this = this;
         let obj = { part: {}, helper: {}, data: {} };
         let key, delimiter, outTemplate, alias, outAlias;
 
         for(let i = 0; i < this.namespace.count; i++) {
             outTemplate = this.namespace[i];
             alias = this.namespace.propertyOf(i);
+            // part
             for (let ii = 0; ii < outTemplate.part.count; ii++) {
                 if (outTemplate.part[ii].isPublic == true) {
                     delimiter = outTemplate.DELIMITER.PART;
@@ -429,6 +459,30 @@ class AutoTemplate {
                     }
                 }
             }
+            // page
+            for (let ii = 0; ii < outTemplate.page.count; ii++) {
+                if (outTemplate.page[ii].isPublic == true) {
+                    delimiter = outTemplate.DELIMITER.PART;
+                    key = 'ns' + delimiter + alias + delimiter + this.AREA.PAGE + delimiter + outTemplate.page[ii].alias;
+                    obj['part'][key] = function(data, hb) {
+                        
+                        let localData = {};
+                        let compileSrc = outTemplate.page[ii];
+                        let content, isSave;
+
+                        for (let prop in data) {
+                            if (!data._parent[prop]) localData[prop] = data[prop];
+                        }
+                        isSave = typeof localData.dir === 'undefined' ? false : true;
+                        if (isSave) {
+                            compileSrc.savePath = _this.dir + path.sep + _this.PATH.SRC + path.sep + compileSrc.subPath.replace('.hbs','');
+                        }
+                        content = compileSrc._compile(localData, isSave);
+                        return isSave === true ? '' : content + '\n';
+                    }
+                }
+            }
+            // group
         }
         for(let i = 0; i < this.namespace.count; i++) {
             outTemplate = this.namespace[i];

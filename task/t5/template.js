@@ -7,8 +7,16 @@ class Template extends AutoTemplate {
     }
 
     ready() {
+        // 구조 만들기
+        this.group.add('spring', [
+            { page: 'aspPage2.asp', context: '{0}inc/2page{1}.asp' }
+        ], ['A', 'B']);
+
         // 전체 page 출판
         // this.attachGroup('all', '_', '__');
+        // this.attachGroup('spring', '_', '__', ['AA', 'BB']);
+
+        console.log(1)
     }
 }
 

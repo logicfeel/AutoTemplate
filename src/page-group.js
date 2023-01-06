@@ -188,10 +188,17 @@ class PageGroup {
         }
     }
 
-    build(prefix = this.prefix, suffix = this.suffix, args = []) {
+    build(data) {
         
         let pg, page, src, context, subPath, argfix;
-        
+        let prefix, suffix, args;
+
+        prefix = data.prefix || this.prefix;
+        suffix = data.suffix || this.suffix;
+        args = data.args || this.args;
+        // args = typeof data.args === 'string' ? data.args.split(',') : this.argfix;
+        // args = args.map(val => val.trim()); // 문자열 공백 제거
+
         // TODO: 유효성 검사
 
         for (let i = 0; i < this._pages.length; i++) {
@@ -205,7 +212,7 @@ class PageGroup {
             subPath = this._makePath(context, prefix, suffix, argfix);
             
             src.savePath = this._owner.dir + path.sep + this._owner.PATH.PUB + path.sep + subPath;  // 이름 재설정
-            src.build();
+            src._compile(data, true);
 
             // }
         }
@@ -225,20 +232,20 @@ class PageGroup {
 
     // }
     
-    _makePath(ctxPath, prefix, suffix, args = []) {
+    _makePath(ctxPath, prefix = '', suffix = '', args = []) {
         
-        let myPath, subPath;
+        let myPath, subPath, filename;
 
         for (let i = 0; i < args.length; i++) {
-            ctxPath += ctxPath.replaceAll(`{${i}}`, args[i]);
+            ctxPath = ctxPath.replaceAll(`{${i}}`, args[i]);
         }
         // prefix, suffix 적용
         myPath = path.parse(ctxPath);
 
-        subPath = myPath.dir.length > 0 ? myPath.dir + path.sep : '';
-        subPath += prefix + myPath.name + suffix + myPath.ext;
+        subPath = myPath.dir.length > 0 ? myPath.dir : '';
+        filename = prefix + myPath.name + suffix + myPath.ext;
         
-        return subPath;
+        return subPath + path.sep + filename;
     }
     
     // #createPage(obj) {

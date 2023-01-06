@@ -69,21 +69,23 @@ class CompileSource extends TemplateSource {
 
     _compile(data = {}, isSave = true) {
 
+        const localScope = this._owner.localScope;
+        const outerScope = this._owner.outerScope;
         let _this = this;
-        let template, content;
+        let template, content, dirname;
 
         // 이벤트 발생
         this._onCompile(this);
         
         // 외부 스코프
-        this.wax.partials(this._owner._outerScope.part);
-        this.wax.helpers(this._owner._outerScope.helper);
-        this.wax.data(this._owner._outerScope.data);
+        this.wax.partials(outerScope.part);
+        this.wax.helpers(outerScope.helper);
+        this.wax.data(outerScope.data);
 
         // 지역 스코프
-        this.wax.partials(this._owner._localScope.part);
-        this.wax.helpers(this._owner._localScope.helper);
-        this.wax.data(this._owner._localScope.data);
+        this.wax.partials(localScope.part);
+        this.wax.helpers(localScope.helper);
+        this.wax.data(localScope.data);
 
         // 내부 스코프
         this.#part.forEach(val => this.wax.partials(val.glob, val.opt));
@@ -96,6 +98,10 @@ class CompileSource extends TemplateSource {
         
         // 파일저장
         if (isSave === true) {
+            dirname = path.dirname(this.savePath);
+            if(!fs.existsSync(dirname)) {
+                fs.mkdirSync(dirname, {recursive: true} );  // 디렉토리 만들기
+            }
             fs.writeFileSync(this.savePath, content, 'utf8');
 
             // 빌드 파일 추가
