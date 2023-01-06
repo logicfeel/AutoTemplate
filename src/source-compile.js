@@ -168,7 +168,7 @@ class CompileCollection extends PropertyCollection {
         
         const delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
         const sep = path.sep;
-        const areaDir = this._owner.PATH[this.area.toUpperCase()];
+        const areaDir = this._owner.DIR[this.area.toUpperCase()];
         let tarSrc;
         
         // 유효성 검사
@@ -235,7 +235,7 @@ class CompileCollection extends PropertyCollection {
         const _this = this;
         const sep = path.sep;
         const delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
-        const areaDir = this._owner.PATH[this.area.toUpperCase()];
+        const areaDir = this._owner.DIR[this.area.toUpperCase()];
         let dirs = [];
         let arrPath = [];
         let localPattern, alias, content, subPath, idx;

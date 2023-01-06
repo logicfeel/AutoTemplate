@@ -6,6 +6,8 @@ const { PropertyCollection, Observer }          = require('entitybind');
  */
 class GroupCollection extends PropertyCollection {
     
+
+
     /*_______________________________________*/        
     // protected
     _owner = null;
@@ -102,7 +104,11 @@ class PageGroup {
     //     context: '',
     //     src: null
     // };
-
+    
+    /*_______________________________________*/
+    // public
+    isPublic = true;
+    
     /*_______________________________________*/
     // protecrted
     _owner = null;
@@ -188,14 +194,15 @@ class PageGroup {
         }
     }
 
-    build(data) {
+    build(data, owner = this._owner) {
         
-        let pg, page, src, context, subPath, argfix;
-        let prefix, suffix, args;
+        let pg, page, src, context, subPath;
+        let argfix, prefix, suffix, dir;
 
-        prefix = data.prefix || this.prefix;
-        suffix = data.suffix || this.suffix;
-        args = data.args || this.args;
+        prefix = data['prefix'] || this.prefix;
+        suffix = data['suffix'] || this.suffix;
+        argfix = data['args'] || this.argfix;
+        dir = data['dir'] || '';
         // args = typeof data.args === 'string' ? data.args.split(',') : this.argfix;
         // args = args.map(val => val.trim()); // 문자열 공백 제거
 
@@ -208,10 +215,11 @@ class PageGroup {
             src = page.src;
             context = page.context || src.subPath;
             context = context.replace('.hbs','');
-            argfix = args.length > 0 ? args : this.#argfix;
+            context = dir.length > 0 ? dir + path.sep +  context : context;
+            // argfix = args.length > 0 ? args : this.#argfix;
             subPath = this._makePath(context, prefix, suffix, argfix);
             
-            src.savePath = this._owner.dir + path.sep + this._owner.PATH.PUB + path.sep + subPath;  // 이름 재설정
+            src.savePath = owner.dir + path.sep + owner.DIR.PUB + path.sep + subPath;  // 이름 재설정
             src._compile(data, true);
 
             // }

@@ -21,7 +21,7 @@ class AutoTemplate {
         GROUP: 'group',
         PUB: 'pub',
     };
-    PATH = {
+    DIR = {
         HELPER: 'template/helper',
         DATA: 'template/data',
         PART: 'template/part',
@@ -33,8 +33,9 @@ class AutoTemplate {
         HELPER: '-',
         DATA: '.',
         PART: '/',
-        PAGE: '/',
-        SRC: '/',
+        PAGE: '/',  // 삭제대기
+        SRC: '/',   // 삭제대기
+        PUB: '/',   // 삭제대기
     };
     GLOB = {
         HELPER: 'template/helper/**/*.js',
@@ -359,16 +360,20 @@ class AutoTemplate {
                 
                 let localData = {};
                 let compileSrc = _this.page[i];
-                let content, isSave;
+                let content, subPath;
+                let isSave = false;
                 
                 for (let prop in data) {
                     if (!data._parent[prop]) localData[prop] = data[prop];
                 }
                 // savePath 경로르 변경 : dir 지정 시 파일별도생성
-                isSave = typeof localData.dir === 'undefined' ? false : true;
+                if (typeof localData['dir'] === 'string' || typeof localData['path'] === 'string') isSave = true;
+                subPath = localData['path'] || compileSrc.subPath.replace('.hbs','');
+                subPath = localData['dir'] ? localData['dir'] + path.sep + subPath : subPath;
                 // 단독저장의 경우 파일경로를 수정함
                 if (isSave) {
-                    compileSrc.savePath = _this.dir + path.sep + _this.PATH.SRC + path.sep + compileSrc.subPath.replace('.hbs','');
+                    // subPath = typeof localData['path'] === 'undefined' ? : localData['path'];
+                    compileSrc.savePath = _this.dir + path.sep + _this.DIR.PUB + path.sep + subPath;
                 }
                 content = compileSrc._compile(localData, isSave);
                 return isSave === true ? '' : content + '\n';
@@ -381,6 +386,7 @@ class AutoTemplate {
             key = this.AREA.GROUP + delimiter + alias;
             
             obj['part'][key] = function(data, hb) {
+                
                 let localData = {};
                 let pageSrc = _this.group[i];
                 let args;
@@ -407,12 +413,9 @@ class AutoTemplate {
                     args = args.map(val => val.trim()); // 문자열 공백 제거
                     localData['args'] = args;
                 }
-
                 // pageSrc.build(prefix, suffix, args);
                 pageSrc.build(localData);
-                
                 return '';
-                // return isSave === true ? '' : content + '\n';
             }
         }
         
@@ -442,7 +445,7 @@ class AutoTemplate {
         for(let i = 0; i < this.namespace.count; i++) {
             outTemplate = this.namespace[i];
             alias = this.namespace.propertyOf(i);
-            // part
+            // ns.part
             for (let ii = 0; ii < outTemplate.part.count; ii++) {
                 if (outTemplate.part[ii].isPublic == true) {
                     delimiter = outTemplate.DELIMITER.PART;
@@ -459,7 +462,7 @@ class AutoTemplate {
                     }
                 }
             }
-            // page
+            // ns.page
             for (let ii = 0; ii < outTemplate.page.count; ii++) {
                 if (outTemplate.page[ii].isPublic == true) {
                     delimiter = outTemplate.DELIMITER.PART;
@@ -468,22 +471,61 @@ class AutoTemplate {
                         
                         let localData = {};
                         let compileSrc = outTemplate.page[ii];
-                        let content, isSave;
+                        let content, subPath;
+                        let isSave = false;
 
                         for (let prop in data) {
                             if (!data._parent[prop]) localData[prop] = data[prop];
                         }
-                        isSave = typeof localData.dir === 'undefined' ? false : true;
+                        // isSave = typeof localData.dir === 'undefined' ? false : true;
+                        if (typeof localData['dir'] === 'string' || typeof localData['path'] === 'string') isSave = true;
+                        subPath = localData['path'] || compileSrc.subPath.replace('.hbs','');
+                        subPath = localData['dir'] ? localData['dir'] + path.sep + subPath : subPath;
+
                         if (isSave) {
-                            compileSrc.savePath = _this.dir + path.sep + _this.PATH.SRC + path.sep + compileSrc.subPath.replace('.hbs','');
+                            // compileSrc.savePath = _this.dir + path.sep + _this.PATH.SRC + path.sep + compileSrc.subPath.replace('.hbs','');
+                            compileSrc.savePath = _this.dir + path.sep + _this.DIR.PUB + path.sep + subPath;
                         }
                         content = compileSrc._compile(localData, isSave);
                         return isSave === true ? '' : content + '\n';
                     }
                 }
             }
-            // group
+            // ns.group
+            for (let ii = 0; ii < outTemplate.group.count; ii++) {
+                if (outTemplate.group[ii].isPublic == true) {
+                    delimiter = outTemplate.DELIMITER.PART;
+                    key = 'ns' + delimiter + alias + delimiter + this.AREA.GROUP + delimiter + outTemplate.group[ii]._alias;
+                    obj['part'][key] = function(data, hb) {
+                        
+                        let localData = {};
+                        let pageGroup = outTemplate.group[ii];
+                        let args;
+                        // let content, isSave;
+
+                        for (let prop in data) {
+                            if (!data._parent[prop]) localData[prop] = data[prop];
+                        }
+                        // isSave = typeof localData.dir === 'undefined' ? false : true;
+                        // if (isSave) {
+                        //     compileSrc.savePath = _this.dir + path.sep + _this.PATH.SRC + path.sep + compileSrc.subPath.replace('.hbs','');
+                        // }
+                        // content = compileSrc._compile(localData, isSave);
+                        // return isSave === true ? '' : content + '\n';
+                        if (typeof localData['args'] === 'string') {
+                            // args = 
+                            args = localData['args'].split(',');
+                            args = args.map(val => val.trim()); // 문자열 공백 제거
+                            localData['args'] = args;
+                        }
+                        // this 의 현재 폴더를 기준으로 변경
+                        pageGroup.build(localData, _this);
+                        return '';
+                    }
+                }
+            }
         }
+        // ns.helper
         for(let i = 0; i < this.namespace.count; i++) {
             outTemplate = this.namespace[i];
             alias = this.namespace.propertyOf(i);
@@ -495,6 +537,7 @@ class AutoTemplate {
                 }
             }
         }
+        // ns.data
         for(let i = 0; i < this.namespace.count; i++) {
             outTemplate = this.namespace[i];
             alias = this.namespace.propertyOf(i);

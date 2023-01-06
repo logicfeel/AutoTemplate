@@ -29,7 +29,7 @@ class TemplateSource {
     get area() { return this.#area; }
     get alias() { return this.#alias; }
     get fullPath() { return this.#fullPath; }
-    get areaDir() { return this._owner.PATH[this.#area.toUpperCase()]; }
+    get areaDir() { return this._owner.DIR[this.#area.toUpperCase()]; }
     get subDir() { return path.dirname(this.subPath); }
     get subPath() { return path.relative(this.dir + path.sep + this.areaDir, this.fullPath); }
     get localDir() { return this.areaDir + path.sep + this.subDir; }
@@ -141,7 +141,7 @@ class TemplateCollection extends PropertyCollection {
         const sep = path.sep;
         const dirs = this._onwer.dirs;
         const delmiter = this._owner.DELIMITER[this.area.toUpperCase()];
-        const areaDir = this._owner.PATH[this.area.toUpperCase()];
+        const areaDir = this._owner.DIR[this.area.toUpperCase()];
         let arrPath = [];
         let localPattern, alias, content, subPath;
 
