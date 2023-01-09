@@ -1,10 +1,10 @@
-const fs                                        = require('fs');
-const path                                      = require('path');
-const { PropertyCollection, Observer }          = require('entitybind');
-const { TemplateCollection }                    = require('./source-template');
-const { CompileCollection, SourceCollection }   = require('./source-compile');
-const { GroupCollection, PageGroup }            = require('./page-group');
-const { template } = require('handlebars');
+const fs                                = require('fs');
+const path                              = require('path');
+const { PropertyCollection, Observer }  = require('entitybind');
+const { TemplateCollection }            = require('./source-template');
+const { CompileCollection }             = require('./source-compile');
+const { GroupCollection, PageGroup }    = require('./page-group');
+// const { template } = require('handlebars');
 
 /**
  * 오토템플릿 클래스
@@ -78,9 +78,15 @@ class AutoTemplate {
     #group              = null;     // REVIEW: group _group 이름 중복 이슈
     #localScope         = null;
     #outerScope         = null;
+    #used               = null;
     
     /*_______________________________________*/        
     // property
+    get used() { return this.#used === null ? this : this.#used; }
+    set used(val) {
+        if (val instanceof AutoTemplate) this.#used = val;
+        else throw new Error('AutoTemplate 타입만 설정할 수 있습니다.');
+    }
     get dir() {
         let size = this.#dir.length;
         if (size === 0) throw new Error(' start [dir] request fail...');
@@ -109,8 +115,8 @@ class AutoTemplate {
     }
     get src() { return this.#src }
     set src(val) {
-        if (val instanceof SourceCollection) this.#src.addCollectoin(val); // TODO:
-        else throw new Error('SourceCollection 타입만 설정할 수 있습니다.');
+        if (val instanceof CompileCollection) this.#src.addCollectoin(val); // TODO:
+        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
     get page() { return this.#page }
     set page(val) {
@@ -150,7 +156,7 @@ class AutoTemplate {
         this.#helper    = new TemplateCollection(this, this.AREA.HELPER);
         this.#data      = new TemplateCollection(this, this.AREA.DATA);
         this.#part      = new CompileCollection(this, this.AREA.PART);
-        this.#src       = new SourceCollection(this);
+        this.#src       = new CompileCollection(this, this.AREA.SRC);
         this.#page      = new CompileCollection(this, this.AREA.PAGE);
         this.#group     = new GroupCollection(this);
     }
@@ -195,10 +201,13 @@ class AutoTemplate {
         // 이벤트 발생
         this._onInited(this, this._auto);
 
-        if (fs.existsSync(this.dir + path.sep + this.FILE.BUILD)) {
-            buildFile = require(this.dir + path.sep + this.FILE.BUILD);
-            if (buildFile.cover) this._buildFile['cover'] = buildFile.cover;
-            if (buildFile.publish) this._buildFile['publish'] = buildFile.publish;
+        // 사용처에서만 사용됨
+        if (this === this.used) {
+            if (fs.existsSync(this.dir + path.sep + this.FILE.BUILD)) {
+                buildFile = require(this.dir + path.sep + this.FILE.BUILD);
+                if (buildFile.cover) this._buildFile['cover'] = buildFile.cover;
+                if (buildFile.publish) this._buildFile['publish'] = buildFile.publish;
+            }
         }
 
         // 사옹자 정의 초기화 호출
@@ -298,6 +307,10 @@ class AutoTemplate {
      * @param {AutoTemplate} template 
      */
     import(alias, template) {
+        // 템플릿 검사
+        if (!(template instanceof AutoTemplate)) new Error('AutoTemplate 타입만 설정할 수 있습니다.');
+        // 템플릿 사용위치 설정
+        template.used = this.used;
         // 외부 템플릿 초기화
         // template.init();
         // 외부 템플릿 등록
@@ -373,7 +386,7 @@ class AutoTemplate {
                 // 단독저장의 경우 파일경로를 수정함
                 if (isSave) {
                     // subPath = typeof localData['path'] === 'undefined' ? : localData['path'];
-                    compileSrc.savePath = _this.dir + path.sep + _this.DIR.PUB + path.sep + subPath;
+                    compileSrc.savePath = _this.used.dir + path.sep + _this.DIR.PUB + path.sep + subPath;
                 }
                 content = compileSrc._compile(localData, isSave);
                 return isSave === true ? '' : content + '\n';
@@ -484,7 +497,7 @@ class AutoTemplate {
 
                         if (isSave) {
                             // compileSrc.savePath = _this.dir + path.sep + _this.PATH.SRC + path.sep + compileSrc.subPath.replace('.hbs','');
-                            compileSrc.savePath = _this.dir + path.sep + _this.DIR.PUB + path.sep + subPath;
+                            compileSrc.savePath = _this.used.dir + path.sep + _this.DIR.PUB + path.sep + subPath;
                         }
                         content = compileSrc._compile(localData, isSave);
                         return isSave === true ? '' : content + '\n';
@@ -578,12 +591,13 @@ class AutoTemplate {
      */
     _saveBuildFile(buildFile) {
         
-        let savePath, data;
+        let savePath, data, dir = this.used.dir;
 
-        savePath = buildFile ? this.dir + path.sep + buildFile : this.dir + path.sep + this.FILE.BUILD;
+        savePath = buildFile ? dir + path.sep + buildFile : dir + path.sep + this.FILE.BUILD;
         data = JSON.stringify(this._buildFile, null, '\t');
 
         fs.writeFileSync(savePath, data, 'utf8');
+        console.log(`빌드파일 저장 : ${savePath} `)
     }
 
     /**
@@ -646,12 +660,16 @@ class AutoTemplate {
  *  외부(오토템플릿)컬렉션 클래스
  */
 class NamespaceCollection extends PropertyCollection {
+    
+    _owner = null;
+    
     /**
      * 네임스페이스컬렉션, import한 외부 Tempalate들
      * @param {AutoTemplate} owner 오토템플릿
      */
     constructor(owner) {
         super(owner);
+        this._owner = owner;
     }
 }
 

@@ -10,7 +10,7 @@ class AutoTask {
     /*_______________________________________*/        
     // public
     entry = null;
-    batch = null;
+    // batch = null;
     cursor = '';
     FILE = {
         TEMPLATE: 'template.js',
@@ -73,6 +73,23 @@ class AutoTask {
     }
 
     /**
+     * 리셋 태스크 실행 (파일 및 폴더 삭제, 객체 초기화)
+     */
+    do_clear() {
+        
+        let dir, entry, delPath;
+
+        this.cursor = 'CLEAR';
+
+        // 로딩
+        this.#load();
+        // 빌드 파일 삭제
+        this.entry.clear();
+        // 이벤트 초기화
+        this.#event.unsubscribeAll();
+    }
+
+    /**
      * 탬플릿 소스 출판
      */
     do_publish() {
@@ -93,23 +110,6 @@ class AutoTask {
         this.#load();
         // 부모 파일 쓰기
         this.entry._writeParentObject();
-    }
-
-    /**
-     * 리셋 태스크 실행 (파일 및 폴더 삭제, 객체 초기화)
-     */
-    do_clear() {
-        
-        let dir, entry, delPath;
-
-        this.cursor = 'CLEAR';
-
-        // 로딩
-        this.#load();
-        // 빌드 파일 삭제
-        this.entry.clear();
-        // 이벤트 초기화
-        this.#event.unsubscribeAll();
     }
 
     /*_______________________________________*/

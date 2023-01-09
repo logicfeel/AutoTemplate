@@ -1,6 +1,6 @@
-const path = require('path');
-const glob = require('glob');
-const { PropertyCollection } = require('entitybind');
+const path                      = require('path');
+const glob                      = require('glob');
+const { PropertyCollection }    = require('entitybind');
 
 /**
  * 템플릿소스 클래스
@@ -14,14 +14,14 @@ class TemplateSource {
 
     /*_______________________________________*/        
     // protected
-    _owner = null;
+    _template = null;
 
     /*_______________________________________*/        
     // private
-    #fullPath = '';
+    #dir = '';
     #area = '';
     #alias = '';
-    #dir = '';
+    #fullPath = '';
 
     /*_______________________________________*/        
     // property
@@ -29,7 +29,7 @@ class TemplateSource {
     get area() { return this.#area; }
     get alias() { return this.#alias; }
     get fullPath() { return this.#fullPath; }
-    get areaDir() { return this._owner.DIR[this.#area.toUpperCase()]; }
+    get areaDir() { return this._template.DIR[this.#area.toUpperCase()]; }
     get subDir() { return path.dirname(this.subPath); }
     get subPath() { return path.relative(this.dir + path.sep + this.areaDir, this.fullPath); }
     get localDir() { return this.areaDir + path.sep + this.subDir; }
@@ -43,12 +43,12 @@ class TemplateSource {
      * @param {*} alias 별칭
      * @param {*?} fullPath 전체경로(최상위부터)
      */
-    constructor(owner, dir, area, alias, fullPath = null) {
-        this._owner = owner;
+    constructor(template, dir, area, alias, fullPath = null) {
+        this._template = template;
         this.#dir = dir;
         this.#area = area;
         this.#alias = alias;
-        this.isPublic = this._owner.defaultPublic;
+        this.isPublic = this._template.defaultPublic;
         if (fullPath !== null) {
             this.#fullPath = fullPath;
         }
@@ -82,6 +82,7 @@ class TemplateCollection extends PropertyCollection {
      * @param {*} alias 별칭
      * @param {function | object | TemplateSource} obj  대상
      * @param {*?} fullPath glob를 통해서 입력한 경우만 
+     * @param {string?} dir 
      * @overloading 상위 add(..) 호출함
      */
     add(alias, obj, fullPath = null, dir = this._owner.dir) {

@@ -28,7 +28,7 @@ class CompileSource extends TemplateSource {
     get saveName() { return path.basename(this.savePath); }
     get saveDir() { return path.dirname(this.savePath); }
     get savePath() {
-        const dir = this._owner.dir;    // 상속한 경우 최종 
+        const dir = this._template.dir;    // 상속한 경우 최종 
         const fullPath = dir + path.sep + this.localPath;
         return this.#savePath === '' ? fullPath.replace('.hbs','') : this.#savePath;
     }
@@ -42,8 +42,8 @@ class CompileSource extends TemplateSource {
 
     /*_______________________________________*/
     // constructor method
-    constructor(owner, dir, area, alias, fullPath = null) {
-        super(owner, dir, area, alias, fullPath);
+    constructor(template, dir, area, alias, fullPath = null) {
+        super(template, dir, area, alias, fullPath);
         this.wax = handlebarsWax(handlebars.create());
     }
     /*_______________________________________*/
@@ -60,17 +60,22 @@ class CompileSource extends TemplateSource {
         this.#data.push({glob: pattern, opt: opt});
     }
     
+    /**
+     * 단독으로 컴파일할 경우 (빌드 로그 생성)
+     * @param {*} data 
+     */
     build(data) {
         // 컴파일
         this._compile(data, true);
         // 빌드 파일 저장
-        this._owner._saveBuildFile();
+        this._template.used._saveBuildFile();
     }
 
     _compile(data = {}, isSave = true) {
 
-        const localScope = this._owner.localScope;
-        const outerScope = this._owner.outerScope;
+        const localScope = this._template.localScope;
+        const outerScope = this._template.outerScope;
+        const used = this._template.used;
         let _this = this;
         let template, content, dirname;
 
@@ -105,7 +110,7 @@ class CompileSource extends TemplateSource {
             fs.writeFileSync(this.savePath, content, 'utf8');
 
             // 빌드 파일 추가
-            this._owner._addBuildFile(this.savePath, 'publish')
+            used._addBuildFile(this.savePath, 'publish')
 
             // 이벤트 발생
             this._onSave(this, this.savePath);
@@ -308,20 +313,20 @@ class CompileCollection extends PropertyCollection {
     }
 }
 
-class SourceCollection extends CompileCollection {
+// class SourceCollection extends CompileCollection {
     
-    constructor(owner) {
-        super(owner, 'src');
-    }
+//     constructor(owner) {
+//         super(owner, 'src');
+//     }
 
-    // buildGroup() {
+//     // buildGroup() {
 
-    //     for (let i = 0; i < this._group.length; i++) {
-    //         this._group[i].pageGroup.build();
-    //     }
-    // }
-}
+//     //     for (let i = 0; i < this._group.length; i++) {
+//     //         this._group[i].pageGroup.build();
+//     //     }
+//     // }
+// }
 
 exports.CompileSource = CompileSource;
 exports.CompileCollection = CompileCollection;
-exports.SourceCollection = SourceCollection;
+// exports.SourceCollection = SourceCollection;
