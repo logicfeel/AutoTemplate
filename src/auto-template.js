@@ -3,8 +3,7 @@ const path                              = require('path');
 const { PropertyCollection, Observer }  = require('entitybind');
 const { TemplateCollection }            = require('./source-template');
 const { CompileCollection }             = require('./source-compile');
-const { GroupCollection, PageGroup }    = require('./page-group');
-// const { template } = require('handlebars');
+const { GroupCollection }               = require('./page-group');
 
 /**
  * 오토템플릿 클래스
@@ -13,36 +12,33 @@ class AutoTemplate {
     /*_______________________________________*/
     // public
     AREA = {
-        HELPER: 'helper',
-        DATA: 'data',
-        PART: 'part',
-        PAGE: 'page',
-        SRC: 'src',
-        GROUP: 'group',
-        PUB: 'pub',
+        HELPER: 'HELPER',
+        DATA: 'DATA',
+        PART: 'PART',
+        SRC: 'SRC',
+        PUB: 'PUB',
+        PAGE: 'PAGE',
+        GROUP: 'GROUP',
     };
     DIR = {
         HELPER: 'template/helper',
         DATA: 'template/data',
         PART: 'template/part',
-        PAGE: 'template/page',
         SRC: 'src',
         PUB: 'src',
+        PAGE: 'template/page',
     }
     DELIMITER = {
         HELPER: '-',
         DATA: '.',
         PART: '/',
-        PAGE: '/',  // 삭제대기
-        SRC: '/',   // 삭제대기
-        PUB: '/',   // 삭제대기
     };
     GLOB = {
         HELPER: 'template/helper/**/*.js',
         DATA: 'template/data/**/*.{js,json}',
         PART: 'template/part/**/*.{hbs,js}',
-        PAGE: 'template/page/**/*.{hbs,js}',
         SRC: 'src/**/*.hbs',
+        PAGE: 'template/page/**/*.{hbs,js}',
     };
     FILE = {
         BUILD: '__BuildFile.json'
@@ -50,11 +46,6 @@ class AutoTemplate {
     TEMP_EXT        = '.hbs';
     defaultPublic   = true;
     isFinal         = false;    // 상속 금지 설정
-    // namespace       = null;
-    // helper          = null;
-    // data            = null;
-    // part            = null;
-    // src             = null;
     
     /*_______________________________________*/
     // protected
@@ -67,18 +58,18 @@ class AutoTemplate {
     
     /*_______________________________________*/
     // private
+    #used               = null;
     #dir                = [];
     #event              = new Observer(this, this);
     #namespace          = null;
     #helper             = null;
-    #part               = null;
     #data               = null;
+    #part               = null;
     #src                = null;
     #page               = null;
     #group              = null;     // REVIEW: group _group 이름 중복 이슈
     #localScope         = null;
     #outerScope         = null;
-    #used               = null;
     
     /*_______________________________________*/        
     // property
@@ -93,8 +84,9 @@ class AutoTemplate {
         return this.#dir[size - 1];
     }
     set dir(val) {
-        if (this.isFinal === true && this.#dir.length > 0) throw new Error('마지막 클래스(상속금지)는 dir 설정할 수 없습니다.');
-        if (this.#dir.indexOf(val) < 0) this.#dir.push(val);
+        if (this.isFinal === true && this.#dir.length > 0) {
+            throw new Error('마지막 클래스(상속금지)는 dir 설정할 수 없습니다.');
+        } else if (this.#dir.indexOf(val) < 0) this.#dir.push(val);
     }
     get dirs() { return this.#dir; }
     get namespace() { return this.#namespace }
@@ -163,7 +155,6 @@ class AutoTemplate {
 
     /*_______________________________________*/        
     // public method
-    
     /**
      * 템플릿 파일을 불러오고 준비가 된 상태, overriding 으로 사용함
      * @virtual
@@ -238,7 +229,6 @@ class AutoTemplate {
             cover: [],
             publish: [],
         };
-
     }
 
     /**
@@ -253,8 +243,8 @@ class AutoTemplate {
         // this.init();
         
         // 빌드 스코스 설정
-        this._localScope = this._getLocalScope();
-        this._outerScope = this._getOuterScope();
+        // this._localScope = this._getLocalScope();
+        // this._outerScope = this._getOuterScope();
 
         // 이벤트 발생
         this._onBuild(this, this._auto);
@@ -311,8 +301,6 @@ class AutoTemplate {
         if (!(template instanceof AutoTemplate)) new Error('AutoTemplate 타입만 설정할 수 있습니다.');
         // 템플릿 사용위치 설정
         template.used = this.used;
-        // 외부 템플릿 초기화
-        // template.init();
         // 외부 템플릿 등록
         this.namespace.add(alias, template);
     }
@@ -347,7 +335,6 @@ class AutoTemplate {
 
     /*_______________________________________*/        
     // protected method
-
     /**
      * 테플릿의 지역범위의 객체를 리턴한다.
      * @returns {object} {part:{..}, helper: {..}, data: {..}}
@@ -365,9 +352,9 @@ class AutoTemplate {
         }
         // page 로딩 (part)
         for (let i = 0; i < this.page.count; i++) {
-            delimiter = this.DELIMITER.PAGE;
+            delimiter = this.DELIMITER.PART;
             alias = this.page[i].alias;
-            key = this.AREA.PAGE + delimiter + alias;
+            key = this.AREA.PAGE.toLowerCase() + delimiter + alias;
             
             obj['part'][key] = function(data, hb) {
                 
@@ -394,9 +381,9 @@ class AutoTemplate {
         }
         // group 로딩 (part)
         for (let i = 0; i < this.group.count; i++) {
-            delimiter = this.DELIMITER.PAGE;
-            alias = this.group[i]._alias;
-            key = this.AREA.GROUP + delimiter + alias;
+            delimiter = this.DELIMITER.PART;
+            alias = this.group[i].alias;
+            key = this.AREA.GROUP.toLowerCase() + delimiter + alias;
             
             obj['part'][key] = function(data, hb) {
                 
@@ -479,7 +466,7 @@ class AutoTemplate {
             for (let ii = 0; ii < outTemplate.page.count; ii++) {
                 if (outTemplate.page[ii].isPublic == true) {
                     delimiter = outTemplate.DELIMITER.PART;
-                    key = 'ns' + delimiter + alias + delimiter + this.AREA.PAGE + delimiter + outTemplate.page[ii].alias;
+                    key = 'ns' + delimiter + alias + delimiter + this.AREA.PAGE.toLowerCase() + delimiter + outTemplate.page[ii].alias;
                     obj['part'][key] = function(data, hb) {
                         
                         let localData = {};
@@ -508,7 +495,7 @@ class AutoTemplate {
             for (let ii = 0; ii < outTemplate.group.count; ii++) {
                 if (outTemplate.group[ii].isPublic == true) {
                     delimiter = outTemplate.DELIMITER.PART;
-                    key = 'ns' + delimiter + alias + delimiter + this.AREA.GROUP + delimiter + outTemplate.group[ii]._alias;
+                    key = 'ns' + delimiter + alias + delimiter + this.AREA.GROUP.toLowerCase() + delimiter + outTemplate.group[ii].alias;
                     obj['part'][key] = function(data, hb) {
                         
                         let localData = {};

@@ -37,8 +37,8 @@ class CompileSource extends TemplateSource {
     /*_______________________________________*/        
     // event property
     set onCompile(fn) { this.#event.subscribe(fn, 'compile') }      // 컴파일 전
+    set onSave(fn) { this.#event.subscribe(fn, 'save') }            // 저장시 저장후
     set onCompiled(fn) { this.#event.subscribe(fn, 'compiled') }    // 컴파일 전
-    set onSave(fn) { this.#event.subscribe(fn, 'save') }    // 컴파일 전
 
     /*_______________________________________*/
     // constructor method
@@ -171,9 +171,11 @@ class CompileCollection extends PropertyCollection {
      */
     add(alias, obj, fullPath = null, dir = this._owner.dir) {
         
-        const delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
+        // const delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
+        const delimiter = this._owner.DELIMITER.PART;
         const sep = path.sep;
-        const areaDir = this._owner.DIR[this.area.toUpperCase()];
+        // const areaDir = this._owner.DIR[this.area.toUpperCase()];
+        const areaDir = this._owner.DIR[this.area];
         let tarSrc;
         
         // 유효성 검사
@@ -183,15 +185,15 @@ class CompileCollection extends PropertyCollection {
         if (typeof obj === 'undefined' || obj === null) {
             throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');
         }
-        if (this.area === 'part' && !(typeof obj === 'function' || typeof obj === 'string')) {
+        if (this.area === 'PART' && !(typeof obj === 'function' || typeof obj === 'string')) {
             throw new Error('area[part] 가능한 타입 : string, function');
         }
-        if (this.area === 'src' && !(typeof obj === 'function' || typeof obj === 'string')) {
+        if (this.area === 'SRC' && !(typeof obj === 'function' || typeof obj === 'string')) {
             throw new Error('area[src] 가능한 타입 : string, function');
         }
 
         // 별칭 규칙 검사
-        if (this.area === 'part') {
+        if (this.area === 'PART') {
             this._partSymbol.forEach(val => {
                 if ((val instanceof RegExp && val.test(alias)) || 
                     (typeof val === 'string' && val === alias)) {
@@ -239,8 +241,10 @@ class CompileCollection extends PropertyCollection {
         
         const _this = this;
         const sep = path.sep;
-        const delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
-        const areaDir = this._owner.DIR[this.area.toUpperCase()];
+        // const delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
+        const delimiter = this._owner.DELIMITER.PART;
+        // const areaDir = this._owner.DIR[this.area.toUpperCase()];
+        const areaDir = this._owner.DIR[this.area];
         let dirs = [];
         let arrPath = [];
         let localPattern, alias, content, subPath, idx;
@@ -271,7 +275,6 @@ class CompileCollection extends PropertyCollection {
 
     /*_______________________________________*/
     // protected method
-
     /**
      * subPath를 입력받이서 별칭로 만들기
      * .hbs만 제거
@@ -282,7 +285,8 @@ class CompileCollection extends PropertyCollection {
 
         let fileName, delimiter, dir;
         
-        delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
+        // delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
+        delimiter = this._owner.DELIMITER.PART;
         fileName = path.basename(subPath, this._owner.TEMP_EXT);    // .hbs 제거
         dir = path.parse(subPath).dir;
         dir = dir.replace(/\//g, delimiter);                   // 구분 문자 변경
@@ -313,20 +317,5 @@ class CompileCollection extends PropertyCollection {
     }
 }
 
-// class SourceCollection extends CompileCollection {
-    
-//     constructor(owner) {
-//         super(owner, 'src');
-//     }
-
-//     // buildGroup() {
-
-//     //     for (let i = 0; i < this._group.length; i++) {
-//     //         this._group[i].pageGroup.build();
-//     //     }
-//     // }
-// }
-
 exports.CompileSource = CompileSource;
 exports.CompileCollection = CompileCollection;
-// exports.SourceCollection = SourceCollection;

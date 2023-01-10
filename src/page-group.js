@@ -4,27 +4,14 @@ const { PropertyCollection, Observer }          = require('entitybind');
 
 
 class PageGroup {
-
-    // pages = [];
-    // fixs = [];
-
-    // argfix = [];
-    // prefix = null;
-    // suffix = null;
-
-    // pages = {
-    //     context: '',
-    //     src: null
-    // };
-    
     /*_______________________________________*/
     // public
     isPublic = true;
+    alias = '';
     
     /*_______________________________________*/
     // protecrted
     _template = null;
-    _alias = '';
     _pages = [];
 
     /*_______________________________________*/
@@ -52,22 +39,8 @@ class PageGroup {
     }
     
     constructor(template, alias) {
-        
-        // if (typeof fixs !== 'undefined' && !Array.isArray(pages)) {
-        //     throw new Error('alias에 array<object> 만 지정할 수 있습니다.');
-        // }
-        // for (let i = 0; i < pages.length; i++) {
-        //     this.pages.push(this.#createPage(pages[i]));
-        // }
         this._template = template;
-        this._alias = alias;
-        // this.pages = [...pages];
-        // this.fixs = [...fixs];
-        // this._force = force;
-        // page 의 CompileSoruce 와 연결 => 이건 필수모드가 맞을듯
-        // if (this._force !== true) {
-        //     this.#linkSource();
-        // }
+        this.alias = alias;
     }
 
     /**
@@ -94,7 +67,7 @@ class PageGroup {
             }
     
             if (context === '' || typeof context !== 'string') {
-                context = src.subPath;  // REVIEW: 이름 매칭 확인필요!
+                context = src.subPath;
             }
     
             this._pages.push({            
@@ -110,7 +83,7 @@ class PageGroup {
         
         // const owner = this._owner;
         const used = this._template.used;
-        let pg, page, src, context, subPath;
+        let page, src, context, subPath;
         let argfix, prefix, suffix, dir;
 
         prefix = data['prefix'] || this.prefix;
@@ -124,8 +97,6 @@ class PageGroup {
 
         for (let i = 0; i < this._pages.length; i++) {
             page = this._pages[i];
-            // for (let ii = 0; ii < pg._pages.length; ii++) {
-            // page = pg.page;
             src = page.src;
             context = page.context || src.subPath;
             context = context.replace('.hbs','');
@@ -140,19 +111,6 @@ class PageGroup {
         }
 
     }
-    // _setPage(page) {
-    //     // if (!Array.isArray(pages)) {
-    //     //     throw new Error('alias에 array<object> 만 지정할 수 있습니다.');
-    //     // }
-        
-    //     // for(let i = 0; i < pages.length; i++) {
-
-    //     // }
-    // }
-
-    // _setFix(fix) {
-
-    // }
     
     _makePath(ctxPath, prefix = '', suffix = '', args = []) {
         
@@ -170,19 +128,6 @@ class PageGroup {
         return subPath + path.sep + filename;
     }
     
-    // #createPage(obj) {
-        
-    //     const alias = obj['page'];
-    //     const context = obj['context'];
-    //     const src = this._auto.group[alias] || null;
-        
-    //     return {
-    //         page: alias,
-    //         context: context,
-    //         src: src
-    //     }
-    // }
-
     // #linkSource() {
         
     //     let src = null;
@@ -233,7 +178,7 @@ class GroupCollection extends PropertyCollection {
      * @param {array<object>} pages 
      * @param {array<string>} defaltFix 
      */
-    add(alias, pages, defaultFix) {
+    add(alias, pages, deffix) {
 
         let pg = null;
 
@@ -244,7 +189,7 @@ class GroupCollection extends PropertyCollection {
         if (!Array.isArray(pages)) {
             throw new Error('pages array<object> 만 지정할 수 있습니다.');
         }
-        if (!Array.isArray(defaultFix)) {
+        if (!Array.isArray(deffix)) {
             throw new Error('alias에 array<object> 만 지정할 수 있습니다.');
         }
 
@@ -258,7 +203,7 @@ class GroupCollection extends PropertyCollection {
 
         pg = new PageGroup(this._owner, alias);
         pg.add(pages);
-        pg.argfix = defaultFix;
+        pg.argfix = deffix;
         // pg.fixs = ['aa', 'Aa'];
         // pg.prefix = 'aa';
         // pg.suffix = 'BB';
@@ -282,10 +227,7 @@ class GroupCollection extends PropertyCollection {
                 context: this._owner.page.subPath
             });
         }
-        
-        super.add(pg._alias, pg);
-        // pg.setFix('');
-
+        super.add(pg.alias, pg);
     }
 }
 

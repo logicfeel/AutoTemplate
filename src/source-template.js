@@ -29,7 +29,7 @@ class TemplateSource {
     get area() { return this.#area; }
     get alias() { return this.#alias; }
     get fullPath() { return this.#fullPath; }
-    get areaDir() { return this._template.DIR[this.#area.toUpperCase()]; }
+    get areaDir() { return this._template.DIR[this.#area]; }
     get subDir() { return path.dirname(this.subPath); }
     get subPath() { return path.relative(this.dir + path.sep + this.areaDir, this.fullPath); }
     get localDir() { return this.areaDir + path.sep + this.subDir; }
@@ -76,7 +76,6 @@ class TemplateCollection extends PropertyCollection {
     
     /*_______________________________________*/
     // public method
-
     /**
      * 컬렉션에 객체를 생성하여 추가
      * @param {*} alias 별칭
@@ -87,7 +86,8 @@ class TemplateCollection extends PropertyCollection {
      */
     add(alias, obj, fullPath = null, dir = this._owner.dir) {
         
-        const localDir = this._owner.AREA[this.area];
+        // const localDir = this._owner.AREA[this.area];
+        const localDir = this._owner.DIR[this.area];
         let tarSrc;
 
         // 유효성 검사
@@ -97,11 +97,11 @@ class TemplateCollection extends PropertyCollection {
         if (typeof obj === 'undefined' || obj === null) {
             throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');
         }
-        if (this.area === 'data' && !(typeof obj === 'function' || typeof obj === 'object')) {
-            throw new Error('area[data] 가능한 타입 : object(null 제외), function');
+        if (this.area === 'DATA' && !(typeof obj === 'function' || typeof obj === 'object')) {
+            throw new Error('area[DATA] 가능한 타입 : object(null 제외), function');
         }
-        if (this.area === 'helper' && !(typeof obj === 'function')) {
-            throw new Error('area[helper] 가능한 타입 : function');
+        if (this.area === 'HELPER' && !(typeof obj === 'function')) {
+            throw new Error('area[HELPER] 가능한 타입 : function');
         }
 
         // TODO: this.add('별칭', out.part['sss'] 삽입시)
@@ -141,8 +141,8 @@ class TemplateCollection extends PropertyCollection {
         const _this = this;
         const sep = path.sep;
         const dirs = this._onwer.dirs;
-        const delmiter = this._owner.DELIMITER[this.area.toUpperCase()];
-        const areaDir = this._owner.DIR[this.area.toUpperCase()];
+        const delmiter = this._owner.DELIMITER[this.area];
+        const areaDir = this._owner.DIR[this.area];
         let arrPath = [];
         let localPattern, alias, content, subPath;
 
@@ -160,7 +160,6 @@ class TemplateCollection extends PropertyCollection {
 
     /*_______________________________________*/
     // protected method
-
     /**
      * subPath를 입력받이서 별칭로 만들기
      * @param {*} subPath 
@@ -168,7 +167,7 @@ class TemplateCollection extends PropertyCollection {
      */
     _makeAlias(subPath) {
         
-        const delmiter = this._owner.DELIMITER[this.area.toUpperCase()];
+        const delmiter = this._owner.DELIMITER[this.area];
         let fileName, dir;
         
         fileName = path.parse(subPath).name;
