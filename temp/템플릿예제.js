@@ -117,5 +117,20 @@
  *      + staruml 확장
  *  - DB 비즈니스 모듈들 (조립가능)
  * 
+ *  - 컬렉션으로 추가된다.
+ * 
+ *      // 호환되어 삽입되어야함
+ *      this.part = ns.part;
+ *      this.part = ns.src;
+ *      this.part = ns.page;
+ *      this.src = ns[part | src | page];
+ *      this.page = ns[part | src | page];
+ * 
+ *      // 지정 컬렉션만 등록가능
+ *      this.helper = ns.helper;
+ *      this.data = ns.data;
+ * 
+ *      this.group = ns.group;
+ * 
  * 
  */

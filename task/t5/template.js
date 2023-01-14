@@ -13,7 +13,7 @@ class Template extends AutoTemplate {
         ], ['A', 'B']);
 
         // 전체 page 출판
-        // this.attachGroup('all', '_', '__');
+        this.attachGroup('all', '_', '__');
         // this.attachGroup('spring', '_', '__', ['AA', 'BB']);
 
         console.log(1)

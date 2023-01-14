@@ -54,7 +54,7 @@ class AutoTemplate {
         cover: [],
         publish: [],
     }
-    _group = [];
+    _instanceGroup = [];
     
     /*_______________________________________*/
     // private
@@ -67,7 +67,7 @@ class AutoTemplate {
     #part               = null;
     #src                = null;
     #page               = null;
-    #group              = null;     // REVIEW: group _group 이름 중복 이슈
+    #group              = null;
     #localScope         = null;
     #outerScope         = null;
     
@@ -92,32 +92,38 @@ class AutoTemplate {
     get namespace() { return this.#namespace }
     get helper() { return this.#helper }
     set helper(val) {
-        if (val instanceof TemplateCollection) this.#helper.addCollectoin(val);
-        else throw new Error('TemplateCollection 타입만 설정할 수 있습니다.');
-    }
-    get part() { return this.#part }
-    set part(val) {
-        if (val instanceof CompileCollection) this.#part.addCollectoin(val);    // TODO:
-        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+        if (val instanceof TemplateCollection && val.area === this.AREA.HELPER) {
+            this.#helper.addCollectoin(val);
+        } else {
+            throw new Error('[helper] TemplateCollection 타입만 설정할 수 있습니다.');
+        } 
     }
     get data() { return this.#data }
     set data(val) {
-        if (val instanceof TemplateCollection) this.#data.addCollectoin(val);   // TODO:
-        else throw new Error('TemplateCollection 타입만 설정할 수 있습니다.');
+        if (val instanceof TemplateCollection && val.area === this.AREA.DATA) {
+            this.#data.addCollectoin(val);
+        } else {
+            throw new Error('[data] TemplateCollection 타입만 설정할 수 있습니다.');
+        } 
     }
     get src() { return this.#src }
-    set src(val) {
-        if (val instanceof CompileCollection) this.#src.addCollectoin(val); // TODO:
+    get part() { return this.#part }
+    set part(val) {
+        if (val instanceof CompileCollection) this.#part.addCollectoin(val);
+        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+    }
+    set src(val) {  // REVIEW:
+        if (val instanceof CompileCollection) this.#src.addCollectoin(val);
         else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
     get page() { return this.#page }
-    set page(val) {
-        if (val instanceof CompileCollection) this.#page.addCollectoin(val); // TODO:
+    set page(val) { // REVIEW:
+        if (val instanceof CompileCollection) this.#page.addCollectoin(val);
         else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
     get group() { return this.#group }
-    set group(val) {
-        if (val instanceof GroupCollection) this.#group.addCollectoin(val); // TODO:
+    set group(val) {    // REVIEW:
+        if (val instanceof GroupCollection) this.#group.addCollectoin(val);
         else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
     get localScope() { 
@@ -236,8 +242,8 @@ class AutoTemplate {
      */
     build() {
         
-        let group = null;
-        let prefix, suffix, args;
+        let instance = null;
+        // let prefix, suffix, args;
 
         // 초기화
         // this.init();
@@ -255,17 +261,18 @@ class AutoTemplate {
         }
 
         // 그룹 빌드 
-        for (let i = 0; i < this._group.length; i++) {
-            group = this._group[i];
-            prefix = group.prefix;
-            suffix = group.suffix;
-            args = group.args;
+        for (let i = 0; i < this._instanceGroup.length; i++) {
+            instance = this._instanceGroup[i];
+            // prefix = instance.prefix;
+            // suffix = instance.suffix;
+            // args = instance.args;
             // group.pageGroup.build(prefix, suffix, args);
-            group.pageGroup.build({
-                prefix: group.prefix,
-                suffix: group.suffix,
-                args: group.args
-            });
+            // instance.pageGroup.build({
+            //     prefix: prefix,
+            //     suffix: suffix,
+            //     args: args
+            // });
+            instance.pageGroup.build(instance.data);
         }
 
         // for (let i = 0; i < this.src._group.length; i++) {
@@ -323,13 +330,17 @@ class AutoTemplate {
         
         group = this.group[alias] || null;
 
-        // TODO: group 유효성 검사
+        if (typeof group === null) {
+            throw new Error('[필수] group 명이 존재하지 않습니다.');
+        }
 
-        this._group.push({
+        this._instanceGroup.push({
             pageGroup: group,
-            prefix: prefix,
-            suffix: suffix,
-            args: args
+            data: {
+                prefix: prefix,
+                suffix: suffix,
+                args: args
+            }
         });
     }
 

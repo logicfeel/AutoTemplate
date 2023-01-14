@@ -180,15 +180,15 @@ class TemplateCollection extends PropertyCollection {
     /**
      * setter 에서 TemplateSource 타입만 받음
      * setter 타입에 따라서 등록위치가 달라짐
-     * @param {*} idx 
+     * @param {*} idx  
      * @returns
      * @override 
      */
     _getPropDescriptor(idx) {
         return {
             get: function() { return this._element[idx]; },
-            set: function(val) {
-                if (val instanceof TemplateSource) {
+            set: function(val) {    // REVIEW: 컬렉션이 임의 삽입 확인필요
+                if (val instanceof TemplateSource && val.area === this.area) {
                     this._element[idx].content = val.content;
                 } else {
                     throw new Error('TemplateSource 타입만 설정할 수 있습니다.');
