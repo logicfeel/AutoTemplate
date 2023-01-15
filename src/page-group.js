@@ -147,7 +147,7 @@ class PageGroup {
 /**
  *  구룹컬렉션 클래스
  */
-class GroupCollection extends PropertyCollection {
+class PageGroupCollection extends PropertyCollection {
     
 
 
@@ -231,5 +231,5 @@ class GroupCollection extends PropertyCollection {
     }
 }
 
-exports.GroupCollection = GroupCollection;
+exports.PageGroupCollection = PageGroupCollection;
 exports.PageGroup = PageGroup;

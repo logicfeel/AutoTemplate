@@ -3,7 +3,7 @@ const path                              = require('path');
 const { PropertyCollection, Observer }  = require('entitybind');
 const { TemplateCollection }            = require('./source-template');
 const { CompileCollection }             = require('./source-compile');
-const { GroupCollection }               = require('./page-group');
+const { PageGroupCollection }           = require('./page-group');
 
 /**
  * 오토템플릿 클래스
@@ -54,7 +54,7 @@ class AutoTemplate {
         cover: [],
         publish: [],
     }
-    _instanceGroup = [];
+    _groupInstance = [];
     
     /*_______________________________________*/
     // private
@@ -123,7 +123,7 @@ class AutoTemplate {
     }
     get group() { return this.#group }
     set group(val) {    // REVIEW:
-        if (val instanceof GroupCollection) this.#group.addCollectoin(val);
+        if (val instanceof PageGroupCollection) this.#group.addCollectoin(val);
         else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
     get localScope() { 
@@ -156,7 +156,7 @@ class AutoTemplate {
         this.#part      = new CompileCollection(this, this.AREA.PART);
         this.#src       = new CompileCollection(this, this.AREA.SRC);
         this.#page      = new CompileCollection(this, this.AREA.PAGE);
-        this.#group     = new GroupCollection(this);
+        this.#group     = new PageGroupCollection(this);
     }
 
     /*_______________________________________*/        
@@ -261,8 +261,8 @@ class AutoTemplate {
         }
 
         // 그룹 빌드 
-        for (let i = 0; i < this._instanceGroup.length; i++) {
-            instance = this._instanceGroup[i];
+        for (let i = 0; i < this._groupInstance.length; i++) {
+            instance = this._groupInstance[i];
             // prefix = instance.prefix;
             // suffix = instance.suffix;
             // args = instance.args;
@@ -334,7 +334,7 @@ class AutoTemplate {
             throw new Error('[필수] group 명이 존재하지 않습니다.');
         }
 
-        this._instanceGroup.push({
+        this._groupInstance.push({
             pageGroup: group,
             data: {
                 prefix: prefix,
