@@ -30,7 +30,7 @@ class TemplateSource {
     get alias() { return this.#alias; }
     get fullPath() { return this.#fullPath; }
     get areaDir() { return this._template.DIR[this.#area]; }
-    get subDir() { return path.dirname(this.subPath); }
+    get subDir() { return path.dirname(this.subPath) === '.' ? '' : path.dirname(this.subPath); }
     get subPath() { return path.relative(this.dir + path.sep + this.areaDir, this.fullPath); }
     get localDir() { return this.areaDir + path.sep + this.subDir; }
     get localPath() { return this.areaDir + path.sep + this.subPath; }
