@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [
 
+
         {
             "type": "node",
             "request": "launch",
@@ -79,6 +80,12 @@
             "request": "launch",
             "name": "t6 ns/page",
             "program": "${workspaceFolder}/task/t6/test_page.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "teaster/default",
+            "program": "${workspaceFolder}/tester/default.test.js"
         },
     ]
 }
