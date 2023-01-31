@@ -84,8 +84,8 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "teaster/default",
-            "program": "${workspaceFolder}/tester/default.test.js"
+            "name": "teaster/base",
+            "program": "${workspaceFolder}/tester/base.test.js"
         },
     ]
 }
