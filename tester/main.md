@@ -20,13 +20,12 @@ ___
     + 템플릿 다른 파일 불러오기
     + 속성 검사
 ___
-- 컬렉션 : **collection.test.js**
-
-___
 - 페이지 : **pageGroup.js**
     + 페이지
     + 그룹
     + 사용위치 : 생성자, 코드
+___
+- 컬렉션 : **collection.test.js**
 ___
 - 가져오기 : **import.test.js**
     + 조각, 헬퍼, 데이터

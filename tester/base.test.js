@@ -28,17 +28,19 @@
         path                    = require('path');
     } else {
         // Item                 = global._W.Meta.Entity.Item;
+        throw new Error('nodeJs 전용입니다. ');
     }
 
     //==============================================================
     // 3. 테스트 본문
     function run() {
 
+        dirname = __dirname + '/base/mod1';
+        fullPath = dirname + '/src/one.html'
+
         console.log('---------------------------------------------------------------------------');
         console.log('템플릿 part.data.helper ');
         
-        dirname = __dirname + '/base/mod1';
-        fullPath = dirname + '/src/one.html'
         autoTask = AutoTask.create(dirname);
 
         (function() {   // IIFE
@@ -74,10 +76,10 @@
                 // 초기화
                 autoTask.do_clear();
 
-                console.log('Result = Success');
+                console.log('Result = Success ');
             } catch(e) {
                 errorCnt++;
-                console.warn(`Result = Fail [ ${e} ] `);
+                console.warn('Result = Fail [ %s ] ', e);
             } finally {
                 taskCnt++;
             }
@@ -87,8 +89,6 @@
         console.log('---------------------------------------------------------------------------');
         console.log('template.js >> newTemplate.js 이름 변경 ');
         
-        dirname = __dirname + '/base/mod1';
-        fullPath = dirname + '/src/one.html'
         autoTask = AutoTask.create(dirname, 'newTemplate.js');
 
         (function() {   // IIFE
@@ -115,8 +115,6 @@
         console.log('---------------------------------------------------------------------------');
         console.log('CompoileSource(TemplateSource) class 속성 검사 ');
         
-        dirname = __dirname + '/base/mod1';
-        fullPath = dirname + '/src/one.html'
         autoTask = AutoTask.create(dirname);
 
         (function() {   // IIFE
@@ -203,7 +201,7 @@
     if (typeof module === 'object' && typeof module.exports === 'object') {     
         module.exports = run();
     } else {
-        // global._W.Test.base = {run: run};
+        global._W.Test.base = {run: run};
     }
 
 }(typeof module === 'object' && typeof module.exports === 'object' ? global : window));

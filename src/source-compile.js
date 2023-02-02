@@ -166,6 +166,7 @@ class CompileCollection extends PropertyCollection {
      * 컬렉션에 객체를 생성하여 추가
      * @param {*} alias 별칭
      * @param {function | object | CompileSource | string} obj  대상
+     * dss
      * @param {*} fullPath glob를 통해서 입력한 경우만 
      * @overloading 상위 add(..) 호출함
      */
@@ -205,14 +206,22 @@ class CompileCollection extends PropertyCollection {
         // 생성
         if (obj instanceof CompileSource) {
             fullPath = obj.fullPath ?? dir + sep + areaDir + sep + obj.subPath;
-            tarSrc = new TemplateSource(this._owner, dir, this.area, alias, fullPath);
+            tarSrc = new CompileSource(this._owner, dir, this.area, alias, fullPath);
             tarSrc.content = obj.content;
-            tarSrc = obj;
         } else {
             fullPath = fullPath ?? dir + sep + areaDir + sep + alias.replaceAll(delimiter, sep);
             tarSrc = new CompileSource(this._owner, dir, this.area, alias, fullPath);
             tarSrc.content = obj;
         }
+
+        /**
+         * 우선순위 : CompileSource > CompileSource > native(fun, str, bool, num..)
+         * REVIEW:
+         */
+        // if (ob instanceof CompileSource) {
+        // } else if (obj instanceof TemplateSource) {
+        // } else {
+        // }
 
         // 추가
         super.add(alias, tarSrc);
