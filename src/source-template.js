@@ -21,20 +21,31 @@ class TemplateSource {
     #dir = '';
     #area = '';
     #alias = '';
-    #fullPath = '';
+    #subPath = '';
+    // #fullPath = '';
+    #filePath = null;
 
     /*_______________________________________*/        
     // property
     get dir() { return this.#dir; }
     get area() { return this.#area; }
     get alias() { return this.#alias; }
-    get fullPath() { return this.#fullPath; }
+    // POINT:
+    // get fullPath() { return this.#fullPath; }
+    // get areaDir() { return this._template.DIR[this.#area]; }
+    // get subDir() { return path.dirname(this.subPath) === '.' ? '' : path.dirname(this.subPath); }
+    // get subPath() { return path.relative(this.dir + path.sep + this.areaDir, this.fullPath); }
+    // get localDir() { return this.areaDir + path.sep + this.subDir; }
+    // get localPath() { return this.areaDir + path.sep + this.subPath; }
+    // get name() { return path.basename(this.fullPath); }
+    get fullPath() { return this.#dir + path.sep + this.localPath; }
     get areaDir() { return this._template.DIR[this.#area]; }
-    get subDir() { return path.dirname(this.subPath) === '.' ? '' : path.dirname(this.subPath); }
-    get subPath() { return path.relative(this.dir + path.sep + this.areaDir, this.fullPath); }
-    get localDir() { return this.areaDir + path.sep + this.subDir; }
+    get subDir() { return path.dirname(this.#subPath) === '.' ? '' : path.dirname(this.#subPath); }
+    get subPath() { return this.#subPath; }
+    get localDir() { return this.subDir === '' ? this.areaDir : this.areaDir + path.sep + this.subDir; }
     get localPath() { return this.areaDir + path.sep + this.subPath; }
-    get name() { return path.basename(this.fullPath); }
+    get name() { return path.basename(this.#subPath); }
+    get filePath() { return this.#filePath; }
 
     /**
      * 템플릿소스 생성자
@@ -43,15 +54,22 @@ class TemplateSource {
      * @param {*} alias 별칭
      * @param {*?} fullPath 전체경로(최상위부터)
      */
-    constructor(template, dir, area, alias, fullPath = null) {
+    constructor(template, dir, area, alias, filePath = null) {
+        
+        let delimiter;
+        
         this._template = template;
         this.#dir = dir;
         this.#area = area;
         this.#alias = alias;
         this.isPublic = this._template.defaultPublic;
-        if (fullPath !== null) {
-            this.#fullPath = fullPath;
-        }
+        // POINT: 하단 추가
+        // if (fullPath !== null) {
+        //     this.#fullPath = fullPath;
+        // }
+        delimiter = template.DELIMITER[area];
+        this.#subPath = alias.replaceAll(delimiter, path.sep);
+        this.#filePath = filePath;
     }
 }
 
@@ -84,35 +102,84 @@ class TemplateCollection extends PropertyCollection {
      * @param {string?} dir 
      * @overloading 상위 add(..) 호출함
      */
-    add(alias, obj, fullPath = null, dir = this._owner.dir) {
+    // POINT:
+    // add(alias, obj, fullPath = null, dir = this._owner.dir) {
+        
+    //     // const localDir = this._owner.AREA[this.area];
+    //     const localDir = this._owner.DIR[this.area];
+    //     let tarSrc;
+
+    //     // 유효성 검사
+    //     if (typeof alias !== 'string' || alias.length === 0) {
+    //         throw new Error('alias에 string 만 지정할 수 있습니다.');
+    //     }
+    //     if (typeof obj === 'undefined' || obj === null) {
+    //         throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');
+    //     }
+    //     if (this.area === 'DATA' && !(typeof obj === 'function' || typeof obj === 'object')) {
+    //         throw new Error('area[DATA] 가능한 타입 : object(null 제외), function');
+    //     }
+    //     if (this.area === 'HELPER' && !(typeof obj === 'function')) {
+    //         throw new Error('area[HELPER] 가능한 타입 : function');
+    //     }
+
+    //     // POINT:
+    //     // TODO: this.add('별칭', out.part['sss'] 삽입시)
+    //     if (obj instanceof TemplateSource) {
+    //         fullPath = obj.fullPath ?? dir + path.sep + localDir + path.sep + obj.subPath;
+    //         tarSrc = new TemplateSource(this._owner, dir, this.area, alias, fullPath);
+    //         tarSrc.content = obj.content;
+    //     } else {
+    //         tarSrc = new TemplateSource(this._owner, dir, this.area, alias, fullPath);
+    //         tarSrc.content = obj;
+    //     }
+
+    //     super.add(alias, tarSrc);
+    // }
+
+    /**
+     * 컬렉션에 객체를 생성하여 추가
+     * @param {*} alias 별칭
+     * @param {function | object | TemplateSource} obj  대상
+     * @param {*?} filePath glob를 통해서 입력한 경우만 
+     * @param {string?} dir 
+     * @overloading 상위 add(..) 호출함
+     */
+    add(alias, obj, filePath = null, dir = this._owner.dir) {
         
         // const localDir = this._owner.AREA[this.area];
-        const localDir = this._owner.DIR[this.area];
-        let tarSrc;
+        // const localDir = this._owner.DIR[this.area];
+        let tarSrc, content;
+
+        // 초기값 설정
+        content = obj instanceof TemplateSource ? obj.content : obj;
 
         // 유효성 검사
         if (typeof alias !== 'string' || alias.length === 0) {
             throw new Error('alias에 string 만 지정할 수 있습니다.');
         }
-        if (typeof obj === 'undefined' || obj === null) {
+        if (typeof content === 'undefined' || content === null) {
             throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');
         }
-        if (this.area === 'DATA' && !(typeof obj === 'function' || typeof obj === 'object')) {
+        if (this.area === 'DATA' && !(typeof content === 'function' || typeof content === 'object')) {
             throw new Error('area[DATA] 가능한 타입 : object(null 제외), function');
         }
-        if (this.area === 'HELPER' && !(typeof obj === 'function')) {
+        if (this.area === 'HELPER' && !(typeof content === 'function')) {
             throw new Error('area[HELPER] 가능한 타입 : function');
         }
 
         // TODO: this.add('별칭', out.part['sss'] 삽입시)
-        if (obj instanceof TemplateSource) {
-            fullPath = obj.fullPath ?? dir + path.sep + localDir + path.sep + obj.subPath;
-            tarSrc = new TemplateSource(this._owner, dir, this.area, alias, fullPath);
-            tarSrc.content = obj.content;
-        } else {
-            tarSrc = new TemplateSource(this._owner, dir, this.area, alias, fullPath);
-            tarSrc.content = obj;
-        }
+        // if (obj instanceof TemplateSource) {
+        //     fullPath = obj.fullPath ?? dir + path.sep + localDir + path.sep + obj.subPath;
+        //     tarSrc = new TemplateSource(this._owner, dir, this.area, alias, filePath);
+        //     tarSrc.content = obj.content;
+        // } else {
+        //     tarSrc = new TemplateSource(this._owner, dir, this.area, alias, filePath);
+        //     tarSrc.content = obj;
+        // }
+
+        tarSrc = new TemplateSource(this._owner, dir, this.area, alias, filePath);
+        tarSrc.content = content;
 
         super.add(alias, tarSrc);
     }

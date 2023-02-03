@@ -1,11 +1,12 @@
 {
 	"cover": [],
 	"publish": [
-		"/Users/logic/PJ-Git/AutoTemplate#v01/tester/pageGroup/mod1/src/one.html",
-		"/Users/logic/PJ-Git/AutoTemplate#v01/tester/pageGroup/mod1/src//Pp1S.asp",
-		"/Users/logic/PJ-Git/AutoTemplate#v01/tester/pageGroup/mod1/src//Pp2S.asp",
-		"/Users/logic/PJ-Git/AutoTemplate#v01/tester/pageGroup/mod1/src//Pp3S.asp",
-		"/Users/logic/PJ-Git/AutoTemplate#v01/tester/pageGroup/mod1/src/A1groupA2/Pp1S.asp",
-		"/Users/logic/PJ-Git/AutoTemplate#v01/tester/pageGroup/mod1/src/A1groupA2/Pp2S.asp"
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/pageGroup/mod1/src/one.html",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/pageGroup/mod1/src/newP3.asp",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/pageGroup/mod1/src//Pp1S.asp",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/pageGroup/mod1/src//Pp2S.asp",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/pageGroup/mod1/src//Pp3S.asp",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/pageGroup/mod1/src/A1groupA2/Pp1S.asp",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/pageGroup/mod1/src/A1groupA2/Pp2S.asp"
 	]
 }

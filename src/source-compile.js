@@ -20,18 +20,25 @@ class CompileSource extends TemplateSource {
     #part       = [];
     #helper     = [];
     #data       = [];
-    #savePath   = '';
+    #savePath   = null;
     #event      = new Observer(this, this);
 
     /*_______________________________________*/        
     // property
     get saveName() { return path.basename(this.savePath); }
     get saveDir() { return path.dirname(this.savePath); }
+    // get savePath() {
+    //     const dir = this._template.dir;    // 상속한 경우 최종 
+    //     const fullPath = dir + path.sep + this.localPath;
+    //     return this.#savePath === '' ? fullPath.replace('.hbs','') : this.#savePath;
+    // }
+    // POINT:
     get savePath() {
         const dir = this._template.dir;    // 상속한 경우 최종 
         const fullPath = dir + path.sep + this.localPath;
-        return this.#savePath === '' ? fullPath.replace('.hbs','') : this.#savePath;
+        return this.#savePath === null ? fullPath : this.#savePath;
     }
+
     set savePath(val) { this.#savePath = val; }
     
     /*_______________________________________*/        
@@ -42,8 +49,8 @@ class CompileSource extends TemplateSource {
 
     /*_______________________________________*/
     // constructor method
-    constructor(template, dir, area, alias, fullPath = null) {
-        super(template, dir, area, alias, fullPath);
+    constructor(template, dir, area, alias, filePath = null) {
+        super(template, dir, area, alias, filePath);
         this.wax = handlebarsWax(handlebars.create());
     }
     /*_______________________________________*/
@@ -167,30 +174,30 @@ class CompileCollection extends PropertyCollection {
      * @param {*} alias 별칭
      * @param {function | object | CompileSource | string} obj  대상
      * dss
-     * @param {*} fullPath glob를 통해서 입력한 경우만 
+     * @param {*} filePath glob를 통해서 입력한 경우만 
      * @overloading 상위 add(..) 호출함
      */
-    add(alias, obj, fullPath = null, dir = this._owner.dir) {
+    add(alias, obj, filePath = null, dir = this._owner.dir) {
         
         // const delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
         const delimiter = this._owner.DELIMITER.PART;
         const sep = path.sep;
         // const areaDir = this._owner.DIR[this.area.toUpperCase()];
         const areaDir = this._owner.DIR[this.area];
-        let tarSrc;
-        
+        let tarSrc, content;
+
+        // 초기값 설정
+        content = obj instanceof TemplateSource ? obj.content : obj;
+
         // 유효성 검사
         if (typeof alias !== 'string' || alias.length === 0) {
             throw new Error('alias에 string 만 지정할 수 있습니다.');
         }
-        if (typeof obj === 'undefined' || obj === null) {
+        if (typeof content === 'undefined' || content === null) {
             throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');
         }
-        if (this.area === 'PART' && !(typeof obj === 'function' || typeof obj === 'string')) {
-            throw new Error('area[part] 가능한 타입 : string, function');
-        }
-        if (this.area === 'SRC' && !(typeof obj === 'function' || typeof obj === 'string')) {
-            throw new Error('area[src] 가능한 타입 : string, function');
+        if (!(typeof content === 'function' || typeof content === 'string')) {
+            throw new Error('가능한 타입 : string, function');
         }
 
         // 별칭 규칙 검사
@@ -204,15 +211,14 @@ class CompileCollection extends PropertyCollection {
         }
         
         // 생성
-        if (obj instanceof CompileSource) {
-            fullPath = obj.fullPath ?? dir + sep + areaDir + sep + obj.subPath;
-            tarSrc = new CompileSource(this._owner, dir, this.area, alias, fullPath);
-            tarSrc.content = obj.content;
-        } else {
-            fullPath = fullPath ?? dir + sep + areaDir + sep + alias.replaceAll(delimiter, sep);
-            tarSrc = new CompileSource(this._owner, dir, this.area, alias, fullPath);
-            tarSrc.content = obj;
-        }
+        // if (obj instanceof CompileSource) {
+        //     fullPath = obj.fullPath ?? dir + sep + areaDir + sep + obj.subPath;
+        // } else {
+        //     fullPath = fullPath ?? dir + sep + areaDir + sep + alias.replaceAll(delimiter, sep);
+        // }
+
+        tarSrc = new CompileSource(this._owner, dir, this.area, alias, filePath);
+        tarSrc.content = content;
 
         /**
          * 우선순위 : CompileSource > CompileSource > native(fun, str, bool, num..)
@@ -251,7 +257,7 @@ class CompileCollection extends PropertyCollection {
         const _this = this;
         const sep = path.sep;
         // const delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
-        const delimiter = this._owner.DELIMITER.PART;
+        // const delimiter = this._owner.DELIMITER.PART;
         // const areaDir = this._owner.DIR[this.area.toUpperCase()];
         const areaDir = this._owner.DIR[this.area];
         let dirs = [];

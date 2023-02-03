@@ -3,6 +3,9 @@
 	"publish": [
 		"/Users/logic/PJ-Git/AutoTemplate#v01/task/t6/src/page-one.html",
 		"/Users/logic/PJ-Git/AutoTemplate#v01/task/t6/src/aaa/in_aspPage_in.asp",
-		"/Users/logic/PJ-Git/AutoTemplate#v01/task/t6/src/aaa/in_aspPage2_in.asp"
+		"/Users/logic/PJ-Git/AutoTemplate#v01/task/t6/src/aaa/in_aspPage2_in.asp",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/task/t6/src/aaa/in_aspPage_in.asp",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/task/t6/src/aaa/in_aspPage2_in.asp",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/task/t6/src/page-one.html"
 	]
 }

@@ -35,55 +35,111 @@
     function run() {
 
         dirname = __dirname + '/pageGroup/mod1';
-        fullPath = dirname + '/src/one.html'
-
+        
         console.log('---------------------------------------------------------------------------');
-        console.log('페이지 ready 에서 등록 (p1, p2, p3) ');
+        console.log('ready() 등록한 page 검사 (p1.asp, p2.asp, p3.asp) one.html | group 과 all 검사 ');
         
         autoTask = AutoTask.create(dirname);
-
+        
         (function() {   // IIFE
-
+            
             try {
+                
+
+                function chk_one_html(data) {
+                    if (
+                        data.indexOf('@part/inc/footer@') < 0 ||
+                        data.indexOf('@entity.Table=1@') < 0 ||
+                        data.indexOf('@part/inc/header@') < 0 ||
+                        data.indexOf('@entity.Tables.[0]:10@') < 0 ||
+                        data.indexOf('@part/inc/content@') < 0 ||
+                        data.indexOf('@<div class="mybold">BOLD</div>@') < 0 ||
+                        false) {
+                        throw new Error('템플릿 실패 '+ fullPath);
+                    }
+                }
+                function chk_p1_asp(data) {
+                    if (
+                        data.indexOf('@page/p1.asp@') < 0 ||
+                        false) {
+                        throw new Error('템플릿 실패 '+ fullPath);
+                    }
+                }
+                function chk_p2_asp(data) {
+                    if (
+                        data.indexOf('@page/p2.asp@') < 0 ||
+                        data.indexOf('@part/inc/footer@') < 0 ||
+                        data.indexOf('@entity.Table=1@') < 0 ||
+                        data.indexOf('@<div class="mybold">BOLD</div>@') < 0 ||
+                        false) {
+                        throw new Error('템플릿 실패 '+ fullPath);
+                    }
+                }
+                function chk_p3_asp(data) {
+                    if (
+                        data.indexOf('@page/p3.asp@') < 0 ||
+                        data.indexOf('@page/p1.asp@') < 0 ||
+                        false) {
+                        throw new Error('템플릿 실패 '+ fullPath);
+                    }
+                }
 
                 // 파일 여부 검사
                 // if (fs.existsSync(fullPath)) {
-                //     throw new Error('/src/one.html 파일이 존재합니다.');
-                // }
-
+                    //     throw new Error('/src/one.html 파일이 존재합니다.');
+                    // }
+                    
                 autoTask.do_publish();
-
+                    
                 // 파일 유무 검사
+                fullPath = dirname + '/src/one.html'
                 if (!fs.existsSync(fullPath)) {
-                    throw new Error('/src/one.html 파일이 존재하지 않습니다. (빌드후) ');
+                    throw new Error('파일이 존재하지 않습니다. (빌드후) ' + fullPath);
                 }
-                if (!fs.existsSync(fullPath)) {
-                    throw new Error('/src/one.html 파일이 존재하지 않습니다. (빌드후) ');
-                }
-                if (!fs.existsSync(fullPath)) {
-                    throw new Error('/src/one.html 파일이 존재하지 않습니다. (빌드후) ');
-                }
-                if (!fs.existsSync(fullPath)) {
-                    throw new Error('/src/one.html 파일이 존재하지 않습니다. (빌드후) ');
-                }
-                if (!fs.existsSync(fullPath)) {
-                    throw new Error('/src/one.html 파일이 존재하지 않습니다. (빌드후) ');
-                }
-                
+                chk_one_html(fs.readFileSync(fullPath,'utf-8'));
 
-                data = fs.readFileSync(fullPath,'utf-8');
+                fullPath = dirname + '/src/A1groupA2/Pp1S.asp'
+                if (!fs.existsSync(fullPath)) {
+                    throw new Error('파일이 존재하지 않습니다. (빌드후) '+ fullPath);
+                }
+                chk_p1_asp(fs.readFileSync(fullPath,'utf-8'));
+
+                fullPath = dirname + '/src/A1groupA2/Pp2S.asp'
+                if (!fs.existsSync(fullPath)) {
+                    throw new Error('파일이 존재하지 않습니다. (빌드후) '+ fullPath);
+                }
+                chk_p2_asp(fs.readFileSync(fullPath,'utf-8'));
+                
+                fullPath = dirname + '/src/newP3.asp'
+                if (!fs.existsSync(fullPath)) {
+                    throw new Error('파일이 존재하지 않습니다. (빌드후) '+ fullPath);
+                }
+                chk_p3_asp(fs.readFileSync(fullPath,'utf-8'));
+
+                fullPath = dirname + '/src/Pp1S.asp'
+                if (!fs.existsSync(fullPath)) {
+                    throw new Error('파일이 존재하지 않습니다. (빌드후) '+ fullPath);
+                }
+                chk_p1_asp(fs.readFileSync(fullPath,'utf-8'));
+
+                fullPath = dirname + '/src/Pp2S.asp'
+                if (!fs.existsSync(fullPath)) {
+                    throw new Error('파일이 존재하지 않습니다. (빌드후) '+ fullPath);
+                }
+                chk_p2_asp(fs.readFileSync(fullPath,'utf-8'));
+
+                fullPath = dirname + '/src/Pp3S.asp'
+                if (!fs.existsSync(fullPath)) {
+                    throw new Error('파일이 존재하지 않습니다. (빌드후) '+ fullPath);
+                }
+                chk_p3_asp(fs.readFileSync(fullPath,'utf-8'));
+
+                // 생성파일 갯수 확인
+                if (autoTask.entry._buildFile.publish.length !== 7){
+                    throw new Error('생성파일 갯수가 다릅니다.  7!= '+ fullPath);
+                }
 
                 // part.data.helper 검사
-                if (
-                    data.indexOf('@part/inc/footer@') < 0 ||
-                    data.indexOf('@entity.Table=1@') < 0 ||
-                    data.indexOf('@part/inc/header@') < 0 ||
-                    data.indexOf('@entity.Tables.[0]:10@') < 0 ||
-                    data.indexOf('@part/inc/content@') < 0 ||
-                    data.indexOf('@<div class="mybold">BOLD</div>@') < 0 ||
-                    false) {
-                    throw new Error('템플릿 실패');
-                }
 
                 // 초기화
                 // autoTask.do_clear();

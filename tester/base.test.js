@@ -56,7 +56,7 @@
 
                 // 파일 유무 검사
                 if (!fs.existsSync(fullPath)) {
-                    throw new Error('/src/one.html 파일이 존재하지 않습니다. (빌드후) ');
+                    throw new Error('%s 파일이 존재하지 않습니다. (빌드후) ', fullPath);
                 }
 
                 data = fs.readFileSync(fullPath,'utf-8');
@@ -137,39 +137,45 @@
                 
 
                 compileSource = entry.part['inc/content'];
-                // CompoileSource 속성 검사
+                // TempleSource 속성 검사
                 if (!(
                     compileSource.dir.indexOf('tester/base/mod1') > -1 &&
                     compileSource.area === 'PART' &&
                     compileSource.alias === 'inc/content' &&
-                    compileSource.fullPath.indexOf('tester/base/mod1/template/part/inc/content.hbs') > -1 &&
+                    compileSource.fullPath.indexOf('tester/base/mod1/template/part/inc/content') > -1 &&
+                    compileSource.filePath.indexOf('tester/base/mod1/template/part/inc/content.hbs') > -1 &&
+                    compileSource.localDir === 'template/part/inc' &&
+                    compileSource.localPath === 'template/part/inc/content' &&
                     compileSource.areaDir === 'template/part' &&
                     compileSource.subDir === 'inc' &&
-                    compileSource.subPath === 'inc/content.hbs' &&
-                    compileSource.name === 'content.hbs' &&
-                    compileSource.saveName.indexOf('content') > -1 &&
+                    compileSource.subPath === 'inc/content' &&
+                    compileSource.name === 'content' &&
+                    compileSource.saveName === 'content' &&
                     compileSource.saveDir.indexOf('tester/base/mod1/template/part/inc') > -1 &&
                     compileSource.savePath.indexOf('tester/base/mod1/template/part/inc/content') > -1 &&
                     true)) {
-                    throw new Error('CompileSource 속성 검사 실패');
+                    throw new Error('CompileSource 속성 검사 실패 : inc/content ');
                 }
 
                 compileSource = entry.src['one.html'];
-                // CompoileSource 속성 검사
+                // CompileSource 속성 검사
                 if (!(
                     compileSource.dir.indexOf('tester/base/mod1') > -1 &&
                     compileSource.area === 'SRC' &&
                     compileSource.alias === 'one.html' &&
-                    compileSource.fullPath.indexOf('tester/base/mod1/src/one.html.hbs') > -1 &&
+                    compileSource.fullPath.indexOf('tester/base/mod1/src/one.html') > -1 &&
+                    compileSource.filePath.indexOf('tester/base/mod1/src/one.html.hbs') > -1 &&
+                    compileSource.localDir === 'src' &&
+                    compileSource.localPath === 'src/one.html' &&
                     compileSource.areaDir === 'src' &&
                     compileSource.subDir === '' &&
-                    compileSource.subPath === 'one.html.hbs' &&
-                    compileSource.name === 'one.html.hbs' &&
-                    compileSource.saveName.indexOf('one.html') > -1 &&
+                    compileSource.subPath === 'one.html' &&
+                    compileSource.name === 'one.html' &&
+                    compileSource.saveName === 'one.html' &&
                     compileSource.saveDir.indexOf('tester/base/mod1/src') > -1 &&
                     compileSource.savePath.indexOf('tester/base/mod1/src/one.html') > -1 &&
                     true)) {
-                    throw new Error('CompoileSource 속성 검사 실패');
+                    throw new Error('CompileSource 속성 검사 실패 : one.html ');
                 }
 
                 // 초기화

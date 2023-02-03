@@ -31,7 +31,11 @@ class AutoTemplate {
     DELIMITER = {
         HELPER: '-',
         DATA: '.',
-        PART: '/',
+        // POINT:
+        // PART: '/',
+        PART: path.sep,
+        SRC: path.sep,
+        PAGE: path.sep,
     };
     GLOB = {
         HELPER: 'template/helper/**/*.js',
@@ -49,11 +53,11 @@ class AutoTemplate {
     
     /*_______________________________________*/
     // protected
-    _auto = null
+    _auto = null;
     _buildFile = {
         cover: [],
         publish: [],
-    }
+    };
     _groupInstance = [];
     
     /*_______________________________________*/
@@ -608,19 +612,38 @@ class AutoTemplate {
         let _this = this;
         let data, dirname;
 
+        // function __copySource(collection, dir) {
+            
+        //     let  fullPath, savePath;
+            
+        //     for (let i = 0; i < collection.count; i++) {
+        //         fullPath = collection[i].fullPath;
+        //         savePath = dir + path.sep + collection[i].localPath;
+        //         if (!fs.existsSync(savePath)) {
+        //             dirname = path.dirname(savePath);   
+        //             if(!fs.existsSync(dirname)) {
+        //                 fs.mkdirSync(dirname, {recursive: true} );  // 디렉토리 만들기
+        //             }
+        //             fs.copyFileSync(fullPath, savePath);
+        //             // cover 빌르 파일 [로그]
+        //             _this._addBuildFile(savePath, 'cover');
+        //         }
+        //     }    
+        // }
+        // POINT:
         function __copySource(collection, dir) {
             
-            let  fullPath, savePath;
+            let  filePath, savePath;
             
             for (let i = 0; i < collection.count; i++) {
-                fullPath = collection[i].fullPath;
+                filePath = collection[i].filePath;
                 savePath = dir + path.sep + collection[i].localPath;
-                if (!fs.existsSync(savePath)) {
+                if (filePath !== null && !fs.existsSync(filePath)) {
                     dirname = path.dirname(savePath);   
                     if(!fs.existsSync(dirname)) {
                         fs.mkdirSync(dirname, {recursive: true} );  // 디렉토리 만들기
                     }
-                    fs.copyFileSync(fullPath, savePath);
+                    fs.copyFileSync(filePath, savePath);
                     // cover 빌르 파일 [로그]
                     _this._addBuildFile(savePath, 'cover');
                 }
