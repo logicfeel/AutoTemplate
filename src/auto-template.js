@@ -110,12 +110,12 @@ class AutoTemplate {
             throw new Error('[data] TemplateCollection 타입만 설정할 수 있습니다.');
         } 
     }
-    get src() { return this.#src }
     get part() { return this.#part }
     set part(val) {
         if (val instanceof CompileCollection) this.#part.addCollectoin(val);
         else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
+    get src() { return this.#src }
     set src(val) {  // REVIEW:
         if (val instanceof CompileCollection) this.#src.addCollectoin(val);
         else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
