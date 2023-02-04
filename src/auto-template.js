@@ -382,14 +382,24 @@ class AutoTemplate {
                     if (!data._parent[prop]) localData[prop] = data[prop];
                 }
                 // savePath 경로르 변경 : dir 지정 시 파일별도생성
-                if (typeof localData['dir'] === 'string' || typeof localData['path'] === 'string') isSave = true;
-                subPath = localData['path'] || compileSrc.subPath.replace('.hbs','');
-                subPath = localData['dir'] ? localData['dir'] + path.sep + subPath : subPath;
-                // 단독저장의 경우 파일경로를 수정함
-                if (isSave) {
-                    // subPath = typeof localData['path'] === 'undefined' ? : localData['path'];
+                // if (typeof localData['dir'] === 'string' || typeof localData['path'] === 'string') isSave = true;
+                // subPath = localData['path'] || compileSrc.subPath.replace('.hbs','');
+                // subPath = localData['dir'] ? localData['dir'] + path.sep + subPath : subPath;
+                // POINT:
+                if (typeof localData['path'] === 'string' && localData['path'].length > 0 ){
+                    isSave = true;
+                    subPath = localData['path'];
+                    subPath = subPath.replaceAll('/', path.sep);
+                    subPath = subPath.replaceAll('\\', path.sep);
                     compileSrc.savePath = _this.used.dir + path.sep + _this.DIR.PUB + path.sep + subPath;
                 }
+                
+                // 단독저장의 경우 파일경로를 수정함
+                // if (isSave) {
+                //     // subPath = typeof localData['path'] === 'undefined' ? : localData['path'];
+                //     compileSrc.savePath = _this.used.dir + path.sep + _this.DIR.PUB + path.sep + subPath;
+                // }
+
                 content = compileSrc._compile(localData, isSave);
                 return isSave === true ? '' : content + '\n';
             }

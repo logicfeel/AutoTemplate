@@ -1,8 +1,16 @@
-{{> inc/footer }}
+<one><!--src/one.html-->
 
-{{#> inc/header }}
-    @inc/header:none@ 없음
-{{/inc/header }}
+  {{>inc/footer }}
 
-@{{#bold }}BOLD{{/bold }}@
-- End -
+  {{>inc/header }}
+
+  @{{#bold }}BOLD{{/bold }}@
+
+  # p1 삽입 
+  {{>page/p1.html }}
+
+{{>group/all dir='inner_all' prefix='pre_' suffix='_suf' }}
+{{>group/double dir='inner_double' prefix='p_' suffix='_s' args='A1,A2' }}
+{{>page/p1.html path='create_p1.html' }}
+
+</one>

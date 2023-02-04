@@ -1,14 +1,13 @@
-@part/inc/header@
-<div class="header">
+<header><!--part/inc/header-->
   header 내용입 
   X param:{{param}}
   X params.[0]:{{params.[0]}}
   X params.0:{{param}}
   @entity.Tables.[0]:{{ entity.Tables.[0] }}@
-{{#each params}}
-    {{this}} sss
-{{/each}}
-</div>
+  {{#each params}}
+      {{this}} sss
+  {{/each}}
 
-inc 하단에 내용
-{{> inc/content }}
+  inc 하단에 내용
+  {{> inc/content }}
+</header>
