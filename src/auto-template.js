@@ -1,9 +1,9 @@
-const fs                                = require('fs');
-const path                              = require('path');
-const { PropertyCollection, Observer }  = require('entitybind');
-const { TemplateCollection }            = require('./source-template');
-const { CompileCollection }             = require('./source-compile');
-const { PageGroupCollection }           = require('./page-group');
+const fs                                    = require('fs');
+const path                                  = require('path');
+const { PropertyCollection, Observer }      = require('entitybind');
+const { TemplateCollection }                = require('./source-template');
+const { CompileCollection }                 = require('./source-compile');
+const { PageGroupCollection, PageGroup }    = require('./page-group');
 
 /**
  * 오토템플릿 클래스
@@ -94,6 +94,7 @@ class AutoTemplate {
     }
     get dirs() { return this.#dir; }
     get namespace() { return this.#namespace }
+    get ns() {return this.namespace }
     get helper() { return this.#helper }
     set helper(val) {
         if (val instanceof TemplateCollection && val.area === this.AREA.HELPER) {
@@ -318,23 +319,31 @@ class AutoTemplate {
 
     /**
      * 빌드대상 소스에 page 구룹 추가
-     * @param {*} alias 
+     * @param {PageGroup | string} obj 그룹명, 그룹객체
      * @param {*} prefix 
      * @param {*} suffix 
      * @param {*} agrs 
      */
-    attachGroup(alias, prefix = '', suffix = '', args = []) {
+    attachGroup(obj, prefix = '', suffix = '', args = []) {
         
-        let group = null;
+        let group = null, alias;
         
-        // 유효성 검사
-        if (typeof alias !== 'string' || alias.length === 0) {
-            throw new Error('[필수] alias에 string 만 지정할 수 있습니다.');
+        // HACK: 코드 보정해야함 명료하게 
+        // 초기값
+        if (typeof obj === 'string' && obj.length > 0) {
+            alias = obj;
+            group = this.group[alias] || null;
+        } else if (obj instanceof PageGroup) {
+            group = obj;
         }
-        
-        group = this.group[alias] || null;
 
-        if (typeof group === null) {
+        // if (typeof alias !== 'string' || alias.length === 0) {
+        //     throw new Error('[필수] alias에 string 만 지정할 수 있습니다.');
+        // }
+        
+        // group = this.group[alias] || null;
+
+        if (!(group instanceof PageGroup)) {
             throw new Error('[필수] group 명이 존재하지 않습니다.');
         }
 

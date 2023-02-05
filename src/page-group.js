@@ -114,7 +114,7 @@ class PageGroup {
     
     _makePath(ctxPath, prefix = '', suffix = '', args = []) {
         
-        let myPath, subPath, filename;
+        let myPath, subDir, subPath, filename;
 
         for (let i = 0; i < args.length; i++) {
             ctxPath = ctxPath.replaceAll(`{${i}}`, args[i]);
@@ -122,10 +122,10 @@ class PageGroup {
         // prefix, suffix 적용
         myPath = path.parse(ctxPath);
 
-        subPath = myPath.dir.length > 0 ? myPath.dir : '';
+        subDir = myPath.dir.length > 0 ? myPath.dir : '';
         filename = prefix + myPath.name + suffix + myPath.ext;
-        
-        return subPath + path.sep + filename;
+        subPath = subDir === '' ? filename : subDir + path.sep + filename;
+        return subPath;
     }
     
     // #linkSource() {

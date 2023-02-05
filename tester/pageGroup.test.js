@@ -48,12 +48,14 @@
 
                 function chk_one_html(data) {
                     if (
+                        data.indexOf('<!--src/one.html-->') < 0 ||
                         data.indexOf('<!--part/inc/footer-->') < 0 ||
                         data.indexOf('@entity.Table=1@') < 0 ||
                         data.indexOf('<!--part/inc/header-->') < 0 ||
                         data.indexOf('@entity.Tables.[0]:10@') < 0 ||
                         data.indexOf('<!--part/inc/content-->') < 0 ||
                         data.indexOf('@<div class="mybold">BOLD</div>@') < 0 ||
+                        data.indexOf('<!--page/p1.html-->') < 0 ||
                         false) {
                         throw new Error('템플릿 실패 '+ fullPath);
                     }
@@ -93,49 +95,49 @@
                     
                 // 파일 유무 검사
                 fullPath = dirname + '/src/one.html'
-                console.log('파일검사 : ' + fullPath);
+                console.log('대상파일 : ' + fullPath);
                 if (!fs.existsSync(fullPath)) {
                     throw new Error('파일이 존재하지 않습니다. (빌드후) ' + fullPath);
                 }
                 chk_one_html(fs.readFileSync(fullPath,'utf-8'));
 
                 fullPath = dirname + '/src/AA1groupAA2/Pp1S.html'
-                console.log('파일검사 : ' + fullPath);
+                console.log('대상파일 : ' + fullPath);
                 if (!fs.existsSync(fullPath)) {
                     throw new Error('파일이 존재하지 않습니다. (빌드후) '+ fullPath);
                 }
                 chk_p1_asp(fs.readFileSync(fullPath,'utf-8'));
 
                 fullPath = dirname + '/src/AA1groupAA2/Pp2S.html'
-                console.log('파일검사 : ' + fullPath);
+                console.log('대상파일 : ' + fullPath);
                 if (!fs.existsSync(fullPath)) {
                     throw new Error('파일이 존재하지 않습니다. (빌드후) '+ fullPath);
                 }
                 chk_p2_asp(fs.readFileSync(fullPath,'utf-8'));
                 
                 fullPath = dirname + '/src/newP3.html'
-                console.log('파일검사 : ' + fullPath);
+                console.log('대상파일 : ' + fullPath);
                 if (!fs.existsSync(fullPath)) {
                     throw new Error('파일이 존재하지 않습니다. (빌드후) '+ fullPath);
                 }
                 chk_p3_asp(fs.readFileSync(fullPath,'utf-8'));
 
                 fullPath = dirname + '/src/Pp1S.html'
-                console.log('파일검사 : ' + fullPath);
+                console.log('대상파일 : ' + fullPath);
                 if (!fs.existsSync(fullPath)) {
                     throw new Error('파일이 존재하지 않습니다. (빌드후) '+ fullPath);
                 }
                 chk_p1_asp(fs.readFileSync(fullPath,'utf-8'));
 
                 fullPath = dirname + '/src/Pp2S.html'
-                console.log('파일검사 : ' + fullPath);
+                console.log('대상파일 : ' + fullPath);
                 if (!fs.existsSync(fullPath)) {
                     throw new Error('파일이 존재하지 않습니다. (빌드후) '+ fullPath);
                 }
                 chk_p2_asp(fs.readFileSync(fullPath,'utf-8'));
 
                 fullPath = dirname + '/src/Pp3S.html'
-                console.log('파일검사 : ' + fullPath);
+                console.log('대상파일 : ' + fullPath);
                 if (!fs.existsSync(fullPath)) {
                     throw new Error('파일이 존재하지 않습니다. (빌드후) '+ fullPath);
                 }

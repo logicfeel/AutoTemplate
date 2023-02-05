@@ -94,5 +94,11 @@
             "name": "teaster/pageGroup",
             "program": "${workspaceFolder}/tester/pageGroup.test.js"
         },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "teaster/import",
+            "program": "${workspaceFolder}/tester/import.test.js"
+        },
     ]
 }

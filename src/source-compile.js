@@ -218,7 +218,13 @@ class CompileCollection extends PropertyCollection {
         // }
 
         tarSrc = new CompileSource(this._owner, dir, this.area, alias, filePath);
-        tarSrc.content = content;
+        if (obj instanceof TemplateSource && obj._template !== this._template) {
+            tarSrc.content = function(data, hb) {
+                return obj._compile(data, false);
+            }
+        } else {
+            tarSrc.content = content;
+        }
 
         /**
          * 우선순위 : CompileSource > CompileSource > native(fun, str, bool, num..)
