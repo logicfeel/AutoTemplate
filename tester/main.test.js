@@ -26,8 +26,9 @@
     //==============================================================
     // 3. 모듈 등록
     tasks.push({ns: '_W.Test.base',                 file: './base.test.js'});
+    tasks.push({ns: '_W.Test.pageGroup',            file: './pageGroup.test.js'});
+    tasks.push({ns: '_W.Test.import',               file: './import.test.js'});
     // tasks.push({ns: '_W.Test.extends',              file: './extends.test.js'});
-    // tasks.push({ns: '_W.Test.pageGroup',            file: './pageGroup.test.js'});
     // tasks.push({ns: '_W.Test.event',                file: './event.test.js'});
     
     //==============================================================
@@ -37,7 +38,7 @@
         for (var i = 0; i < tasks.length; i++) {
             task = typeof module === 'object' ?  tasks[i].file : tasks[i].ns;
             console.log('===========================================================================');
-            console.log('단위 테스트 %s : %s', i, task);
+            console.log('그룹(파일) 테스트 %s : %s', i + 1, task);
             
             if (typeof module === 'object' && typeof module.exports === 'object') {     
                 task = tasks[i].file;

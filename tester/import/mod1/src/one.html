@@ -3,7 +3,7 @@
   # ns part 삽입
   <footer><!--part/inc/footer-->
       <p>기본 footer. </p>
-      @entity.Table=1@
+      $entity.Table=1$
   </footer>
   
 
@@ -13,7 +13,7 @@
     X param:
     X params.[0]:
     X params.0:
-    @entity.Tables.[0]:10@
+    $entity.Tables.[0]:10$
   
     inc 하단에 내용
     <content><!--part/inc/content-->
@@ -21,7 +21,7 @@
     </content></header>
 
   # ns helper 삽입
-  @<div class="mybold">BOLD</div>@
+  $<div class="mybold">BOLD</div>$
 
   # ns page 삽입 
   <p1><!--page/p1.html-->
@@ -29,7 +29,7 @@
   </p1>
 
   # ns data 조회
-  @entity.Table=1@
+  $entity.Tables=10,20$
 
 
 </one>
