@@ -1,0 +1,22 @@
+<one><!--src/one.html-->
+
+  # part 삽입
+  {{>inc/footer }}
+
+  # part 삽입
+  {{>inc/header }}
+
+  # helper 삽입
+  ${{#bold }}BOLD{{/bold }}$
+
+  # page 삽입 
+  {{>page/p1.html }}
+
+  # data 조회
+  $entity.Tables={{entity.Tables}}$
+
+{{>group/all dir='sup1_all' prefix='pre_' suffix='_suf' }}
+{{>group/double dir='sup1_double' prefix='p_' suffix='_s' args='A1_,_A2' }}
+{{>page/p1.html path='sup1_p1.html' }}
+
+</one>

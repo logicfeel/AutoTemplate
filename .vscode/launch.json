@@ -100,5 +100,11 @@
             "name": "teaster/import",
             "program": "${workspaceFolder}/tester/import.test.js"
         },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "teaster/extends",
+            "program": "${workspaceFolder}/tester/extends.test.js"
+        },
     ]
 }

@@ -1,5 +1,6 @@
 const fs                                    = require('fs');
 const path                                  = require('path');
+const glob                                  = require('glob');
 const { PropertyCollection, Observer }      = require('entitybind');
 const { TemplateCollection }                = require('./source-template');
 const { CompileCollection }                 = require('./source-compile');
@@ -222,19 +223,46 @@ class AutoTemplate {
     clear() {
 
         const buildFile = this.dir + path.sep + this.FILE.BUILD;
-        let filePath;
+        let filePath, dir, dirs = [];
 
         // 파일 삭제
         for (let i = 0; i < this._buildFile['cover'].length; i++) {
             filePath = this._buildFile['cover'][i];
             if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+            dir = path.dirname(filePath);
+            if (dirs.indexOf(dir) < 0) dirs.push(dir);
         }
         for (let i = 0; i < this._buildFile['publish'].length; i++) {
             filePath = this._buildFile['publish'][i];
             if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+            dir = path.dirname(filePath);
+            if (dirs.indexOf(dir) < 0) dirs.push(dir);
         }
         if (fs.existsSync(buildFile)) fs.unlinkSync(buildFile);
         
+        // 빈폴더 제거
+        // 조건 : 기본 디렉토리가 아니면서,
+        // 함수로 재귀적으로 만들어야 할듯
+        // 폴더삭제 함수 REVIEW: 공통함수로 추출
+        // function delEmptyDir(dir) {
+        //     let arr = fs.readdirSync(val);
+        //     arr.forEach(val => {
+        //         val
+        //     });
+        // }
+
+        // dirs.forEach(val => {
+        //     // let arr =  glob.sync(val);
+        //     let arr =  fs.readdirSync(val);
+        //     // 조건 : 기본디렉토리가 아니면서
+
+        //     // if(glob.sync(val).length === 0) fs.rmdirSync(val, { recursive: true });
+        //     // if(glob.sync(val).length === 0) fs.rmdirSync(val, { recursive: true });
+        //     console.log(1)
+        // });
+
+
+
         // 속성 초기화
         this._batchFile = {
             cover: [],
@@ -652,19 +680,22 @@ class AutoTemplate {
         // POINT:
         function __copySource(collection, dir) {
             
-            let  filePath, savePath;
+            let  src, filePath, copyFilePath;
             
             for (let i = 0; i < collection.count; i++) {
-                filePath = collection[i].filePath;
-                savePath = dir + path.sep + collection[i].localPath;
-                if (filePath !== null && !fs.existsSync(filePath)) {
-                    dirname = path.dirname(savePath);   
+                src = collection[i];
+                filePath = src.filePath;
+                if (filePath === null) continue;
+                copyFilePath = dir + path.sep + src.localDir + path.sep + src.fileName;
+                if (filePath !== null && !fs.existsSync(copyFilePath)) {
+                    // 디렉토리 없으면 만들기
+                    dirname = path.dirname(copyFilePath);   
                     if(!fs.existsSync(dirname)) {
-                        fs.mkdirSync(dirname, {recursive: true} );  // 디렉토리 만들기
+                        fs.mkdirSync(dirname, {recursive: true} );
                     }
-                    fs.copyFileSync(filePath, savePath);
+                    fs.copyFileSync(filePath, copyFilePath);
                     // cover 빌르 파일 [로그]
-                    _this._addBuildFile(savePath, 'cover');
+                    _this._addBuildFile(copyFilePath, 'cover');
                 }
             }    
         }
@@ -673,7 +704,8 @@ class AutoTemplate {
         __copySource(this.helper, this.dir);
         __copySource(this.data, this.dir);        
         __copySource(this.part, this.dir);        
-        __copySource(this.src, this.dir);        
+        // __copySource(this.src, this.dir);        
+        __copySource(this.page, this.dir);        
 
         // 빌드 파일 저장
         this._saveBuildFile();

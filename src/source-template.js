@@ -45,6 +45,7 @@ class TemplateSource {
     get localDir() { return this.subDir === '' ? this.areaDir : this.areaDir + path.sep + this.subDir; }
     get localPath() { return this.areaDir + path.sep + this.subPath; }
     get name() { return path.basename(this.#subPath); }
+    get fileName() { return path.basename(this.#filePath); }
     get filePath() { return this.#filePath; }
 
     /**

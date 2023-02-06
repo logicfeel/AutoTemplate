@@ -82,7 +82,7 @@ class AutoTask {
         this.cursor = 'CLEAR';
 
         // 로딩
-        this.#load();
+        // this.#load();
         // 빌드 파일 삭제
         this.entry.clear();
         // 이벤트 초기화
