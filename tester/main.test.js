@@ -28,7 +28,7 @@
     tasks.push({ns: '_W.Test.base',                 file: './base.test.js'});
     tasks.push({ns: '_W.Test.pageGroup',            file: './pageGroup.test.js'});
     tasks.push({ns: '_W.Test.import',               file: './import.test.js'});
-    // tasks.push({ns: '_W.Test.extends',              file: './extends.test.js'});
+    tasks.push({ns: '_W.Test.extends',              file: './extends.test.js'});
     // tasks.push({ns: '_W.Test.event',                file: './event.test.js'});
     
     //==============================================================

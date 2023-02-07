@@ -82,9 +82,11 @@ class AutoTask {
         this.cursor = 'CLEAR';
 
         // 로딩
-        // this.#load();
+        // this.#init();
+        this.#init();
         // 빌드 파일 삭제
         this.entry.clear();
+        // if (this.entry !== null) this.entry.clear();
         // 이벤트 초기화
         this.#event.unsubscribeAll();
     }
@@ -95,7 +97,7 @@ class AutoTask {
     do_publish() {
         this.cursor = 'PUBLISH';
         // 로딩
-        this.#load();
+        this.#init();
         // 빌드
         this.entry.build();
     }
@@ -107,7 +109,7 @@ class AutoTask {
     do_cover(template = this.entry) {
         this.cursor = 'COVER';
         // 로딩
-        this.#load();
+        this.#init();
         // 부모 파일 쓰기
         this.entry._writeParentObject();
     }
@@ -115,22 +117,31 @@ class AutoTask {
     /*_______________________________________*/
     // protected method
 
-    /**
-     * 앤트리 오토 조회 및 적재
-     */
-    #load(entry) {        
+    #init(entry) {
         // 현재 폴더의 auto.js 파일 로딩
         const entryFile  = entry ? this.#dir + path.sep + entry : this.#dir + path.sep + this.FILE.TEMPLATE;
         // 다양한 조건에 예외조건을 수용해야함
         const EntryTemplate = require(entryFile);
         // 타입 검사해야함
         this.entry = new EntryTemplate();
-        // 초기화
+        // entry 초기화
         this.entry.init();
-
-        // 이벤트 발생
-        // this._onLoad();
     }
+    
+    /**
+     * 앤트리 오토 조회 및 적재
+     */
+    // #load(entry) {        
+        
+    //     // task 초기화
+    //     this.#init(entry);
+        
+    //     // entry 초기화
+    //     this.entry.init();
+
+    //     // 이벤트 발생
+    //     // this._onLoad();
+    // }
 
     /*_______________________________________*/
     // event call

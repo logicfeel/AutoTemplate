@@ -52,6 +52,9 @@
                 //     throw new Error('/src/one.html 파일이 존재합니다.');
                 // }
 
+                // 초기화
+                autoTask.do_clear();
+
                 autoTask.do_publish();
 
                 // 파일 유무 검사
@@ -73,9 +76,6 @@
                     throw new Error('템플릿 실패');
                 }
 
-                // 초기화
-                autoTask.do_clear();
-
                 console.log('Result = Success ');
             } catch(e) {
                 errorCnt++;
@@ -94,12 +94,11 @@
         (function() {   // IIFE
             
             try {
+                // 초기화
+                autoTask.do_clear();
 
                 // 출판
                 autoTask.do_publish();
-
-                // 초기화
-                autoTask.do_clear();
 
                 console.log('Result = Success');
             } catch(e) {
@@ -123,6 +122,9 @@
 
                 var entry, compileSource
 
+                // 초기화
+                autoTask.do_clear();
+                
                 autoTask.do_publish();
                 entry = autoTask.entry;
 
@@ -178,8 +180,6 @@
                     throw new Error('CompileSource 속성 검사 실패 : one.html ');
                 }
 
-                // 초기화
-                autoTask.do_clear();
 
                 console.log('Result = Success');
             } catch(e) {

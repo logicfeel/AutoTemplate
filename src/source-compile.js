@@ -283,9 +283,11 @@ class CompileCollection extends PropertyCollection {
                 content = fs.readFileSync(val,'utf-8');
                 
                 idx = _this.indexOfName(alias);  // 중복이름 검사
-                // 중복 검사
-                if (idx > -1) {
-                    _this[idx] = new CompileSource(_this._owner, dirs[i], this.area, alias, val);
+                
+                if (idx > -1) { // 컬렉션이 존재할 경우
+                    // _this[idx] = new CompileSource(_this._owner, dirs[i], this.area, alias, val);
+                    // _this[idx].content = content;
+                    _this._setElement(idx, new CompileSource(_this._owner, dirs[i], this.area, alias, val));
                     _this[idx].content = content;
                 } else {
                     _this.add(alias, content, val, dirs[i]);
@@ -335,6 +337,10 @@ class CompileCollection extends PropertyCollection {
             enumerable: true,
             configurable: true
         };
+    }
+
+    _setElement(idx, elem) {
+        this._element[idx] = elem;
     }
 }
 

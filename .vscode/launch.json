@@ -7,6 +7,7 @@
 
 
 
+
         {
             "type": "node",
             "request": "launch",
@@ -81,6 +82,18 @@
             "request": "launch",
             "name": "t6 ns/page",
             "program": "${workspaceFolder}/task/t6/test_page.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "teaster/all_clear",
+            "program": "${workspaceFolder}/tester/all_clear.test.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "teaster/main",
+            "program": "${workspaceFolder}/tester/main.test.js"
         },
         {
             "type": "node",

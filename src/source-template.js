@@ -15,6 +15,7 @@ class TemplateSource {
     /*_______________________________________*/        
     // protected
     _template = null;
+    _ref = null;
 
     /*_______________________________________*/        
     // private
@@ -212,7 +213,7 @@ class TemplateCollection extends PropertyCollection {
         const delmiter = this._owner.DELIMITER[this.area];
         const areaDir = this._owner.DIR[this.area];
         let arrPath = [];
-        let localPattern, alias, content, subPath;
+        let localPattern, alias, content, subPath, idx;
 
         for (let i = 0; i < dirs.length; i++) {
             localPattern = dirs[i] + sep + pattern;
@@ -221,7 +222,16 @@ class TemplateCollection extends PropertyCollection {
                 subPath = path.relative(dirs[i] + sep + areaDir, val)
                 alias = _this._makeAlias(subPath);
                 content = require(val);
-                _this.add(alias, content, val, dirs[i]);
+
+                idx = _this.indexOfName(alias);  // 중복이름 검사
+                
+                if (idx > -1) { // 컬렉션이 존재할 경우
+                    _this[idx] = new TemplateSource(_this._owner, dirs[i], this.area, alias, val);
+                    _this[idx].content = content;
+                } else {
+                    _this.add(alias, content, val, dirs[i]);
+                }
+                // _this.add(alias, content, val, dirs[i]);
             });
         }
     }

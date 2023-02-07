@@ -91,6 +91,9 @@
                     //     throw new Error('/src/one.html 파일이 존재합니다.');
                     // }
                     
+                // 초기화
+                autoTask.do_clear();
+
                 autoTask.do_publish();
                     
                 // 파일 유무 검사
@@ -148,8 +151,7 @@
                 //     throw new Error('생성파일 갯수가 다릅니다.  7!= '+ fullPath);
                 // }
 
-                // 초기화
-                // autoTask.do_clear();
+
 
                 console.log('Result = Success ');
             } catch(e) {
@@ -161,79 +163,6 @@
 
         }());
 
-
-        // console.log('---------------------------------------------------------------------------');
-        // console.log('CompoileSource(TemplateSource) class 속성 검사 ');
-        
-        // autoTask = AutoTask.create(dirname);
-
-        // (function() {   // IIFE
-
-        //     try {
-
-        //         var entry, compileSource
-
-        //         autoTask.do_publish();
-        //         entry = autoTask.entry;
-
-        //         // AutoTemplate 속성 검사
-        //         if (!(
-        //             entry.used === entry &&
-        //             entry.dir.indexOf('tester/base/mod1') > -1 &&
-        //             entry.dirs.length === 1 &&
-        //             true)) {
-        //             throw new Error('AutoTemplate 속성 검사 실패');
-        //         }
-                
-
-        //         compileSource = entry.part['inc/content'];
-        //         // CompoileSource 속성 검사
-        //         if (!(
-        //             compileSource.dir.indexOf('tester/base/mod1') > -1 &&
-        //             compileSource.area === 'PART' &&
-        //             compileSource.alias === 'inc/content' &&
-        //             compileSource.fullPath.indexOf('tester/base/mod1/template/part/inc/content.hbs') > -1 &&
-        //             compileSource.areaDir === 'template/part' &&
-        //             compileSource.subDir === 'inc' &&
-        //             compileSource.subPath === 'inc/content.hbs' &&
-        //             compileSource.name === 'content.hbs' &&
-        //             compileSource.saveName.indexOf('content') > -1 &&
-        //             compileSource.saveDir.indexOf('tester/base/mod1/template/part/inc') > -1 &&
-        //             compileSource.savePath.indexOf('tester/base/mod1/template/part/inc/content') > -1 &&
-        //             true)) {
-        //             throw new Error('CompileSource 속성 검사 실패');
-        //         }
-
-        //         compileSource = entry.src['one.html'];
-        //         // CompoileSource 속성 검사
-        //         if (!(
-        //             compileSource.dir.indexOf('tester/base/mod1') > -1 &&
-        //             compileSource.area === 'SRC' &&
-        //             compileSource.alias === 'one.html' &&
-        //             compileSource.fullPath.indexOf('tester/base/mod1/src/one.html.hbs') > -1 &&
-        //             compileSource.areaDir === 'src' &&
-        //             compileSource.subDir === '' &&
-        //             compileSource.subPath === 'one.html.hbs' &&
-        //             compileSource.name === 'one.html.hbs' &&
-        //             compileSource.saveName.indexOf('one.html') > -1 &&
-        //             compileSource.saveDir.indexOf('tester/base/mod1/src') > -1 &&
-        //             compileSource.savePath.indexOf('tester/base/mod1/src/one.html') > -1 &&
-        //             true)) {
-        //             throw new Error('CompoileSource 속성 검사 실패');
-        //         }
-
-        //         // 초기화
-        //         autoTask.do_clear();
-
-        //         console.log('Result = Success');
-        //     } catch(e) {
-        //         errorCnt++;
-        //         console.warn(`Result = Fail [ ${e} ] `);
-        //     } finally {
-        //         taskCnt++;
-        //     }
-
-        // }());
 
         //#################################################
         console.log('===========================================================================');

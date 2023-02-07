@@ -103,7 +103,9 @@
                 // if (fs.existsSync(fullPath)) {
                 //     throw new Error('/src/one.html 파일이 존재합니다.');
                 // }
-                    
+                
+                // 초기화
+                autoTask.do_clear();
                 
                 // 출판
                 autoTask.do_publish();

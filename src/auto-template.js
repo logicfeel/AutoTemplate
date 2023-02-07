@@ -154,8 +154,11 @@ class AutoTemplate {
      * @param {Automation?} auto 소속된 오토메이션
      */
     constructor(dir, auto) {
-        this.dir        = dir;      // Automation 설정시 사용
-        this._auto      = auto;     // Automation 설정시 사용
+        
+        // let buildFile;
+        
+        if (dir) this.dir = dir;      // Automation 설정시 사용
+        if (auto) this._auto = auto;     // Automation 설정시 사용
         this.#namespace = new NamespaceCollection(this);
         this.#helper    = new TemplateCollection(this, this.AREA.HELPER);
         this.#data      = new TemplateCollection(this, this.AREA.DATA);
@@ -163,6 +166,15 @@ class AutoTemplate {
         this.#src       = new CompileCollection(this, this.AREA.SRC);
         this.#page      = new CompileCollection(this, this.AREA.PAGE);
         this.#group     = new PageGroupCollection(this);
+
+        // 사용처에서만 사용됨
+        // if (this === this.used) {
+        //     if (fs.existsSync(this.dir + path.sep + this.FILE.BUILD)) {
+        //         buildFile = require(this.dir + path.sep + this.FILE.BUILD);
+        //         if (buildFile.cover) this._buildFile['cover'] = buildFile.cover;
+        //         if (buildFile.publish) this._buildFile['publish'] = buildFile.publish;
+        //     }
+        // }
     }
 
     /*_______________________________________*/        
@@ -184,12 +196,19 @@ class AutoTemplate {
         // 이벤트 발생
         this._onInit(this, this._auto);
 
-        // 네임스페이스 초기화
+        // 네임스페이스 초기화 : AutoTemplate.init()
         for (let i = 0; i< this.namespace.count; i++) {
             this.namespace[i].init();
         }
         
         // 지역 초기화
+        this.helper.clear();
+        this.data.clear();
+        this.part.clear();
+        this.src.clear();
+        this.page.clear();
+        this.group.clear();
+        // 적재
         this.helper.addGlob(this.GLOB.HELPER);
         this.data.addGlob(this.GLOB.DATA);
         this.part.addGlob(this.GLOB.PART);
@@ -685,7 +704,7 @@ class AutoTemplate {
             for (let i = 0; i < collection.count; i++) {
                 src = collection[i];
                 filePath = src.filePath;
-                if (filePath === null) continue;
+                if (filePath === null) continue;    // 파일인 경우만
                 copyFilePath = dir + path.sep + src.localDir + path.sep + src.fileName;
                 if (filePath !== null && !fs.existsSync(copyFilePath)) {
                     // 디렉토리 없으면 만들기
@@ -694,6 +713,7 @@ class AutoTemplate {
                         fs.mkdirSync(dirname, {recursive: true} );
                     }
                     fs.copyFileSync(filePath, copyFilePath);
+                    // fs.writeFileSync(filePath, src.content, 'utf-8');
                     // cover 빌르 파일 [로그]
                     _this._addBuildFile(copyFilePath, 'cover');
                 }
