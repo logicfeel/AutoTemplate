@@ -52,7 +52,7 @@
                         data.indexOf('<!--part/inc/header-->') < 0 ||
                         data.indexOf('$entity.Tables.[0]:10$') < 0 ||
                         data.indexOf('<!--part/content(OVER)-->') < 0 ||
-                        data.indexOf('$<div class="mybold">BOLD</div>$') < 0 ||
+                        data.indexOf('$<div class="mybold-OVER">BOLD</div>$') < 0 ||
                         data.indexOf('<!--page/p1.html(OVER)-->') < 0 ||
                         false) {
                         throw new Error('템플릿 실패 '+ fullPath);
@@ -70,7 +70,7 @@
                         data.indexOf('<!--page/p2.html-->') < 0 ||
                         data.indexOf('<!--part/inc/footer-->') < 0 ||
                         data.indexOf('$entity.Table=1$') < 0 ||
-                        data.indexOf('$<div class="mybold">BOLD</div>$') < 0 ||    // 오버로딩
+                        data.indexOf('$<div class="mybold-OVER">BOLD</div>$') < 0 ||    // 오버로딩
                         false) {
                         throw new Error('템플릿 실패 '+ fullPath);
                     }

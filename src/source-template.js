@@ -46,7 +46,7 @@ class TemplateSource {
     get localDir() { return this.subDir === '' ? this.areaDir : this.areaDir + path.sep + this.subDir; }
     get localPath() { return this.areaDir + path.sep + this.subPath; }
     get name() { return path.basename(this.#subPath); }
-    get fileName() { return path.basename(this.#filePath); }
+    get fileName() { return this.#filePath !== null ? path.basename(this.#filePath) : null; }
     get filePath() { return this.#filePath; }
 
     /**
@@ -226,7 +226,9 @@ class TemplateCollection extends PropertyCollection {
                 idx = _this.indexOfName(alias);  // 중복이름 검사
                 
                 if (idx > -1) { // 컬렉션이 존재할 경우
-                    _this[idx] = new TemplateSource(_this._owner, dirs[i], this.area, alias, val);
+                    // _this[idx] = new TemplateSource(_this._owner, dirs[i], this.area, alias, val);
+                    // _this[idx].content = content;
+                    _this._setElement(idx, new TemplateSource(_this._owner, dirs[i], this.area, alias, val));
                     _this[idx].content = content;
                 } else {
                     _this.add(alias, content, val, dirs[i]);
@@ -275,6 +277,10 @@ class TemplateCollection extends PropertyCollection {
             enumerable: true,
             configurable: true
         };
+    }
+
+    _setElement(idx, elem) {
+        this._element[idx] = elem;
     }
 }
 

@@ -239,26 +239,89 @@ class AutoTemplate {
     /**
      * 깨끗이 지운다. 생성파일을 삭제한다.
      */
-    clear() {
+    /**
+     * 
+     * @param {number} opt = 1: 모두삭제, 2: 커버 수정제외
+     */
+    clear(opt = 2) {
 
         const buildFile = this.dir + path.sep + this.FILE.BUILD;
-        let filePath, dir, dirs = [];
+        let filePath, oriPath, dir, dirs = [];
+        let newCover = [];
+        // let source;
+
+        function __checkChangeFile(tarPath, oriPath) {
+            let oriData, tarData;
+            // return true; 디버깅용
+            if (opt === 1) return true;
+            if(fs.existsSync(tarPath)) tarData = fs.readFileSync(tarPath,'utf-8');
+            else return false;  // 대상파일이 없으니 수정없음 처리
+            
+            if(fs.existsSync(oriPath)) oriData = fs.readFileSync(oriPath,'utf-8');
+            else return false;   // 원본파일이 없는 경우 
+            // 파일내용 비교
+            // if (oriData.trim() === tarData.trim()) return true;
+            if (oriData === tarData) return true;
+            console.log(1)
+            return false;
+        }
+
 
         // 파일 삭제
         for (let i = 0; i < this._buildFile['cover'].length; i++) {
-            filePath = this._buildFile['cover'][i];
-            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+            filePath = this._buildFile['cover'][i].tar;
+            oriPath = this._buildFile['cover'][i].ori;
+            // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+            // if (f) {
+                if (opt === 1 && fs.existsSync(filePath)) {    // 강제 삭제
+                    fs.unlinkSync(filePath);
+                    // this._buildFile['cover'].splice(i, 1);
+                    // arrDel.push(i);
+                } else if (__checkChangeFile(filePath, oriPath)) {
+                    // source = this._lookupSource(filePath);
+                    // if (__checkChangeFile(filePath, oriPath)) {
+                        fs.unlinkSync(filePath);
+                        // this._buildFile['cover'].splice(i, 1);
+                        // arrDel.push(i);
+                } else {
+                    newCover.push(this._buildFile['cover'][i]);
+                }
+                // }
+            // }
+            // 폴더 경로 저장
             dir = path.dirname(filePath);
             if (dirs.indexOf(dir) < 0) dirs.push(dir);
         }
+        this._buildFile['cover'] = newCover;
+
+
         for (let i = 0; i < this._buildFile['publish'].length; i++) {
             filePath = this._buildFile['publish'][i];
-            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+                // this._buildFile['publish'].splice(i, 1);
+            }
+            // if (opt === 1) {    // 강제 삭제
+                // fs.unlinkSync(filePath);
+            // } else {
+            //     source = this._lookupSource(filePath);
+            //     if (source && __checkChangeFile(filePath, source.filePath)) fs.unlinkSync(filePath);
+            // }
+            
+            // 폴더 경로 저장
             dir = path.dirname(filePath);
             if (dirs.indexOf(dir) < 0) dirs.push(dir);
         }
-        if (fs.existsSync(buildFile)) fs.unlinkSync(buildFile);
-        
+        this._buildFile['publish'] = [];
+
+        // this._batchFile = {
+        //     publish: [],
+        // };
+
+        if (this._buildFile['cover'].length === 0 &&  fs.existsSync(buildFile)) fs.unlinkSync(buildFile);
+        else this._saveBuildFile();
+
         // 빈폴더 제거
         // 조건 : 기본 디렉토리가 아니면서,
         // 함수로 재귀적으로 만들어야 할듯
@@ -283,10 +346,10 @@ class AutoTemplate {
 
 
         // 속성 초기화
-        this._batchFile = {
-            cover: [],
-            publish: [],
-        };
+        // this._batchFile = {
+        //     cover: [],
+        //     publish: [],
+        // };
     }
 
     /**
@@ -646,7 +709,7 @@ class AutoTemplate {
      * @param {string} type cover: 부모, 출판
      */
     _addBuildFile(savePath, type) {
-        if (type === 'cover' && this._buildFile['cover'].indexOf(savePath) < 0) {
+        if (type === 'cover' && !this._buildFile['cover'].find(val => val.tar === savePath.tar)) {
             this._buildFile['cover'].push(savePath);
         } else if (type === 'publish' && this._buildFile['publish'].indexOf(savePath) < 0) {
             this._buildFile['publish'].push(savePath);
@@ -697,6 +760,7 @@ class AutoTemplate {
         //     }    
         // }
         // POINT:
+
         function __copySource(collection, dir) {
             
             let  src, filePath, copyFilePath;
@@ -715,7 +779,7 @@ class AutoTemplate {
                     fs.copyFileSync(filePath, copyFilePath);
                     // fs.writeFileSync(filePath, src.content, 'utf-8');
                     // cover 빌르 파일 [로그]
-                    _this._addBuildFile(copyFilePath, 'cover');
+                    _this._addBuildFile({ori: filePath, tar: copyFilePath} , 'cover');
                 }
             }    
         }
@@ -724,13 +788,37 @@ class AutoTemplate {
         __copySource(this.helper, this.dir);
         __copySource(this.data, this.dir);        
         __copySource(this.part, this.dir);        
-        // __copySource(this.src, this.dir);        
+        __copySource(this.src, this.dir);  
         __copySource(this.page, this.dir);        
 
         // 빌드 파일 저장
         this._saveBuildFile();
 
     }
+
+    // _lookupSource(filePath) {
+        
+    //     let source, _this = this;
+        
+    //     function __lookupCollection(col) {
+    //         let srcFilePath;
+    //         for (let i = 0; i < col.count; i++) {
+    //             if (!col[i].fileName) return;   // 상속이나 커버로 생성한게 아닌 경우
+    //             srcFilePath = _this.dir + path.sep + col[i].localDir + path.sep + col[i].fileName;
+    //             if (filePath === srcFilePath) return col[i];                
+    //         }
+    //     }
+    //     source = __lookupCollection(this.helper);
+    //     if (source) return source;
+    //     source = __lookupCollection(this.data);
+    //     if (source) return source;
+    //     source = __lookupCollection(this.part);
+    //     if (source) return source;
+    //     source = __lookupCollection(this.src);
+    //     if (source) return source;
+    //     source = __lookupCollection(this.page);
+    //     if (source) return source;
+    // }
     
     /*_______________________________________*/
     // event caller

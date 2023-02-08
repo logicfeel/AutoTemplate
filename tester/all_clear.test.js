@@ -42,20 +42,20 @@
             try {
                 var filePath;
 
-                filePath = __dirname+ '/base/mod1';
-                console.log('대상 : '+ filePath);
-                autoTask = AutoTask.create(filePath);
-                autoTask.do_clear();
+                // filePath = __dirname+ '/base/mod1';
+                // console.log('대상 : '+ filePath);
+                // autoTask = AutoTask.create(filePath);
+                // autoTask.do_clear();
 
-                filePath = __dirname+ '/import/mod1';
-                console.log('대상 : '+ filePath);
-                autoTask = AutoTask.create(filePath);
-                autoTask.do_clear();
+                // filePath = __dirname+ '/import/mod1';
+                // console.log('대상 : '+ filePath);
+                // autoTask = AutoTask.create(filePath);
+                // autoTask.do_clear();
 
-                filePath = __dirname+ '/pageGroup/mod1';
-                console.log('대상 : '+ filePath);
-                autoTask = AutoTask.create(filePath);
-                autoTask.do_clear();
+                // filePath = __dirname+ '/pageGroup/mod1';
+                // console.log('대상 : '+ filePath);
+                // autoTask = AutoTask.create(filePath);
+                // autoTask.do_clear();
 
                 filePath = __dirname+ '/extends/mod1';
                 console.log('대상 : '+ filePath);
