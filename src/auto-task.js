@@ -75,7 +75,7 @@ class AutoTask {
     /**
      * 리셋 태스크 실행 (파일 및 폴더 삭제, 객체 초기화)
      */
-    do_clear() {
+    do_clear(opt = 1) {
         
         let dir, entry, delPath;
 
@@ -85,7 +85,7 @@ class AutoTask {
         // this.#init();
         this.#init();
         // 빌드 파일 삭제
-        this.entry.clear();
+        this.entry.clear(opt);
         // if (this.entry !== null) this.entry.clear();
         // 이벤트 초기화
         this.#event.unsubscribeAll();

@@ -238,16 +238,13 @@ class AutoTemplate {
 
     /**
      * 깨끗이 지운다. 생성파일을 삭제한다.
+     * @param {number} opt = 1: 모두삭제, 2: 모두삭제(커버수정제외), 3: 커버삭제(수정제외)
      */
-    /**
-     * 
-     * @param {number} opt = 1: 모두삭제, 2: 커버 수정제외
-     */
-    clear(opt = 2) {
+    clear(opt = 1) {
 
         const buildFile = this.dir + path.sep + this.FILE.BUILD;
         let filePath, oriPath, dir, dirs = [];
-        let newCover = [];
+        let newCover = [], areaDirs = [];
         // let source;
 
         function __checkChangeFile(tarPath, oriPath) {
@@ -262,62 +259,38 @@ class AutoTemplate {
             // 파일내용 비교
             // if (oriData.trim() === tarData.trim()) return true;
             if (oriData === tarData) return true;
-            console.log(1)
+            // console.log(1)
             return false;
         }
-
 
         // 파일 삭제
         for (let i = 0; i < this._buildFile['cover'].length; i++) {
             filePath = this._buildFile['cover'][i].tar;
             oriPath = this._buildFile['cover'][i].ori;
-            // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
-            // if (f) {
-                if (opt === 1 && fs.existsSync(filePath)) {    // 강제 삭제
-                    fs.unlinkSync(filePath);
-                    // this._buildFile['cover'].splice(i, 1);
-                    // arrDel.push(i);
-                } else if (__checkChangeFile(filePath, oriPath)) {
-                    // source = this._lookupSource(filePath);
-                    // if (__checkChangeFile(filePath, oriPath)) {
-                        fs.unlinkSync(filePath);
-                        // this._buildFile['cover'].splice(i, 1);
-                        // arrDel.push(i);
-                } else {
-                    newCover.push(this._buildFile['cover'][i]);
-                }
-                // }
-            // }
+            if (opt === 1 && fs.existsSync(filePath)) {    // 강제 삭제
+                fs.unlinkSync(filePath);
+            } else if (__checkChangeFile(filePath, oriPath)) {
+                fs.unlinkSync(filePath);
+            } else {
+                newCover.push(this._buildFile['cover'][i]);
+            }
             // 폴더 경로 저장
             dir = path.dirname(filePath);
             if (dirs.indexOf(dir) < 0) dirs.push(dir);
         }
         this._buildFile['cover'] = newCover;
 
-
-        for (let i = 0; i < this._buildFile['publish'].length; i++) {
-            filePath = this._buildFile['publish'][i];
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
-                // this._buildFile['publish'].splice(i, 1);
+        if (opt !== 3) {
+            for (let i = 0; i < this._buildFile['publish'].length; i++) {
+                filePath = this._buildFile['publish'][i];
+                if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+                // 폴더 경로 저장
+                dir = path.dirname(filePath);
+                if (dirs.indexOf(dir) < 0) dirs.push(dir);
             }
-            // if (opt === 1) {    // 강제 삭제
-                // fs.unlinkSync(filePath);
-            // } else {
-            //     source = this._lookupSource(filePath);
-            //     if (source && __checkChangeFile(filePath, source.filePath)) fs.unlinkSync(filePath);
-            // }
-            
-            // 폴더 경로 저장
-            dir = path.dirname(filePath);
-            if (dirs.indexOf(dir) < 0) dirs.push(dir);
+            this._buildFile['publish'] = [];
         }
-        this._buildFile['publish'] = [];
-
-        // this._batchFile = {
-        //     publish: [],
-        // };
 
         if (this._buildFile['cover'].length === 0 &&  fs.existsSync(buildFile)) fs.unlinkSync(buildFile);
         else this._saveBuildFile();
@@ -326,30 +299,59 @@ class AutoTemplate {
         // 조건 : 기본 디렉토리가 아니면서,
         // 함수로 재귀적으로 만들어야 할듯
         // 폴더삭제 함수 REVIEW: 공통함수로 추출
-        // function delEmptyDir(dir) {
-        //     let arr = fs.readdirSync(val);
-        //     arr.forEach(val => {
-        //         val
-        //     });
-        // }
+        function delEmptyDir(dir) {
+            try {
+                let paths, deepPath, file, isRecursive = false;
+                
+                if (!fs.existsSync(dir)) return; // 폴더가 없으면 리턴
+                
+                paths = fs.readdirSync(dir, { withFileTypes: true })
+                if (paths.length === 0) {
+                    // fs.unlinkSync(dir); // 빈폴더이면 삭제
+                    fs.rmdirSync(dir);
+                    console.log(`삭제폴더 :${dir}`);
+                    return;
+                }
+                
+                for (let i = 0; i < paths.length; i++) {
+                    file = paths[i];
+                    if (file.isDirectory()) {
+                        delEmptyDir(dir + path.sep + file.name);
+                        isRecursive = true;
+                    }
+                }
+                // 재귀 호출후 재검사
+                if (isRecursive) {
+                    paths = fs.readdirSync(dir, { withFileTypes: true })
+                    if (paths.length === 0) {
+                        // fs.unlinkSync(dir); // 빈폴더이면 삭제
+                        fs.rmdirSync(dir);
+                    console.log(`삭제폴더 :${dir}`);
+                        return;
+                    }
+                }
 
-        // dirs.forEach(val => {
-        //     // let arr =  glob.sync(val);
-        //     let arr =  fs.readdirSync(val);
-        //     // 조건 : 기본디렉토리가 아니면서
+              } catch(e) {
+                  return console.error('Delete Error', e);
+              }
+        }
 
-        //     // if(glob.sync(val).length === 0) fs.rmdirSync(val, { recursive: true });
-        //     // if(glob.sync(val).length === 0) fs.rmdirSync(val, { recursive: true });
-        //     console.log(1)
-        // });
+        // REVIEW: 함수로 추출 검토
+        for (const prop in this.DIR) {
+            if (Object.hasOwnProperty.call(this.DIR, prop)) areaDirs.push(this.dir + path.sep + this.DIR[prop]);
+        }  
 
+        dirs.forEach(delDir => {
+            let areaDir, subDir, arr;
+            // 기본 areaDir 제외
+            if (areaDirs.indexOf(delDir) < 0) {
+                areaDir = areaDirs.find(arrDir => delDir.indexOf(arrDir) > -1 );
+                subDir = delDir.substring(areaDir.length + 1);
+                arr = subDir.split(path.sep);
+                delEmptyDir(areaDir + path.sep + arr[0]);
+            }
+        });
 
-
-        // 속성 초기화
-        // this._batchFile = {
-        //     cover: [],
-        //     publish: [],
-        // };
     }
 
     /**

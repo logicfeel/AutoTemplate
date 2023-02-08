@@ -1,9 +1,44 @@
 {
 	"cover": [
 		{
+			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/helper/bold.js",
+			"tar": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/template/helper/bold.js"
+		},
+		{
+			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/part/content.hbs",
+			"tar": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/template/part/content.hbs"
+		},
+		{
 			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod3/template/part/title.hbs",
 			"tar": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/template/part/title.hbs"
+		},
+		{
+			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/part/inc/header.hbs",
+			"tar": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/template/part/inc/header.hbs"
+		},
+		{
+			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/page/p1.html.hbs",
+			"tar": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/template/page/p1.html.hbs"
+		},
+		{
+			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/page/p2.html.hbs",
+			"tar": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/template/page/p2.html.hbs"
 		}
 	],
-	"publish": []
+	"publish": [
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/sup1_all/pre_p1_suf.html",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/sup1_all/pre_p2_suf.html",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/sup1_all/pre_p3_suf.html",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/sup1_double/A1_group_A2/p_p1_s.html",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/sup1_double/A1_group_A2/p_p2_s.html",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/sup1_p1.html",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/one.html",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/ready_p2.html",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/ready_p3.html",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/P_p1_S.html",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/P_p2_S.html",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/P_p3_S.html",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/AA1_group_AA2/P_p1_S.html",
+		"/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/AA1_group_AA2/P_p2_S.html"
+	]
 }
