@@ -16,7 +16,7 @@ class Template extends Mod2 {
         this.group.add('double', [
             { page: 'p1.html', context: '{0}group{1}/p1.html' },
             { page: 'p2.html', context: '{0}group{1}/p2.html' },
-        ], ['', '']);
+        ], ['__', '_']);
         
         // 페이지 또는 그룹 등록
         this.attachGroup(this.group['all'], 'P_', '_S', ['A1_', '_A2']);

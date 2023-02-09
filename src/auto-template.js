@@ -624,14 +624,22 @@ class AutoTemplate {
                             if (!data._parent[prop]) localData[prop] = data[prop];
                         }
                         // isSave = typeof localData.dir === 'undefined' ? false : true;
-                        if (typeof localData['dir'] === 'string' || typeof localData['path'] === 'string') isSave = true;
-                        subPath = localData['path'] || compileSrc.subPath.replace('.hbs','');
-                        subPath = localData['dir'] ? localData['dir'] + path.sep + subPath : subPath;
-
-                        if (isSave) {
-                            // compileSrc.savePath = _this.dir + path.sep + _this.PATH.SRC + path.sep + compileSrc.subPath.replace('.hbs','');
+                        // if (typeof localData['dir'] === 'string' || typeof localData['path'] === 'string') isSave = true;
+                        // subPath = localData['path'] || compileSrc.subPath.replace('.hbs','');
+                        // subPath = localData['dir'] ? localData['dir'] + path.sep + subPath : subPath;
+                        // POINT:
+                        if (typeof localData['path'] === 'string' && localData['path'].length > 0 ){
+                            isSave = true;
+                            subPath = localData['path'];
+                            subPath = subPath.replaceAll('/', path.sep);
+                            subPath = subPath.replaceAll('\\', path.sep);
                             compileSrc.savePath = _this.used.dir + path.sep + _this.DIR.PUB + path.sep + subPath;
                         }
+
+                        // if (isSave) {
+                        //     // compileSrc.savePath = _this.dir + path.sep + _this.PATH.SRC + path.sep + compileSrc.subPath.replace('.hbs','');
+                        //     compileSrc.savePath = _this.used.dir + path.sep + _this.DIR.PUB + path.sep + subPath;
+                        // }
                         content = compileSrc._compile(localData, isSave);
                         return isSave === true ? '' : content + '\n';
                     }
