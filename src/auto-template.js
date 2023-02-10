@@ -28,6 +28,7 @@ class AutoTemplate {
         SRC: 'src',
         PUB: 'src',
         PAGE: 'template/page',
+        ORIGIN: 'template/__origin',
     }
     DELIMITER = {
         HELPER: '-',
@@ -238,19 +239,19 @@ class AutoTemplate {
 
     /**
      * 깨끗이 지운다. 생성파일을 삭제한다.
-     * @param {number} opt = 1: 모두삭제, 2: 모두삭제(커버수정제외), 3: 커버삭제(수정제외)
+     * @param {number} opt = 1: 모두삭제, 2: 모두삭제(커버수정제외)
      */
     clear(opt = 1) {
 
         const buildFile = this.dir + path.sep + this.FILE.BUILD;
         let filePath, oriPath, dir, dirs = [];
-        let newCover = [], areaDirs = [];
+        let aboveCover = [], abovePub = [], areaDirs = [];
         // let source;
 
         function __checkChangeFile(tarPath, oriPath) {
             let oriData, tarData;
             // return true; 디버깅용
-            if (opt === 1) return true;
+            // if (opt === 1) return true;
             if(fs.existsSync(tarPath)) tarData = fs.readFileSync(tarPath,'utf-8');
             else return false;  // 대상파일이 없으니 수정없음 처리
             
@@ -273,26 +274,39 @@ class AutoTemplate {
             } else if (__checkChangeFile(filePath, oriPath)) {
                 fs.unlinkSync(filePath);
             } else {
-                newCover.push(this._buildFile['cover'][i]);
+                aboveCover.push(this._buildFile['cover'][i]);
             }
             // 폴더 경로 저장
             dir = path.dirname(filePath);
             if (dirs.indexOf(dir) < 0) dirs.push(dir);
         }
-        this._buildFile['cover'] = newCover;
+        this._buildFile['cover'] = aboveCover;
 
-        if (opt !== 3) {
-            for (let i = 0; i < this._buildFile['publish'].length; i++) {
-                filePath = this._buildFile['publish'][i];
-                if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-                // 폴더 경로 저장
-                dir = path.dirname(filePath);
-                if (dirs.indexOf(dir) < 0) dirs.push(dir);
+
+        for (let i = 0; i < this._buildFile['publish'].length; i++) {
+            filePath = this._buildFile['publish'][i].tar;
+            oriPath = this._buildFile['publish'][i].ori;
+
+            if (opt === 1 && fs.existsSync(filePath)) {    // 강제 삭제
+                fs.unlinkSync(filePath);
+            } else if (__checkChangeFile(filePath, oriPath)) {
+                fs.unlinkSync(filePath);
+            } else {
+                abovePub.push(this._buildFile['publish'][i]);
             }
-            this._buildFile['publish'] = [];
+            // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+            // 폴더 경로 저장
+            dir = path.dirname(filePath);
+            if (dirs.indexOf(dir) < 0) dirs.push(dir);
         }
+        // this._buildFile['publish'] = [];
+        this._buildFile['publish'] = abovePub;
 
-        if (this._buildFile['cover'].length === 0 &&  fs.existsSync(buildFile)) fs.unlinkSync(buildFile);
+        // 남은 원본 확인후 삭제
+
+
+        if (this._buildFile['cover'].length === 0 &&  this._buildFile['publish'].length === 0 &&  
+            fs.existsSync(buildFile)) fs.unlinkSync(buildFile);
         else this._saveBuildFile();
 
         // 빈폴더 제거
@@ -337,6 +351,11 @@ class AutoTemplate {
         }
 
         // REVIEW: 함수로 추출 검토
+        // areaDirs.push(this.dir + path.sep + this.DIR['HELPER']);
+        // areaDirs.push(this.dir + path.sep + this.DIR['DATA']);
+        // areaDirs.push(this.dir + path.sep + this.DIR['PART']);
+        // areaDirs.push(this.dir + path.sep + this.DIR['SRC']);
+        // areaDirs.push(this.dir + path.sep + this.DIR['PUB']);
         for (const prop in this.DIR) {
             if (Object.hasOwnProperty.call(this.DIR, prop)) areaDirs.push(this.dir + path.sep + this.DIR[prop]);
         }  
@@ -721,7 +740,8 @@ class AutoTemplate {
     _addBuildFile(savePath, type) {
         if (type === 'cover' && !this._buildFile['cover'].find(val => val.tar === savePath.tar)) {
             this._buildFile['cover'].push(savePath);
-        } else if (type === 'publish' && this._buildFile['publish'].indexOf(savePath) < 0) {
+        // } else if (type === 'publish' && this._buildFile['publish'].indexOf(savePath) < 0) {
+        } else if (type === 'publish' && !this._buildFile['publish'].find(val => val.tar === savePath.tar)) {
             this._buildFile['publish'].push(savePath);
         }
     }

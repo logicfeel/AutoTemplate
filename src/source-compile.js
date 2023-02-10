@@ -21,6 +21,7 @@ class CompileSource extends TemplateSource {
     #helper     = [];
     #data       = [];
     #savePath   = null;
+    #origin     = null;
     #event      = new Observer(this, this);
 
     /*_______________________________________*/        
@@ -38,8 +39,11 @@ class CompileSource extends TemplateSource {
         const fullPath = dir + path.sep + this.localPath;
         return this.#savePath === null ? fullPath : this.#savePath;
     }
-
     set savePath(val) { this.#savePath = val; }
+    get origin() {
+        return this.#origin === null;
+    }
+    set origin(val) { this.#origin = val; }
     
     /*_______________________________________*/        
     // event property
@@ -84,7 +88,7 @@ class CompileSource extends TemplateSource {
         const outerScope = this._template.outerScope;
         const used = this._template.used;
         let _this = this;
-        let template, content, dirname;
+        let template, content, dirname, originPath;
 
         // 이벤트 발생
         this._onCompile(this);
@@ -116,8 +120,11 @@ class CompileSource extends TemplateSource {
             }
             fs.writeFileSync(this.savePath, content, 'utf8');
 
+            // 원본 저장
+            originPath = this._setOrigin(this.subPath, content);
+
             // 빌드 파일 추가
-            used._addBuildFile(this.savePath, 'publish')
+            used._addBuildFile({tar:this.savePath, ori: originPath}, 'publish');
 
             // 이벤트 발생
             this._onSave(this, this.savePath);
@@ -129,7 +136,24 @@ class CompileSource extends TemplateSource {
         return content;
     }
 
-    
+    // 원본을 비교해서 넣는다
+    // oriPath 은 subPath 비슷한 성격이다.!
+    _setOrigin(oriPath, data) {
+        // template/__origin/ 폴더 없으면 만들기
+        const dirname = this._template.DIR['ORIGIN'];
+        const savePath = this._template.dir + path.sep + dirname + path.sep + oriPath;
+        const saveDir = path.dirname(savePath);   
+
+        if(!fs.existsSync(saveDir)) {
+            fs.mkdirSync(saveDir, {recursive: true} );
+        }
+
+        // 경로에 파일 없으면 저장, 없으면 통과
+        if(!fs.existsSync(savePath)) fs.writeFileSync(savePath, data, 'utf8');;
+        // 리턴 오리진경로
+        return savePath;
+    }
+
     /*_______________________________________*/
     // event caller
     _onCompile(source) {

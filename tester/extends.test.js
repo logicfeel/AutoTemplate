@@ -131,8 +131,8 @@
                 checkFile(dirname + '/src/P_p3_S.html', 'p3')
 
                 // 생성파일 갯수 확인
-                console.log('생성파일 갯수 검사 : 14');
-                if (autoTask.entry._buildFile.publish.length !== 14){
+                console.log('생성파일 갯수 검사 : 16');
+                if (autoTask.entry._buildFile.publish.length !== 16){
                     throw new Error('생성파일 갯수가 다릅니다.  7!= '+ fullPath);
                 }
 
