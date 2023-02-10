@@ -75,7 +75,7 @@ class AutoTask {
     /**
      * 리셋 태스크 실행 (파일 및 폴더 삭제, 객체 초기화)
      */
-    do_clear(opt = 1) {
+    do_clear(opt) {
         
         let dir, entry, delPath;
 
@@ -94,12 +94,12 @@ class AutoTask {
     /**
      * 탬플릿 소스 출판
      */
-    do_publish() {
+    do_publish(isKeep) {
         this.cursor = 'PUBLISH';
         // 로딩
         this.#init();
         // 빌드
-        this.entry.build();
+        this.entry.build(isKeep);
     }
 
     /**

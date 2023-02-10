@@ -52,6 +52,7 @@ class AutoTemplate {
     TEMP_EXT        = '.hbs';
     defaultPublic   = true;
     isFinal         = false;    // 상속 금지 설정
+    isKeepEdit      = true;     // 수정 파일 유지
     
     /*_______________________________________*/
     // protected
@@ -239,13 +240,14 @@ class AutoTemplate {
 
     /**
      * 깨끗이 지운다. 생성파일을 삭제한다.
-     * @param {number} opt = 1: 모두삭제, 2: 모두삭제(커버수정제외)
+     * @param {number} opt = 1: 모두삭제, 2: 모두삭제(수정제외)
      */
-    clear(opt = 1) {
+    clear(opt = 2) {
 
         const buildFile = this.dir + path.sep + this.FILE.BUILD;
+        const originDir = this.dir + path.sep + this.DIR['ORIGIN'];
         let filePath, oriPath, dir, dirs = [];
-        let aboveCover = [], abovePub = [], areaDirs = [];
+        let ignoreCover = [], ignorePub = [], areaDirs = [];
         // let source;
 
         function __checkChangeFile(tarPath, oriPath) {
@@ -274,13 +276,13 @@ class AutoTemplate {
             } else if (__checkChangeFile(filePath, oriPath)) {
                 fs.unlinkSync(filePath);
             } else {
-                aboveCover.push(this._buildFile['cover'][i]);
+                ignoreCover.push(this._buildFile['cover'][i]);
             }
             // 폴더 경로 저장
             dir = path.dirname(filePath);
             if (dirs.indexOf(dir) < 0) dirs.push(dir);
         }
-        this._buildFile['cover'] = aboveCover;
+        this._buildFile['cover'] = ignoreCover;
 
 
         for (let i = 0; i < this._buildFile['publish'].length; i++) {
@@ -292,7 +294,7 @@ class AutoTemplate {
             } else if (__checkChangeFile(filePath, oriPath)) {
                 fs.unlinkSync(filePath);
             } else {
-                abovePub.push(this._buildFile['publish'][i]);
+                ignorePub.push(this._buildFile['publish'][i]);
             }
             // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
             // 폴더 경로 저장
@@ -300,9 +302,11 @@ class AutoTemplate {
             if (dirs.indexOf(dir) < 0) dirs.push(dir);
         }
         // this._buildFile['publish'] = [];
-        this._buildFile['publish'] = abovePub;
+        this._buildFile['publish'] = ignorePub;
 
         // 남은 원본 확인후 삭제
+        if (opt == 1) fs.rmSync(originDir, { recursive: true, force: true });
+
 
 
         if (this._buildFile['cover'].length === 0 &&  this._buildFile['publish'].length === 0 &&  
@@ -376,7 +380,7 @@ class AutoTemplate {
     /**
      * src 에 등록된 소스를 빌드한다.(템플릿을 컴파일한다.)
      */
-    build() {
+    build(isKeep) {
         
         let instance = null;
         // let prefix, suffix, args;
@@ -390,6 +394,9 @@ class AutoTemplate {
 
         // 이벤트 발생
         this._onBuild(this, this._auto);
+
+        // 편집 유지 설정
+        if (typeof isKeep === 'boolean') this.isKeepEdit;
 
         // 소스 컴파일
         for (let i = 0; i < this.src.count; i++) {

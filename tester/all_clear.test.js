@@ -17,10 +17,11 @@
     var result = [];        // 결과 확인 **사용시 초기화
     var isCallback = global.isCallback === false ? false : true;
     var taskCnt = 0;
-
+    
     var fs, path;
     var AutoTask, autoTask;
-    
+    var args = process.argv.slice(2);
+
     if (typeof module === 'object' && typeof module.exports === 'object') {   
         AutoTask                = require('../src/auto-task').AutoTask;
         fs                      = require('fs');
@@ -29,6 +30,10 @@
         // Item                 = global._W.Meta.Entity.Item;
         throw new Error('nodeJs 전용입니다. ');
     }
+
+    // process.argv.forEach((val, index) => {
+    //     console.log(`${index}: ${val}`);
+    // });
 
     //==============================================================
     // 3. 테스트 본문
@@ -40,27 +45,28 @@
         (function() {   // IIFE
 
             try {
-                var filePath;
+                var filePath, opt;
+                opt = args[0] ? Number(args[0]) : undefined;
 
                 filePath = __dirname+ '/base/mod1';
                 console.log('대상 : '+ filePath);
                 autoTask = AutoTask.create(filePath);
-                autoTask.do_clear();
+                autoTask.do_clear(opt);
 
                 filePath = __dirname+ '/import/mod1';
                 console.log('대상 : '+ filePath);
                 autoTask = AutoTask.create(filePath);
-                autoTask.do_clear();
+                autoTask.do_clear(opt);
 
                 filePath = __dirname+ '/pageGroup/mod1';
                 console.log('대상 : '+ filePath);
                 autoTask = AutoTask.create(filePath);
-                autoTask.do_clear();
+                autoTask.do_clear(opt);
 
                 filePath = __dirname+ '/extends/mod1';
                 console.log('대상 : '+ filePath);
                 autoTask = AutoTask.create(filePath);
-                autoTask.do_clear();
+                autoTask.do_clear(opt);
 
                 // filePath = __dirname+ '/base/mod1';
                 // console.log('대상 : '+ filePath);
@@ -72,6 +78,7 @@
             } catch(e) {
                 errorCnt++;
                 console.warn('Result = Fail [ %s ] ', e);
+                if (e.stack) console.warn(e.stack);
             } finally {
                 taskCnt++;
             }

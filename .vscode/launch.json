@@ -92,6 +92,14 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "teaster/all_clear(opt=1)",
+            "args": ["1"],
+            "program": "${workspaceFolder}/tester/all_clear.test.js"
+        },
+
+        {
+            "type": "node",
+            "request": "launch",
             "name": "teaster/main",
             "program": "${workspaceFolder}/tester/main.test.js"
         },

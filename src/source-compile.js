@@ -41,7 +41,8 @@ class CompileSource extends TemplateSource {
     }
     set savePath(val) { this.#savePath = val; }
     get origin() {
-        return this.#origin === null;
+        // return this.#origin === null;
+        return this.#origin === null ? this.subPath : this.#origin;
     }
     set origin(val) { this.#origin = val; }
     
@@ -87,8 +88,9 @@ class CompileSource extends TemplateSource {
         const localScope = this._template.localScope;
         const outerScope = this._template.outerScope;
         const used = this._template.used;
+        const isKeepEdit = this._template.isKeepEdit;
         let _this = this;
-        let template, content, dirname, originPath;
+        let template, content, dirname, originPath, oriData;
 
         // 이벤트 발생
         this._onCompile(this);
@@ -118,10 +120,24 @@ class CompileSource extends TemplateSource {
             if(!fs.existsSync(dirname)) {
                 fs.mkdirSync(dirname, {recursive: true} );  // 디렉토리 만들기
             }
-            fs.writeFileSync(this.savePath, content, 'utf8');
-
             // 원본 저장
-            originPath = this._setOrigin(this.subPath, content);
+            originPath = this._setOrigin(this.origin, content);
+            
+            
+            // 편집 유지일 경우
+            if (isKeepEdit) {
+                // 파일의 유무 확인
+                if (!fs.existsSync(this.savePath) || content === fs.readFileSync(this.savePath,'utf-8')) {
+                    fs.writeFileSync(this.savePath, content, 'utf8');
+                }
+                //     if(fs.existsSync(originPath)) oriData = fs.readFileSync(originPath,'utf-8');
+                // if (oriData !== content && fs.existsSync(this.savePath)) {
+                //     fs.writeFileSync(this.savePath, content, 'utf8');
+                // }
+            } else {
+                // 저장
+                fs.writeFileSync(this.savePath, content, 'utf8');
+            }
 
             // 빌드 파일 추가
             used._addBuildFile({tar:this.savePath, ori: originPath}, 'publish');
@@ -242,6 +258,9 @@ class CompileCollection extends PropertyCollection {
         // }
 
         tarSrc = new CompileSource(this._owner, dir, this.area, alias, filePath);
+        
+        if (obj instanceof CompileSource) tarSrc.origin = obj.origin;   // 원본경로 설정
+
         if (obj instanceof TemplateSource && obj._template !== this._template) {
             tarSrc.content = function(data, hb) {
                 return obj._compile(data, false);
