@@ -156,8 +156,10 @@ class CompileSource extends TemplateSource {
     // oriPath 은 subPath 비슷한 성격이다.!
     _setOrigin(oriPath, data) {
         // template/__origin/ 폴더 없으면 만들기
-        const dirname = this._template.DIR['ORIGIN'];
-        const savePath = this._template.dir + path.sep + dirname + path.sep + oriPath;
+        // const dirname = this._template.DIR['ORIGIN'];
+        // const savePath = this._template.dir + path.sep + dirname + path.sep + oriPath;
+        const dirname = this._template.used.DIR['ORIGIN'];
+        const savePath = this._template.used.dir + path.sep + dirname + path.sep + oriPath;
         const saveDir = path.dirname(savePath);   
 
         if(!fs.existsSync(saveDir)) {
@@ -211,13 +213,13 @@ class CompileCollection extends PropertyCollection {
     // public method
     /**
      * 컬렉션에 객체를 생성하여 추가
-     * @param {*} alias 별칭
-     * @param {function | object | CompileSource | string} obj  대상
+     * @param {string | TemplateSource} obj 별칭, 템플릿소스
+     * @param {function | object | string | CompileSource} value  대상
      * dss
      * @param {*} filePath glob를 통해서 입력한 경우만 
      * @overloading 상위 add(..) 호출함
      */
-    add(alias, obj, filePath = null, dir = this._owner.dir) {
+    add(obj, value, filePath = null, dir = this._owner.dir) {
         
         // const delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
         const delimiter = this._owner.DELIMITER.PART;
@@ -225,20 +227,34 @@ class CompileCollection extends PropertyCollection {
         // const areaDir = this._owner.DIR[this.area.toUpperCase()];
         const areaDir = this._owner.DIR[this.area];
         let tarSrc, content;
-
+        let alias;
+    
         // 초기값 설정
-        content = obj instanceof TemplateSource ? obj.content : obj;
+        if (obj instanceof TemplateSource) {
+            alias = obj.alias;
+            value = obj;
+        } else alias = obj;
+
+        // content = obj instanceof TemplateSource ? obj.content : obj;
+        if (value instanceof TemplateSource) {
+            content = function(data, hb) {
+                return value._compile(data, false);
+            }
+        } else content = value;
+        
 
         // 유효성 검사
         if (typeof alias !== 'string' || alias.length === 0) {
             throw new Error('alias에 string 만 지정할 수 있습니다.');
         }
         if (typeof content === 'undefined' || content === null) {
-            throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');
+            throw new Error('value에 null 또는 undefined 지정할 수 없습니다. ');
         }
+        // area별 타입 검사
         if (!(typeof content === 'function' || typeof content === 'string')) {
             throw new Error('가능한 타입 : string, function');
         }
+
 
         // 별칭 규칙 검사
         if (this.area === 'PART') {
@@ -259,15 +275,18 @@ class CompileCollection extends PropertyCollection {
 
         tarSrc = new CompileSource(this._owner, dir, this.area, alias, filePath);
         
-        if (obj instanceof CompileSource) tarSrc.origin = obj.origin;   // 원본경로 설정
+        if (value instanceof CompileSource) tarSrc.origin = value.origin;   // 원본경로 설정
 
-        if (obj instanceof TemplateSource && obj._template !== this._template) {
-            tarSrc.content = function(data, hb) {
-                return obj._compile(data, false);
-            }
-        } else {
-            tarSrc.content = content;
-        }
+
+        // if (obj instanceof TemplateSource && obj._template !== this._template) {
+        //     tarSrc.content = function(data, hb) {
+        //         return obj._compile(data, false);
+        //     }
+        // } else {
+        //     tarSrc.content = content;
+        // }
+        // POINT:
+        tarSrc.content = content;
 
         /**
          * 우선순위 : CompileSource > CompileSource > native(fun, str, bool, num..)

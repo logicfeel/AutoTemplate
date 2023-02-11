@@ -22,19 +22,17 @@ class AutoTemplate {
         GROUP: 'GROUP',
     };
     DIR = {
-        HELPER: 'template/helper',
+        HELPER: 'template/helper',  // TODO: path.sep 로 통일해야함
         DATA: 'template/data',
         PART: 'template/part',
         SRC: 'src',
         PUB: 'src',
         PAGE: 'template/page',
-        ORIGIN: 'template/__origin',
+        ORIGIN: 'template/__cache',
     }
     DELIMITER = {
         HELPER: '-',
         DATA: '.',
-        // POINT:
-        // PART: '/',
         PART: path.sep,
         SRC: path.sep,
         PAGE: path.sep,
@@ -156,9 +154,6 @@ class AutoTemplate {
      * @param {Automation?} auto 소속된 오토메이션
      */
     constructor(dir, auto) {
-        
-        // let buildFile;
-        
         if (dir) this.dir = dir;      // Automation 설정시 사용
         if (auto) this._auto = auto;     // Automation 설정시 사용
         this.#namespace = new NamespaceCollection(this);
@@ -168,15 +163,6 @@ class AutoTemplate {
         this.#src       = new CompileCollection(this, this.AREA.SRC);
         this.#page      = new CompileCollection(this, this.AREA.PAGE);
         this.#group     = new PageGroupCollection(this);
-
-        // 사용처에서만 사용됨
-        // if (this === this.used) {
-        //     if (fs.existsSync(this.dir + path.sep + this.FILE.BUILD)) {
-        //         buildFile = require(this.dir + path.sep + this.FILE.BUILD);
-        //         if (buildFile.cover) this._buildFile['cover'] = buildFile.cover;
-        //         if (buildFile.publish) this._buildFile['publish'] = buildFile.publish;
-        //     }
-        // }
     }
 
     /*_______________________________________*/        
@@ -216,11 +202,7 @@ class AutoTemplate {
         this.part.addGlob(this.GLOB.PART);
         this.src.addGlob(this.GLOB.SRC);
         this.page.addGlob(this.GLOB.PAGE);
-        this.group._setAllPage();   // group.all 컬렉션 추가
-
-        // // 빌드 스코스 설정
-        // this._localScope = this._getLocalScope();
-        // this._outerScope = this._getOuterScope();
+        this.group._setDefaultProp();   // group.all 컬렉션 추가
 
         // 이벤트 발생
         this._onInited(this, this._auto);
@@ -360,14 +342,14 @@ class AutoTemplate {
         // areaDirs.push(this.dir + path.sep + this.DIR['PART']);
         // areaDirs.push(this.dir + path.sep + this.DIR['SRC']);
         // areaDirs.push(this.dir + path.sep + this.DIR['PUB']);
+        // REVIEW: 코드 검토 필요
         for (const prop in this.DIR) {
             if (Object.hasOwnProperty.call(this.DIR, prop)) areaDirs.push(this.dir + path.sep + this.DIR[prop]);
         }  
-
         dirs.forEach(delDir => {
             let areaDir, subDir, arr;
             // 기본 areaDir 제외
-            if (areaDirs.indexOf(delDir) < 0) {
+            if (areaDirs.indexOf(delDir) < 0 && delDir.indexOf(this.dir) === 0) {
                 areaDir = areaDirs.find(arrDir => delDir.indexOf(arrDir) > -1 );
                 subDir = delDir.substring(areaDir.length + 1);
                 arr = subDir.split(path.sep);

@@ -17,6 +17,7 @@ class Template extends AutoTemplate {
         this.attachGroup('all', 'P', 'S', ['A1', 'A2']);
         this.attachGroup('double', 'P', 'S', ['AA1', 'AA2']);
         this.src.add('newP3.html', this.page['p3.html']);
+        this.src.add(this.page['p3.html']); // 즉시 등록
     }
 }
 

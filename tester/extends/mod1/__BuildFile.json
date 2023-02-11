@@ -1,13 +1,29 @@
 {
-	"cover": [],
-	"publish": [
+	"cover": [
 		{
-			"tar": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/sup1_p1.html",
-			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/template/__origin/p1.html"
+			"ori": "/Users/logic/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/helper/bold.js",
+			"tar": "/Users/logic/PJ-Git/AutoTemplate#v01/tester/extends/mod1/template/helper/bold.js"
 		},
 		{
-			"tar": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/ready_p3.html",
-			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/template/__origin/p3.html"
+			"ori": "/Users/logic/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/part/content.hbs",
+			"tar": "/Users/logic/PJ-Git/AutoTemplate#v01/tester/extends/mod1/template/part/content.hbs"
+		},
+		{
+			"ori": "/Users/logic/PJ-Git/AutoTemplate#v01/tester/extends/mod3/template/part/title.hbs",
+			"tar": "/Users/logic/PJ-Git/AutoTemplate#v01/tester/extends/mod1/template/part/title.hbs"
+		},
+		{
+			"ori": "/Users/logic/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/part/inc/header.hbs",
+			"tar": "/Users/logic/PJ-Git/AutoTemplate#v01/tester/extends/mod1/template/part/inc/header.hbs"
+		},
+		{
+			"ori": "/Users/logic/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/page/p1.html.hbs",
+			"tar": "/Users/logic/PJ-Git/AutoTemplate#v01/tester/extends/mod1/template/page/p1.html.hbs"
+		},
+		{
+			"ori": "/Users/logic/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/page/p2.html.hbs",
+			"tar": "/Users/logic/PJ-Git/AutoTemplate#v01/tester/extends/mod1/template/page/p2.html.hbs"
 		}
-	]
+	],
+	"publish": []
 }

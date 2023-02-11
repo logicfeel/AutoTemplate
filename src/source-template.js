@@ -141,20 +141,32 @@ class TemplateCollection extends PropertyCollection {
 
     /**
      * 컬렉션에 객체를 생성하여 추가
-     * @param {*} alias 별칭
-     * @param {function | object | TemplateSource} obj  대상
+     * @param {string | TemplateSource} obj 별칭
+     * @param {function | object | TemplateSource} value  대상
      * @param {*?} filePath glob를 통해서 입력한 경우만 
      * @param {string?} dir 
      * @overloading 상위 add(..) 호출함
      */
-    add(alias, obj, filePath = null, dir = this._owner.dir) {
+    add(obj, value, filePath = null, dir = this._owner.dir) {
         
         // const localDir = this._owner.AREA[this.area];
         // const localDir = this._owner.DIR[this.area];
         let tarSrc, content;
+        let alias;
 
         // 초기값 설정
-        content = obj instanceof TemplateSource ? obj.content : obj;
+        // content = obj instanceof TemplateSource ? obj.content : obj;
+        if (obj instanceof TemplateSource) {
+            alias = obj.alias;
+            value = obj;
+        } else alias = obj;
+
+        if (obj instanceof TemplateSource) {
+            content = function(data, hb) {
+                return value._compile(data, false);
+            }
+        } else content = value;
+
 
         // 유효성 검사
         if (typeof alias !== 'string' || alias.length === 0) {
@@ -163,10 +175,10 @@ class TemplateCollection extends PropertyCollection {
         if (typeof content === 'undefined' || content === null) {
             throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');
         }
+        // area별 타입 검사
         if (this.area === 'DATA' && !(typeof content === 'function' || typeof content === 'object')) {
             throw new Error('area[DATA] 가능한 타입 : object(null 제외), function');
-        }
-        if (this.area === 'HELPER' && !(typeof content === 'function')) {
+        } else if (this.area === 'HELPER' && !(typeof content === 'function')) {
             throw new Error('area[HELPER] 가능한 타입 : function');
         }
 

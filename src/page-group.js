@@ -47,13 +47,15 @@ class PageGroup {
      * 페이지 개체를 설정한다.
      * @param {object | array} obj 배열 또는 객체
      */
-    add(obj) {
+    add(obj, defArgs) {
         
         let arr = [];
         let pageObj, src, alias, context;
 
         if (Array.isArray(obj)) arr = [...obj];
         else arr.push(obj);
+
+        if (defArgs) this.argfix = defArgs;
 
         for (let i = 0; i < arr.length; i++) {
             
@@ -175,13 +177,66 @@ class PageGroupCollection extends PropertyCollection {
 
     /**
      * 페이지 그룹 추가
-     * @param {string} alias 
-     * @param {array<object>} pages 
-     * @param {array<string>} defaltFix 
+     * @param {string | PageGroup} alias name | PageGroup
+     * @param {array<object> | PageGroup} pages config<obj> | PageGroup
+     * @param {array<string>?} defaltFix 
      */
-    add(alias, pages, deffix) {
+    // add(alias, pages, deffix) {
+
+    //     let pg = null;
+
+    //     // 유효성 검사
+    //     if (typeof alias !== 'string' || alias.length === 0) {
+    //         throw new Error('alias에 string 만 지정할 수 있습니다.');
+    //     }
+    //     if (!Array.isArray(pages)) {
+    //         throw new Error('pages array<object> 만 지정할 수 있습니다.');
+    //     }
+    //     if (!Array.isArray(deffix)) {
+    //         throw new Error('alias에 array<object> 만 지정할 수 있습니다.');
+    //     }
+
+    //     // 별칭 규칙 검사
+    //     this._groupSymbol.forEach(val => {
+    //         if ((val instanceof RegExp && val.test(alias)) || 
+    //             (typeof val === 'string' && val === alias)) {
+    //             throw new Error('[group]에 예약어를 입력할 수 없습니다. : all');
+    //         }
+    //     });
+
+    //     pg = new PageGroup(this._owner, alias);
+    //     pg.add(pages, deffix);
+    //     // pg.argfix = deffix;
+    //     // pg.fixs = ['aa', 'Aa'];
+    //     // pg.prefix = 'aa';
+    //     // pg.suffix = 'BB';
+
+    //     super.add(alias, pg);
+    // }
+    add(obj, value, deffix = []) {
 
         let pg = null;
+        let alias, pages = [];
+
+        // 초기화 alias
+        if (obj instanceof PageGroup) {
+            alias = obj.alias;
+            value = obj;
+        } else {
+            alias = obj;
+            // pages = value;
+        }
+        // 
+        if (value instanceof PageGroup) {
+            // content = function(data, hb) {
+            //     return value._compile(data, false);
+            // }
+            pg = value;
+        } else {
+            // pg = new PageGroup(this._owner, alias);
+            pages = value;
+        }
+
 
         // 유효성 검사
         if (typeof alias !== 'string' || alias.length === 0) {
@@ -191,7 +246,7 @@ class PageGroupCollection extends PropertyCollection {
             throw new Error('pages array<object> 만 지정할 수 있습니다.');
         }
         if (!Array.isArray(deffix)) {
-            throw new Error('alias에 array<object> 만 지정할 수 있습니다.');
+            throw new Error('deffix 는 array<object> 만 지정할 수 있습니다.');
         }
 
         // 별칭 규칙 검사
@@ -202,20 +257,22 @@ class PageGroupCollection extends PropertyCollection {
             }
         });
 
-        pg = new PageGroup(this._owner, alias);
-        pg.add(pages);
-        pg.argfix = deffix;
+        if (!(pg instanceof PageGroup)){
+            pg = new PageGroup(this._owner, alias);
+            pg.add(pages, deffix);
+        }
+        // pg.argfix = deffix;
         // pg.fixs = ['aa', 'Aa'];
         // pg.prefix = 'aa';
         // pg.suffix = 'BB';
 
         super.add(alias, pg);
     }
-
     /**
-     * group.all 컬렉션 설정
+     * group.all 컬렉션 설정 setPropDefault
+     * 
      */
-    _setAllPage() {
+    _setDefaultProp() {
 
         // const pg = new PageGroup(this._owner, 'all', pages, defaltFix);
         const pg = new PageGroup(this._owner, 'all');
