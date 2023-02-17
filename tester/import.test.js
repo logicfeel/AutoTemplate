@@ -39,13 +39,13 @@
         console.log('---------------------------------------------------------------------------');
         console.log('import 검사: ns/out1, ns ');
         
-        autoTask = AutoTask.create(dirname);
         
         (function() {   // IIFE
             
+            autoTask = AutoTask.create(dirname);
+
             try {
                 
-
                 function chk_one_html(data) {
                     if (
                         data.indexOf('<!--src/one.html-->') < 0 ||
@@ -147,6 +147,32 @@
                 console.warn('Result = Fail [ %s ] [%s] ', e, e.message);
                 // console.warn(e.stack);
 
+            } finally {
+                taskCnt++;
+            }
+
+        }());
+
+        (function() {   // IIFE
+            autoTask = AutoTask.create(dirname);
+            // autoTask.init();
+            try {
+                var entry  = autoTask.entry;
+                
+                // 오류 발생 테스트
+                // entry.import('aa')
+                /**
+                 * 어떤식으로 추가해야 할까?
+                 * 객체로 생성해서 오류 발생시킬지?
+                 * 오류발생하는 클래스를 만들지?
+                 */
+                
+
+                console.log('Result = Success ');
+            } catch(e) {
+                errorCnt++;
+                console.warn('Result = Fail [ %s ] [%s] ', e, e.message);
+                // console.warn(e.stack);
             } finally {
                 taskCnt++;
             }

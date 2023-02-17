@@ -1,7 +1,8 @@
 
 const {AutoTemplate} = require('../../../src/auto-template');
-const Out1 = require('../out1/template');
-const out1 = new Out1();
+// const Out1 = require('../out1/template');
+// const out1 = new Out1();
+const out1 = new (require('../out1/template').AutoTemplate);
 
 class Template extends AutoTemplate {
     constructor() {
@@ -24,4 +25,5 @@ class Template extends AutoTemplate {
     }
 }
 
-module.exports = Template;
+// module.exports = Template;
+exports.AutoTemplate = Template;

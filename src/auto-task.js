@@ -123,7 +123,7 @@ class AutoTask {
         // 다양한 조건에 예외조건을 수용해야함
         const EntryTemplate = require(entryFile);
         // 타입 검사해야함
-        this.entry = new EntryTemplate();
+        this.entry = typeof EntryTemplate === 'function' ? new EntryTemplate() : new EntryTemplate.AutoTemplate();
         // entry 초기화
         this.entry.init();
     }

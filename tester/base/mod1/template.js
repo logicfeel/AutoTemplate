@@ -7,4 +7,5 @@ class Template extends AutoTemplate {
     }
 }
 
-module.exports = Template;
+// module.exports = Template;
+exports.AutoTemplate = Template;

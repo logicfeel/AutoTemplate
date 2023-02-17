@@ -429,10 +429,10 @@ class AutoTemplate {
      * @param {AutoTemplate} template 
      */
     import(alias, template) {
-        // 템플릿 검사
-        if (!(template instanceof AutoTemplate)) new Error('AutoTemplate 타입만 설정할 수 있습니다.');
-        // 템플릿 사용위치 설정
-        template.used = this.used;
+        // // 템플릿 검사
+        // if (!(template instanceof AutoTemplate)) new Error('AutoTemplate 타입만 설정할 수 있습니다.');
+        // // 템플릿 사용위치 설정
+        // template.used = this.used;
         // 외부 템플릿 등록
         this.namespace.add(alias, template);
     }
@@ -870,6 +870,25 @@ class NamespaceCollection extends PropertyCollection {
         super(owner);
         this._owner = owner;
     }
+
+    /**
+     * 오토템플릿 추가
+     * @override
+     * @param {string} alias 
+     * @param {AutoTemplate} obj 
+     */
+    add(alias, template) {
+        
+        if (typeof alias !== 'string') new Error('alias string 타입만 설정할 수 있습니다.');
+        if (alias.length === 0) new Error('alias 빈문자열을 삽입 할 수 없습니다.');
+        // 템플릿 검사
+        if (!(template instanceof AutoTemplate)) new Error('AutoTemplate 타입만 설정할 수 있습니다.');
+        // 템플릿 사용위치 설정
+        template.used = this._owner.used;
+        // 부모 호출
+        super.add(alias, template);
+    }
+
 }
 
 

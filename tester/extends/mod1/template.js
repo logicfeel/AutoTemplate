@@ -1,10 +1,11 @@
 
-const {AutoTemplate} = require('../../../src/auto-template');
-const Mod2 = require('../mod2/template');
+// const {AutoTemplate} = require('../../../src/auto-template');
+// const Mod2 = require('../mod2/template');
+const {AutoTemplate} = require('../mod2/template');
 // const Out1 = require('../out1/template');
 // const out1 = new Out1();
 
-class Template extends Mod2 {
+class Template extends AutoTemplate {
     constructor() {
         super();
         this.dir = __dirname;
@@ -27,4 +28,5 @@ class Template extends Mod2 {
     }
 }
 
-module.exports = Template;
+// module.exports = Template;
+exports.AutoTemplate = Template;
