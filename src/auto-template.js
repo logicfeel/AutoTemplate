@@ -190,12 +190,12 @@ class AutoTemplate {
         }
         
         // 지역 초기화
-        this.helper.clear();
-        this.data.clear();
-        this.part.clear();
-        this.src.clear();
-        this.page.clear();
-        this.group.clear();
+        // this.helper.clear();
+        // this.data.clear();
+        // this.part.clear();
+        // this.src.clear();
+        // this.page.clear();
+        // this.group.clear();
         // 적재
         this.helper.addGlob(this.GLOB.HELPER);
         this.data.addGlob(this.GLOB.DATA);
@@ -356,6 +356,13 @@ class AutoTemplate {
                 delEmptyDir(areaDir + path.sep + arr[0]);
             }
         });
+
+        this.helper.clear();
+        this.data.clear();
+        this.part.clear();
+        this.src.clear();
+        this.page.clear();
+        this.group.clear();
 
     }
 
