@@ -13,7 +13,7 @@ class CompileSource extends TemplateSource {
     
     /*_______________________________________*/        
     // public
-    wax = null;
+    // wax = null;
     
     /*_______________________________________*/        
     // private
@@ -56,7 +56,7 @@ class CompileSource extends TemplateSource {
     // constructor method
     constructor(template, dir, area, alias, filePath = null) {
         super(template, dir, area, alias, filePath);
-        this.wax = handlebarsWax(handlebars.create());
+        this._wax = handlebarsWax(handlebars.create());
     }
     /*_______________________________________*/
     // public method
@@ -96,22 +96,22 @@ class CompileSource extends TemplateSource {
         this._onCompile(this);
         
         // 외부 스코프
-        this.wax.partials(outerScope.part);
-        this.wax.helpers(outerScope.helper);
-        this.wax.data(outerScope.data);
+        this._wax.partials(outerScope.part);
+        this._wax.helpers(outerScope.helper);
+        this._wax.data(outerScope.data);
 
         // 지역 스코프
-        this.wax.partials(localScope.part);
-        this.wax.helpers(localScope.helper);
-        this.wax.data(localScope.data);
+        this._wax.partials(localScope.part);
+        this._wax.helpers(localScope.helper);
+        this._wax.data(localScope.data);
 
         // 내부 스코프
-        this.#part.forEach(val => this.wax.partials(val.glob, val.opt));
-        this.#helper.forEach(val => this.wax.helpers(val.glob, val.opt));
-        this.#data.forEach(val => this.wax.data(val.glob, val.opt));
+        this.#part.forEach(val => this._wax.partials(val.glob, val.opt));
+        this.#helper.forEach(val => this._wax.helpers(val.glob, val.opt));
+        this.#data.forEach(val => this._wax.data(val.glob, val.opt));
 
         // 템플릿 컴파일
-        template = this.wax.compile(this.content);
+        template = this._wax.compile(this.content);
         content = template(data);
         
         // 파일저장

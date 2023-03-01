@@ -13,7 +13,10 @@ class CompileSource extends TemplateSource {
     
     /*_______________________________________*/        
     // public
-    wax = null;
+
+    /*_______________________________________*/        
+    // protected
+    _wax = null;
     
     /*_______________________________________*/        
     // private

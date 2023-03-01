@@ -1,10 +1,12 @@
 const path                      = require('path');
 const glob                      = require('glob');
 const { PropertyCollection }    = require('entitybind');
+// const { PropertyCollection, MetaElement }    = require('entitybind');
 
 /**
  * 템플릿소스 클래스
  */
+// class TemplateSource extends MetaElement {
 class TemplateSource {
     
     /*_______________________________________*/        
@@ -49,6 +51,7 @@ class TemplateSource {
     get fileName() { return this.#filePath !== null ? path.basename(this.#filePath) : null; }
     get filePath() { return this.#filePath; }
 
+
     /**
      * 템플릿소스 생성자
      * @param {AutoTemplate} owner 소속된 템플릿
@@ -57,7 +60,9 @@ class TemplateSource {
      * @param {*?} fullPath 전체경로(최상위부터)
      */
     constructor(template, dir, area, alias, filePath = null) {
-        
+        // super(alias);
+        // super();
+
         let delimiter;
         
         this._template = template;
@@ -73,6 +78,30 @@ class TemplateSource {
         this.#subPath = alias.replaceAll(delimiter, path.sep);
         this.#filePath = filePath;
     }
+
+    getObject() {
+        let obj = {};
+
+        for (var prop in this) {
+            // if (this[prop] instanceof TemplateSource) {
+            //     obj[prop] = this[prop].getObject(p_context);
+            // } else if (typeof this[prop] !== 'function' && prop.substr(0, 1) !== '_') {
+            //     obj[prop] = this[prop];
+            // }
+            if (typeof this[prop] !== 'function' && prop.substr(0, 1) !== '_') {
+                obj[prop] = this[prop];
+            }
+
+            // for(var prop in p_option) {
+            //     if (p_option.hasOwnProperty(prop) && 
+            //         ['domType', 'isReadOnly', 'isHide', 'element', 'selector', 'getFilter', 'setFilter'].indexOf(prop) > -1) {
+            //         this[prop] = p_option[prop];
+            //     }
+            // }
+        
+        }
+        return obj;
+    }     
 }
 
 /**

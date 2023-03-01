@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`기본 검사 : do_clear >> do_publish  스냅샷 검사 1`] = `
+"@part/inc/footer@
+<p>기본 footer. </p>
+@entity.Table=1@
+@part/inc/header@
+<div class="header">
+  header 내용입 
+  X param:
+  X params.[0]:
+  X params.0:
+  @entity.Tables.[0]:10@
+</div>
+
+inc 하단에 내용
+@part/inc/content@
+
+내용임
+
+@<div class="mybold">BOLD</div>@
+- End - "
+`;
+
+exports[`기본 검사 : do_clear >> do_publish  스냅샷 검사 2`] = `
+"{
+	"isPublic": true,
+	"content": "{{> inc/footer }}\\n\\n{{#> inc/header }}\\n    @inc/header:none@ 없음\\n{{/inc/header }}\\n\\n@{{#bold }}BOLD{{/bold }}@\\n- End - "
+}"
+`;
