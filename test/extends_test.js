@@ -25,3 +25,4 @@ const a = new C();
 
 
 console.log(0);
+

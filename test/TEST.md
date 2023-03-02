@@ -30,3 +30,15 @@
 ## ETC
 - [ ] 오토와의 연동
     + YY
+
+
+```mermaid
+graph TD;
+AA("abcd")
+BB("cdef")
+CC("kkk")
+A-->B
+A-->C
+B-->D
+C-->D
+```
