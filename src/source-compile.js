@@ -16,6 +16,10 @@ class CompileSource extends TemplateSource {
     // wax = null;
     
     /*_______________________________________*/        
+    // protected
+    _wax = null;
+
+    /*_______________________________________*/        
     // private
     #part       = [];
     #helper     = [];
@@ -60,6 +64,17 @@ class CompileSource extends TemplateSource {
     }
     /*_______________________________________*/
     // public method
+    getObject() {
+        let obj1 = super.getObject();
+        let obj2 = {
+            saveName: this.saveName,
+            saveDir: this.saveDir,
+            savePath: this.savePath,
+            origin: this.origin,
+        };
+        return { ...obj1, ...obj2 };
+    }
+
     partials(pattern, opt) {
         this.#part.push({glob: pattern, opt: opt});
     }

@@ -52,6 +52,7 @@ class TemplateSource {
     get filePath() { return this.#filePath; }
 
 
+    
     /**
      * 템플릿소스 생성자
      * @param {AutoTemplate} owner 소속된 템플릿
@@ -77,29 +78,46 @@ class TemplateSource {
         delimiter = template.DELIMITER[area];
         this.#subPath = alias.replaceAll(delimiter, path.sep);
         this.#filePath = filePath;
+
+        // Object.defineProperty(this.prototype, 'fullPath', {enumerable: true});
     }
 
     getObject() {
-        let obj = {};
+        let obj = {
+            isPublic: this.isPublic,
+            content: this.content,
+            dir: this.dir,
+            area: this.area,
+            fullPath: this.fullPath,
+            areaDir: this.areaDir,
+            subDir: this.subDir,
+            subPath: this.subPath,
+            localDir: this.localDir,
+            localPath: this.localPath,
+            name: this.name,
+            fileName: this.fileName,
+            filePath: this.filePath,
+        };
+        // let super = getObject();
 
-        for (var prop in this) {
-            // if (this[prop] instanceof TemplateSource) {
-            //     obj[prop] = this[prop].getObject(p_context);
-            // } else if (typeof this[prop] !== 'function' && prop.substr(0, 1) !== '_') {
-            //     obj[prop] = this[prop];
-            // }
-            if (typeof this[prop] !== 'function' && prop.substr(0, 1) !== '_') {
-                obj[prop] = this[prop];
-            }
+        // for (var prop in this) {
+        //     // if (this[prop] instanceof TemplateSource) {
+        //     //     obj[prop] = this[prop].getObject(p_context);
+        //     // } else if (typeof this[prop] !== 'function' && prop.substr(0, 1) !== '_') {
+        //     //     obj[prop] = this[prop];
+        //     // }
+        //     if (typeof this[prop] !== 'function' && prop.substring(0, 1) !== '_') {
+        //         obj[prop] = this[prop];
+        //     }
 
-            // for(var prop in p_option) {
-            //     if (p_option.hasOwnProperty(prop) && 
-            //         ['domType', 'isReadOnly', 'isHide', 'element', 'selector', 'getFilter', 'setFilter'].indexOf(prop) > -1) {
-            //         this[prop] = p_option[prop];
-            //     }
-            // }
+        //     // for(var prop in p_option) {
+        //     //     if (p_option.hasOwnProperty(prop) && 
+        //     //         ['domType', 'isReadOnly', 'isHide', 'element', 'selector', 'getFilter', 'setFilter'].indexOf(prop) > -1) {
+        //     //         this[prop] = p_option[prop];
+        //     //     }
+        //     // }
         
-        }
+        // }
         return obj;
     }     
 }

@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`task :: do_publish() 속성 1`] = `
+"{
+	"isPublic": true,
+	"content": "{{> inc/footer }}\\n\\n{{#> inc/header }}\\n    @inc/header:none@ 없음\\n{{/inc/header }}\\n\\n@{{#bold }}BOLD{{/bold }}@\\n- End - ",
+	"dir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
+	"area": "SRC",
+	"fullPath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src/one.html",
+	"areaDir": "src",
+	"subDir": "",
+	"subPath": "one.html",
+	"localDir": "src",
+	"localPath": "src/one.html",
+	"name": "one.html",
+	"fileName": "one.html.hbs",
+	"filePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src/one.html.hbs",
+	"saveName": "one.html",
+	"saveDir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src",
+	"savePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src/one.html",
+	"origin": "one.html"
+}"
+`;
+
+exports[`task :: do_publish() 파일 비교 1`] = `
+"@part/inc/footer@
+<p>기본 footer. </p>
+@entity.Table=1@
+@part/inc/header@
+<div class="header">
+  header 내용입 
+  X param:
+  X params.[0]:
+  X params.0:
+  @entity.Tables.[0]:10@
+</div>
+
+inc 하단에 내용
+@part/inc/content@
+
+내용임
+
+@<div class="mybold">BOLD</div>@
+- End - "
+`;

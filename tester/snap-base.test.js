@@ -18,6 +18,8 @@ describe.only("기본 검사 : do_clear >> do_publish ", () => {
     autoTask = AutoTask.create(dirname);
     autoTask.do_clear();
     autoTask.do_publish();
+    const aaa = 1;
+    bbb = 2
   });
 
   it("스냅샷 검사", () => {
@@ -30,7 +32,9 @@ describe.only("기본 검사 : do_clear >> do_publish ", () => {
     
     // autoTask = AutoTask.create(dirname);
     
-    
+  // console.log(aaa);
+  // console.log(bbb);
+  
     // autoTask.do_clear();
     
     // autoTask.do_publish();
