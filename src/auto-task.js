@@ -1,6 +1,10 @@
 const fs                = require('fs');
 const path              = require('path');
 const { Observer }      = require('entitybind');
+// import fs from "fs";
+// import path from "path";
+// import { Observer } from "entitybind";
+
 // const { SourceBatch }   = require('./source-batch');
 
 /**
@@ -121,7 +125,10 @@ class AutoTask {
         // 현재 폴더의 auto.js 파일 로딩
         const entryFile  = entry ? this.#dir + path.sep + entry : this.#dir + path.sep + this.FILE.TEMPLATE;
         // 다양한 조건에 예외조건을 수용해야함
+        
         const EntryTemplate = require(entryFile);
+        // import {AutoTemplate} from entryFile;
+        // const {AutoTemplate} = await import(entryFile);
         // 타입 검사해야함
         this.entry = typeof EntryTemplate === 'function' ? new EntryTemplate() : new EntryTemplate.AutoTemplate();
         // entry 초기화
@@ -160,5 +167,13 @@ class AutoTask {
     // }
 
 }
+console.log('ee');
+
+// export function aaa() {}
 
 exports.AutoTask = AutoTask;
+// export default AutoTask
+// export { AutoTask }
+
+// export const aaa = "AAA"
+

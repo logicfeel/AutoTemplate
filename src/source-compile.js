@@ -5,6 +5,16 @@ const handlebars                        = require('handlebars');
 const handlebarsWax                     = require('handlebars-wax');
 const { PropertyCollection, Observer }  = require('entitybind');
 const { TemplateSource }                = require('./source-template');
+// import fs from "fs";
+// import path from "path";
+// import glob from "glob";
+// import handlebars from "handlebars";
+// import handlebarsWax from "handlebars-wax";
+// // import * as handlebarsWax from "handlebarsWax";
+// import { PropertyCollection, Observer } from "entitybind";
+// import { TemplateSource } from "./source-template.js";
+
+
 
 /**
  * 컴파일소스 클래스
@@ -423,3 +433,4 @@ class CompileCollection extends PropertyCollection {
 
 exports.CompileSource = CompileSource;
 exports.CompileCollection = CompileCollection;
+// export { CompileSource, CompileCollection }

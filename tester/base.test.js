@@ -1,10 +1,17 @@
+import fs from "fs";
+import path from "path";
+import { AutoTask } from "../src/auto-task.js";
+
+const __dirname = path.resolve();
+
 // - 기본 : base.js
 //     + 소스 출판 
 //     + 클리어
 //     + 조각, 헬퍼, 데이터
 //     + 템플릿 다른 파일 불러오기
-(function(global) {
-    'use strict';
+
+// (function(global) {
+    // 'use strict';
 
     //==============================================================
     // 1. 모듈 네임스페이스 선언
@@ -18,19 +25,23 @@
     var isCallback = global.isCallback === false ? false : true;
     var taskCnt = 0;
 
-    var fs, path;
-    var AutoTask, autoTask
+    // var fs, path;
+    // var AutoTask, autoTask
+    var autoTask;
     var dirname, fullPath, data;
     
-    if (typeof module === 'object' && typeof module.exports === 'object') {   
-        AutoTask                = require('../src/auto-task').AutoTask;
-        fs                      = require('fs');
-        path                    = require('path');
-    } else {
-        // Item                 = global._W.Meta.Entity.Item;
-        throw new Error('nodeJs 전용입니다. ');
-    }
+    // if (typeof module === 'object' && typeof module.exports === 'object') {   
+        // AutoTask                = require('../src/auto-task').AutoTask;
+        // fs                      = require('fs');
+        // path                    = require('path');
+       
 
+
+    // } else {
+        // Item                 = global._W.Meta.Entity.Item;
+        // throw new Error('nodeJs 전용입니다. ');
+    // }
+console.log(1)
     //==============================================================
     // 3. 테스트 본문
     function run() {
@@ -202,12 +213,14 @@
         };
     }
 
+    run.call(this);
+
     //==============================================================
     // 5. 모듈 내보내기 (node | web)
-    if (typeof module === 'object' && typeof module.exports === 'object') {     
-        module.exports = run();
-    } else {
-        global._W.Test.base = {run: run};
-    }
+    // if (typeof module === 'object' && typeof module.exports === 'object') {     
+    //     module.exports = run();
+    // } else {
+    //     global._W.Test.base = {run: run};
+    // }
 
-}(typeof module === 'object' && typeof module.exports === 'object' ? global : window));
+// }(typeof module === 'object' && typeof module.exports === 'object' ? global : window));

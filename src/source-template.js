@@ -1,6 +1,11 @@
 const path                      = require('path');
 const glob                      = require('glob');
 const { PropertyCollection }    = require('entitybind');
+// import path from "path";
+// import glob from "glob";
+// import { PropertyCollection } from "entitybind";
+
+
 // const { PropertyCollection, MetaElement }    = require('entitybind');
 
 /**
@@ -345,3 +350,4 @@ class TemplateCollection extends PropertyCollection {
 
 exports.TemplateSource = TemplateSource;
 exports.TemplateCollection = TemplateCollection;
+// export { TemplateSource, TemplateCollection }

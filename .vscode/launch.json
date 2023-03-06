@@ -4,11 +4,6 @@
     // 자세한 내용을 보려면 https://go.microsoft.com/fwlink/?linkid=830387을(를) 방문하세요.
     "version": "0.2.0",
     "configurations": [
-    
-
-
-
-
         {
             "type": "node",
             "request": "launch",
@@ -133,6 +128,28 @@
             "request": "launch",
             "name": "teaster/j-base",
             "program": "${workspaceFolder}/tester/j-base.test.js"
+        },
+        {
+            "name": "Launch via npm",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["test", "__test__/base.test.js"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Tests",
+            "program": "${workspaceRoot}/node_modules/.bin/jest",
+            "cwd": "${workspaceRoot}",
+            "args": ["--i", "--config", "__test__/base.test.js"],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "_test_ run",
+            "program": "${workspaceFolder}/__test__/base.test.js"
         },
     ]
 }

@@ -5,6 +5,14 @@ const { PropertyCollection, Observer }      = require('entitybind');
 const { TemplateCollection }                = require('./source-template');
 const { CompileCollection }                 = require('./source-compile');
 const { PageGroupCollection, PageGroup }    = require('./page-group');
+// import fs from "fs";
+// import path from "path";
+// import glob from "glob";
+// import { PropertyCollection, Observer } from "entitybind";
+// import { TemplateCollection } from "./source-template.js";
+// import { CompileCollection } from "./source-compile.js";
+// import { PageGroupCollection, PageGroup } from "./page-group.js";
+
 
 /**
  * 오토템플릿 클래스
@@ -900,3 +908,4 @@ class NamespaceCollection extends PropertyCollection {
 
 
 exports.AutoTemplate = AutoTemplate;
+// export { AutoTemplate }

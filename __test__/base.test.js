@@ -1,6 +1,14 @@
+
+// import {describe, expect, test} from '@jest/globals';
+// import fs from "fs";
+// import path from "path";
+// import {AutoTask} from "../src/auto-task";
+
 const fs        = require('fs');
 const path      = require('path');
 const AutoTask  = require('../src/auto-task').AutoTask;
+// const {describe, expect, test} = require('@jest/globals');
+
 const dirname   = __dirname + '/base/mod1';
 let autoTask    = null;
 
@@ -31,8 +39,18 @@ describe("task :: do_publish()", () => {
         expect(data).toMatchSnapshot();
     });
     it("속성", () => {
-        const prop = autoTask.entry.src['one.html'].getObject();
-        expect(JSON.stringify(prop, null, '\t')).toMatchSnapshot();
+        const prop1 = autoTask.entry.data['entity'].getObject();
+        const prop2 = autoTask.entry.helper['bold'].getObject();
+        const prop3 = autoTask.entry.part['inc/content'].getObject();
+        const prop4 = autoTask.entry.part['inc/footer'].getObject();
+        const prop5 = autoTask.entry.part['inc/header'].getObject();
+        const prop6 = autoTask.entry.src['one.html'].getObject();
+        expect(JSON.stringify(prop1, null, '\t')).toMatchSnapshot();
+        expect(JSON.stringify(prop2, null, '\t')).toMatchSnapshot();
+        expect(JSON.stringify(prop3, null, '\t')).toMatchSnapshot();
+        expect(JSON.stringify(prop4, null, '\t')).toMatchSnapshot();
+        expect(JSON.stringify(prop5, null, '\t')).toMatchSnapshot();
+        expect(JSON.stringify(prop6, null, '\t')).toMatchSnapshot();
     });
 });
 
