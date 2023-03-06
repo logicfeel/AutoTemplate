@@ -19,7 +19,10 @@ describe("task :: do_clear()", () => {
     });
     it("파일 유무", () => {
         const fullPath = dirname + '/src/one.html';
+        // 시점은 검토해야함
+        // const publish = require(path.join(dirname, '__BuildFile.json'));
         expect(fs.existsSync(fullPath)).toBeFalsy();
+        
     });
 });
 

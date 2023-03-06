@@ -4,6 +4,10 @@
 		{
 			"tar": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src/one.html",
 			"ori": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/__cache/one.html"
+		},
+		{
+			"tar": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src/one.html",
+			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/__cache/one.html"
 		}
 	]
 }
