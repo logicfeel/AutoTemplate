@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`task :: do_publish() 속성 1`] = `
+exports[`task :: do_publish() [속성 비교] data : entity.json 1`] = `
 "{
 	"isPublic": true,
 	"content": {
@@ -24,7 +24,7 @@ exports[`task :: do_publish() 속성 1`] = `
 }"
 `;
 
-exports[`task :: do_publish() 속성 2`] = `
+exports[`task :: do_publish() [속성 비교] helper : bold.js 1`] = `
 "{
 	"isPublic": true,
 	"dir": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
@@ -41,7 +41,7 @@ exports[`task :: do_publish() 속성 2`] = `
 }"
 `;
 
-exports[`task :: do_publish() 속성 3`] = `
+exports[`task :: do_publish() [속성 비교] part : inc/content.hbs 1`] = `
 "{
 	"isPublic": true,
 	"content": "@part/inc/content@\\n\\n내용임\\n",
@@ -63,7 +63,7 @@ exports[`task :: do_publish() 속성 3`] = `
 }"
 `;
 
-exports[`task :: do_publish() 속성 4`] = `
+exports[`task :: do_publish() [속성 비교] part : inc/foote.hbs 1`] = `
 "{
 	"isPublic": true,
 	"content": "@part/inc/footer@\\n<p>기본 footer. </p>\\n@entity.Table={{ entity.Table }}@",
@@ -85,7 +85,7 @@ exports[`task :: do_publish() 속성 4`] = `
 }"
 `;
 
-exports[`task :: do_publish() 속성 5`] = `
+exports[`task :: do_publish() [속성 비교] part : inc/header.hbs 1`] = `
 "{
 	"isPublic": true,
 	"content": "@part/inc/header@\\n<div class=\\"header\\">\\n  header 내용입 \\n  X param:{{param}}\\n  X params.[0]:{{params.[0]}}\\n  X params.0:{{param}}\\n  @entity.Tables.[0]:{{ entity.Tables.[0] }}@\\n{{#each params}}\\n    {{this}} sss\\n{{/each}}\\n</div>\\n\\ninc 하단에 내용\\n{{> inc/content }}",
@@ -107,7 +107,7 @@ exports[`task :: do_publish() 속성 5`] = `
 }"
 `;
 
-exports[`task :: do_publish() 속성 6`] = `
+exports[`task :: do_publish() [속성 비교] src : one.html.hbs 1`] = `
 "{
 	"isPublic": true,
 	"content": "{{> inc/footer }}\\n\\n{{#> inc/header }}\\n    @inc/header:none@ 없음\\n{{/inc/header }}\\n\\n@{{#bold }}BOLD{{/bold }}@\\n- End - ",
@@ -129,7 +129,7 @@ exports[`task :: do_publish() 속성 6`] = `
 }"
 `;
 
-exports[`task :: do_publish() 파일 비교 1`] = `
+exports[`task :: do_publish() [파일 비교] : /src/one.html 1`] = `
 "@part/inc/footer@
 <p>기본 footer. </p>
 @entity.Table=1@

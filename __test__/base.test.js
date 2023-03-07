@@ -15,7 +15,7 @@ let autoTask    = null;
 describe("task :: do_clear()", () => {
     beforeEach(() => {
         autoTask = AutoTask.create(dirname);
-        autoTask.do_clear();
+        autoTask.do_clear(1);
     });
     it("파일 유무", () => {
         const fullPath = dirname + '/src/one.html';
@@ -31,29 +31,41 @@ describe("task :: do_publish()", () => {
         autoTask = AutoTask.create(dirname);
         autoTask.do_publish();
     });
-    it("파일 유무", () => {
+    it("[파일 유무] : /src/one.html", () => {
         const fullPath = dirname + '/src/one.html';
         expect(fs.existsSync(fullPath)).toBeTruthy();
     });
-    it("파일 비교", () => {
+    it("[파일 비교] : /src/one.html", () => {
         const fullPath = dirname + '/src/one.html';
         const data = fs.readFileSync(fullPath,'utf-8');
         expect(fs.existsSync(fullPath)).toBeTruthy();
         expect(data).toMatchSnapshot();
     });
-    it("속성", () => {
-        const prop1 = autoTask.entry.data['entity'].getObject();
-        const prop2 = autoTask.entry.helper['bold'].getObject();
-        const prop3 = autoTask.entry.part['inc/content'].getObject();
-        const prop4 = autoTask.entry.part['inc/footer'].getObject();
-        const prop5 = autoTask.entry.part['inc/header'].getObject();
-        const prop6 = autoTask.entry.src['one.html'].getObject();
-        expect(JSON.stringify(prop1, null, '\t')).toMatchSnapshot();
-        expect(JSON.stringify(prop2, null, '\t')).toMatchSnapshot();
-        expect(JSON.stringify(prop3, null, '\t')).toMatchSnapshot();
-        expect(JSON.stringify(prop4, null, '\t')).toMatchSnapshot();
-        expect(JSON.stringify(prop5, null, '\t')).toMatchSnapshot();
-        expect(JSON.stringify(prop6, null, '\t')).toMatchSnapshot();
+    describe("[속성 비교]", () => {
+        it("data : entity.json", () => {
+            const prop = autoTask.entry.data['entity'].getObject();
+            expect(JSON.stringify(prop, null, '\t')).toMatchSnapshot();
+        });
+        it("helper : bold.js", () => {
+            const prop = autoTask.entry.helper['bold'].getObject();
+            expect(JSON.stringify(prop, null, '\t')).toMatchSnapshot();
+        });
+        it("part : inc/content.hbs", () => {
+            const prop = autoTask.entry.part['inc/content'].getObject();
+            expect(JSON.stringify(prop, null, '\t')).toMatchSnapshot();
+        });
+        it("part : inc/foote.hbs", () => {
+            const prop = autoTask.entry.part['inc/footer'].getObject();
+            expect(JSON.stringify(prop, null, '\t')).toMatchSnapshot();
+        });
+        it("part : inc/header.hbs", () => {
+            const prop = autoTask.entry.part['inc/header'].getObject();
+            expect(JSON.stringify(prop, null, '\t')).toMatchSnapshot();
+        });
+        it("src : one.html.hbs", () => {
+            const prop = autoTask.entry.src['one.html'].getObject();
+            expect(JSON.stringify(prop, null, '\t')).toMatchSnapshot();
+        });
     });
 });
 
