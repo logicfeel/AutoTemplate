@@ -1,8 +1,10 @@
-{{> inc/footer }}
+<one><!--src/one.html-->
 
-{{#> inc/header }}
-    @inc/header:none@ 없음
-{{/inc/header }}
+    {{#>inc/header }}
+        @inc/header:none@ 없음
+    {{/inc/header}}
 
-@{{#bold }}BOLD{{/bold }}@
-- End - 
+    {{> inc/footer }}
+
+    @{{#bold }}BOLD{{/bold }}@
+</one>

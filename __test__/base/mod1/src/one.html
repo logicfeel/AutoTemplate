@@ -1,19 +1,20 @@
-@part/inc/footer@
-<p>기본 footer. </p>
-@entity.Table=1@
-@part/inc/header@
-<div class="header">
-  header 내용입 
-  X param:
-  X params.[0]:
-  X params.0:
-  @entity.Tables.[0]:10@
-</div>
+<one><!--src/one.html-->
 
-inc 하단에 내용
-@part/inc/content@
+<header><!--part/inc/header-->
+  # data 삽입 
+  $entity.Tables.[0]:10$
 
-내용임
 
-@<div class="mybold">BOLD</div>@
-- End - 
+  # part 삽입
+  <content><!--part/inc/content-->
+      내용임
+  </content>
+</header>
+
+    <footer><!--part/inc/footer-->
+        <p>기본 footer. </p>
+        $entity.Table=1$
+    </footer>
+
+    @<div class="mybold">BOLD</div>@
+</one>

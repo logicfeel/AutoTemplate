@@ -1,5 +1,30 @@
 {
-	"cover": [],
+	"cover": [
+		{
+			"tar": "template/helper/bold.js",
+			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/helper/bold.js"
+		},
+		{
+			"tar": "template/part/content.hbs",
+			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/part/content.hbs"
+		},
+		{
+			"tar": "template/part/title.hbs",
+			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod3/template/part/title.hbs"
+		},
+		{
+			"tar": "template/part/inc/header.hbs",
+			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/part/inc/header.hbs"
+		},
+		{
+			"tar": "template/page/p1.html.hbs",
+			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/page/p1.html.hbs"
+		},
+		{
+			"tar": "template/page/p2.html.hbs",
+			"ori": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod2/template/page/p2.html.hbs"
+		}
+	],
 	"publish": [
 		{
 			"tar": "/Users/kimneo/PJ-Git/AutoTemplate#v01/tester/extends/mod1/src/sup1_all/pre_p1_suf.html",

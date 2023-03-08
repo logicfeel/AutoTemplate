@@ -1,0 +1,19 @@
+<one><!--src/one.html-->
+
+  {{>inc/footer }}
+
+  {{>inc/header }}
+
+  @{{#bold }}BOLD{{/bold }}@
+
+  # p1 삽입 
+  {{>page/p1.html }}
+
+  # ns data 조회
+  $entity.Tables={{entity.Tables}}$
+
+{{>group/all dir='inner_all' prefix='pre_' suffix='_suf' }}
+{{>group/double dir='inner_double' prefix='p_' suffix='_s' args='A1,A2' }}
+{{>page/p1.html path='create_p1.html' }}
+
+</one>

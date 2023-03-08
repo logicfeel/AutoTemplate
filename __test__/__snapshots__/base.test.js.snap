@@ -1,6 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`task :: do_publish() [속성 비교] data : entity.json 1`] = `
+exports[`task :: do_publish() - 파일 비교 : src/one.html 1`] = `
+"<one><!--src/one.html-->
+
+<header><!--part/inc/header-->
+  # data 삽입 
+  $entity.Tables.[0]:10$
+
+
+  # part 삽입
+  <content><!--part/inc/content-->
+      내용임
+  </content>
+</header>
+
+    <footer><!--part/inc/footer-->
+        <p>기본 footer. </p>
+        $entity.Table=1$
+    </footer>
+
+    @<div class="mybold">BOLD</div>@
+</one>"
+`;
+
+exports[`task :: do_publish() 속성  - data : entity.json 1`] = `
 "{
 	"isPublic": true,
 	"content": {
@@ -10,9 +33,9 @@ exports[`task :: do_publish() [속성 비교] data : entity.json 1`] = `
 			20
 		]
 	},
-	"dir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
+	"dir": "@@",
 	"area": "DATA",
-	"fullPath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/data/entity",
+	"fullPath": "@@/template/data/entity",
 	"areaDir": "template/data",
 	"subDir": "",
 	"subPath": "entity",
@@ -20,16 +43,16 @@ exports[`task :: do_publish() [속성 비교] data : entity.json 1`] = `
 	"localPath": "template/data/entity",
 	"name": "entity",
 	"fileName": "entity.json",
-	"filePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/data/entity.json"
+	"filePath": "@@/template/data/entity.json"
 }"
 `;
 
-exports[`task :: do_publish() [속성 비교] helper : bold.js 1`] = `
+exports[`task :: do_publish() 속성  - helper : bold.js 1`] = `
 "{
 	"isPublic": true,
-	"dir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
+	"dir": "@@",
 	"area": "HELPER",
-	"fullPath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/helper/bold",
+	"fullPath": "@@/template/helper/bold",
 	"areaDir": "template/helper",
 	"subDir": "",
 	"subPath": "bold",
@@ -37,17 +60,17 @@ exports[`task :: do_publish() [속성 비교] helper : bold.js 1`] = `
 	"localPath": "template/helper/bold",
 	"name": "bold",
 	"fileName": "bold.js",
-	"filePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/helper/bold.js"
+	"filePath": "@@/template/helper/bold.js"
 }"
 `;
 
-exports[`task :: do_publish() [속성 비교] part : inc/content.hbs 1`] = `
+exports[`task :: do_publish() 속성  - part : inc/content.hbs 1`] = `
 "{
 	"isPublic": true,
-	"content": "@part/inc/content@\\n\\n내용임\\n",
-	"dir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
+	"content": "<content><!--part/inc/content-->\\n    내용임\\n</content>",
+	"dir": "@@",
 	"area": "PART",
-	"fullPath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/content",
+	"fullPath": "@@/template/part/inc/content",
 	"areaDir": "template/part",
 	"subDir": "inc",
 	"subPath": "inc/content",
@@ -55,21 +78,21 @@ exports[`task :: do_publish() [속성 비교] part : inc/content.hbs 1`] = `
 	"localPath": "template/part/inc/content",
 	"name": "content",
 	"fileName": "content.hbs",
-	"filePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/content.hbs",
+	"filePath": "@@/template/part/inc/content.hbs",
 	"saveName": "content",
-	"saveDir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc",
-	"savePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/content",
+	"saveDir": "@@/template/part/inc",
+	"savePath": "@@/template/part/inc/content",
 	"origin": "inc/content"
 }"
 `;
 
-exports[`task :: do_publish() [속성 비교] part : inc/foote.hbs 1`] = `
+exports[`task :: do_publish() 속성  - part : inc/foote.hbs 1`] = `
 "{
 	"isPublic": true,
-	"content": "@part/inc/footer@\\n<p>기본 footer. </p>\\n@entity.Table={{ entity.Table }}@",
-	"dir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
+	"content": "<footer><!--part/inc/footer-->\\n    <p>기본 footer. </p>\\n    $entity.Table={{ entity.Table }}$\\n</footer>\\n",
+	"dir": "@@",
 	"area": "PART",
-	"fullPath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/footer",
+	"fullPath": "@@/template/part/inc/footer",
 	"areaDir": "template/part",
 	"subDir": "inc",
 	"subPath": "inc/footer",
@@ -77,21 +100,21 @@ exports[`task :: do_publish() [속성 비교] part : inc/foote.hbs 1`] = `
 	"localPath": "template/part/inc/footer",
 	"name": "footer",
 	"fileName": "footer.hbs",
-	"filePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/footer.hbs",
+	"filePath": "@@/template/part/inc/footer.hbs",
 	"saveName": "footer",
-	"saveDir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc",
-	"savePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/footer",
+	"saveDir": "@@/template/part/inc",
+	"savePath": "@@/template/part/inc/footer",
 	"origin": "inc/footer"
 }"
 `;
 
-exports[`task :: do_publish() [속성 비교] part : inc/header.hbs 1`] = `
+exports[`task :: do_publish() 속성  - part : inc/header.hbs 1`] = `
 "{
 	"isPublic": true,
-	"content": "@part/inc/header@\\n<div class=\\"header\\">\\n  header 내용입 \\n  X param:{{param}}\\n  X params.[0]:{{params.[0]}}\\n  X params.0:{{param}}\\n  @entity.Tables.[0]:{{ entity.Tables.[0] }}@\\n{{#each params}}\\n    {{this}} sss\\n{{/each}}\\n</div>\\n\\ninc 하단에 내용\\n{{> inc/content }}",
-	"dir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
+	"content": "<header><!--part/inc/header-->\\n  # data 삽입 \\n  $entity.Tables.[0]:{{ entity.Tables.[0] }}$\\n\\n  {{#each params}}\\n      {{this}} sss\\n  {{/each}}\\n\\n  # part 삽입\\n  {{> inc/content }}\\n\\n</header>\\n",
+	"dir": "@@",
 	"area": "PART",
-	"fullPath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/header",
+	"fullPath": "@@/template/part/inc/header",
 	"areaDir": "template/part",
 	"subDir": "inc",
 	"subPath": "inc/header",
@@ -99,21 +122,21 @@ exports[`task :: do_publish() [속성 비교] part : inc/header.hbs 1`] = `
 	"localPath": "template/part/inc/header",
 	"name": "header",
 	"fileName": "header.hbs",
-	"filePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/header.hbs",
+	"filePath": "@@/template/part/inc/header.hbs",
 	"saveName": "header",
-	"saveDir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc",
-	"savePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/header",
+	"saveDir": "@@/template/part/inc",
+	"savePath": "@@/template/part/inc/header",
 	"origin": "inc/header"
 }"
 `;
 
-exports[`task :: do_publish() [속성 비교] src : one.html.hbs 1`] = `
+exports[`task :: do_publish() 속성  - src : one.html.hbs 1`] = `
 "{
 	"isPublic": true,
-	"content": "{{> inc/footer }}\\n\\n{{#> inc/header }}\\n    @inc/header:none@ 없음\\n{{/inc/header }}\\n\\n@{{#bold }}BOLD{{/bold }}@\\n- End - ",
-	"dir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
+	"content": "<one><!--src/one.html-->\\n\\n    {{#>inc/header }}\\n        @inc/header:none@ 없음\\n    {{/inc/header}}\\n\\n    {{> inc/footer }}\\n\\n    @{{#bold }}BOLD{{/bold }}@\\n</one>",
+	"dir": "@@",
 	"area": "SRC",
-	"fullPath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src/one.html",
+	"fullPath": "@@/src/one.html",
 	"areaDir": "src",
 	"subDir": "",
 	"subPath": "one.html",
@@ -121,32 +144,10 @@ exports[`task :: do_publish() [속성 비교] src : one.html.hbs 1`] = `
 	"localPath": "src/one.html",
 	"name": "one.html",
 	"fileName": "one.html.hbs",
-	"filePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src/one.html.hbs",
+	"filePath": "@@/src/one.html.hbs",
 	"saveName": "one.html",
-	"saveDir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src",
-	"savePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src/one.html",
+	"saveDir": "@@/src",
+	"savePath": "@@/src/one.html",
 	"origin": "one.html"
 }"
-`;
-
-exports[`task :: do_publish() [파일 비교] : /src/one.html 1`] = `
-"@part/inc/footer@
-<p>기본 footer. </p>
-@entity.Table=1@
-@part/inc/header@
-<div class="header">
-  header 내용입 
-  X param:
-  X params.[0]:
-  X params.0:
-  @entity.Tables.[0]:10@
-</div>
-
-inc 하단에 내용
-@part/inc/content@
-
-내용임
-
-@<div class="mybold">BOLD</div>@
-- End - "
 `;
