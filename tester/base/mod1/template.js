@@ -1,6 +1,6 @@
 
-// const {AutoTemplate} = require('../../../src/auto-template');
-import {AutoTemplate} from "../../../src/auto-template"
+const {AutoTemplate} = require('../../../src/auto-template');
+// import {AutoTemplate} from "../../../src/auto-template"
 class Template extends AutoTemplate {
     constructor() {
         super(__dirname);

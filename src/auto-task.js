@@ -19,7 +19,8 @@ class AutoTask {
     FILE = {
         TEMPLATE: 'template.js',
     };
-    
+    isLog = true;
+
     /*_______________________________________*/        
     // protected
     static _instance = null;
@@ -123,7 +124,7 @@ class AutoTask {
 
     #init(entry) {
         // 현재 폴더의 auto.js 파일 로딩
-        const entryFile  = entry ? this.#dir + path.sep + entry : this.#dir + path.sep + this.FILE.TEMPLATE;
+        const entryFile  = entry ? path.join(this.#dir, entry) : path.join(this.#dir, this.FILE.TEMPLATE);
         // 다양한 조건에 예외조건을 수용해야함
         
         const EntryTemplate = require(entryFile);
@@ -132,6 +133,7 @@ class AutoTask {
         // 타입 검사해야함
         this.entry = typeof EntryTemplate === 'function' ? new EntryTemplate() : new EntryTemplate.AutoTemplate();
         // entry 초기화
+        this.entry.isLog = this.isLog;
         this.entry.init();
     }
     
@@ -167,7 +169,7 @@ class AutoTask {
     // }
 
 }
-console.log('ee');
+// console.log('ee');
 
 // export function aaa() {}
 

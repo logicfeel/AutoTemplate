@@ -184,7 +184,7 @@ class CompileSource extends TemplateSource {
         let focusPath = this._template._buildFile['focus'][oriPath] ? this._template._buildFile['focus'][oriPath] : savePath;
         let focusData;        
         
-        // 파일 유무
+        // 파일 유무 
         if (fs.existsSync(focusPath)) {
             // 파일 비교
             if (data !== fs.readFileSync(focusPath,'utf-8')) {

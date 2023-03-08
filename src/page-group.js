@@ -103,11 +103,11 @@ class PageGroup {
             src = page.src;
             context = page.context || src.subPath;
             context = context.replace('.hbs','');
-            context = dir.length > 0 ? dir + path.sep +  context : context;
+            context = dir.length > 0 ? path.join(dir, context) : context;
             // argfix = args.length > 0 ? args : this.#argfix;
             subPath = this._makePath(context, prefix, suffix, argfix);
             
-            src.savePath = used.dir + path.sep + used.DIR.PUB + path.sep + subPath;  // 이름 재설정
+            src.savePath = path.join(used.dir, used.DIR.PUB, subPath);  // 이름 재설정
             src._compile(data, true);
 
             // }
@@ -128,7 +128,7 @@ class PageGroup {
 
         subDir = myPath.dir.length > 0 ? myPath.dir : '';
         filename = prefix + myPath.name + suffix + myPath.ext;
-        subPath = subDir === '' ? filename : subDir + path.sep + filename;
+        subPath = subDir === '' ? filename : path.join(subDir, filename);
         return subPath;
     }
     

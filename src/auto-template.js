@@ -5,14 +5,6 @@ const { PropertyCollection, Observer }      = require('entitybind');
 const { TemplateCollection }                = require('./source-template');
 const { CompileCollection }                 = require('./source-compile');
 const { PageGroupCollection, PageGroup }    = require('./page-group');
-// import fs from "fs";
-// import path from "path";
-// import glob from "glob";
-// import { PropertyCollection, Observer } from "entitybind";
-// import { TemplateCollection } from "./source-template.js";
-// import { CompileCollection } from "./source-compile.js";
-// import { PageGroupCollection, PageGroup } from "./page-group.js";
-
 
 /**
  * 오토템플릿 클래스
@@ -30,13 +22,13 @@ class AutoTemplate {
         GROUP: 'GROUP',
     };
     DIR = {
-        HELPER: 'template/helper',  // TODO: path.sep 로 통일해야함
-        DATA: 'template/data',
-        PART: 'template/part',
+        HELPER: path.join('template', 'helper'),
+        DATA: path.join('template', 'data'),
+        PART: path.join('template', 'part'),
         SRC: 'src',
         PUB: 'src',
-        PAGE: 'template/page',
-        ORIGIN: 'template/__cache',
+        PAGE: path.join('template', 'page'),
+        ORIGIN: path.join('template', '__cache'),
     }
     DELIMITER = {
         HELPER: '-',
@@ -59,6 +51,7 @@ class AutoTemplate {
     defaultPublic   = true;
     isFinal         = false;    // 상속 금지 설정
     isKeepEdit      = true;     // 수정 파일 유지
+    isLog           = true;
     
     /*_______________________________________*/
     // protected
@@ -66,6 +59,7 @@ class AutoTemplate {
     _buildFile = {
         cover: [],
         publish: [],
+        focus: {},
     };
     _groupInstance = [];
     
@@ -217,10 +211,11 @@ class AutoTemplate {
 
         // 사용처에서만 사용됨
         if (this === this.used) {
-            if (fs.existsSync(this.dir + path.sep + this.FILE.BUILD)) {
-                buildFile = require(this.dir + path.sep + this.FILE.BUILD);
-                if (buildFile.cover) this._buildFile['cover'] = buildFile.cover;
-                if (buildFile.publish) this._buildFile['publish'] = buildFile.publish;
+            if (fs.existsSync(path.join(this.dir, this.FILE.BUILD))) {
+                buildFile = require(path.join(this.dir, this.FILE.BUILD));
+                if (buildFile.cover) this._buildFile['cover'] = buildFile['cover'];
+                if (buildFile.publish) this._buildFile['publish'] = buildFile['publish'];
+                if (buildFile['focus']) this._buildFile['focus'] = buildFile['focus'];
             }
         }
 
@@ -233,9 +228,9 @@ class AutoTemplate {
      * @param {number} opt = 1: 모두삭제, 2: 모두삭제(수정제외)
      */
     clear(opt = 2) {
-
-        const buildFile = this.dir + path.sep + this.FILE.BUILD;
-        const originDir = this.dir + path.sep + this.DIR['ORIGIN'];
+        const _this = this;
+        const buildFile = path.join(this.dir, this.FILE.BUILD);
+        const originDir = path.join(this.dir, this.DIR['ORIGIN']);
         let filePath, oriPath, dir, dirs = [];
         let ignoreCover = [], ignorePub = [], areaDirs = [];
         // let source;
@@ -258,14 +253,22 @@ class AutoTemplate {
 
         // 파일 삭제
         for (let i = 0; i < this._buildFile['cover'].length; i++) {
-            filePath = this._buildFile['cover'][i].tar;
+            filePath = path.join(this.dir, this._buildFile['cover'][i].tar);
             oriPath = this._buildFile['cover'][i].ori;
 
-            if (opt === 1 && fs.existsSync(filePath)) {    // 강제 삭제
-                fs.unlinkSync(filePath);
+            // if (opt === 1 && fs.existsSync(filePath)) {    // 강제 삭제
+            //     fs.unlinkSync(filePath);
+            // } else if (__checkChangeFile(filePath, oriPath)) {
+            //     fs.unlinkSync(filePath);
+            // } else {
+            //     ignoreCover.push(this._buildFile['cover'][i]);
+            // }
+            if (opt === 1) {    // 강제 삭제
+                if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
             } else if (__checkChangeFile(filePath, oriPath)) {
                 fs.unlinkSync(filePath);
-            } else {
+            // 파일이 한쪽에라도 존재할 경우만 저장
+            } else if (fs.existsSync(filePath) || fs.existsSync(oriPath)) {
                 ignoreCover.push(this._buildFile['cover'][i]);
             }
             // 폴더 경로 저장
@@ -276,16 +279,25 @@ class AutoTemplate {
 
 
         for (let i = 0; i < this._buildFile['publish'].length; i++) {
-            filePath = this._buildFile['publish'][i].tar;
+            filePath = path.join(this.dir, this._buildFile['publish'][i].tar);
             oriPath = this._buildFile['publish'][i].ori;
 
-            if (opt === 1 && fs.existsSync(filePath)) {    // 강제 삭제
-                fs.unlinkSync(filePath);
+            // if (opt === 1 && fs.existsSync(filePath)) {    // 강제 삭제
+            //     fs.unlinkSync(filePath);
+            // } else if (__checkChangeFile(filePath, oriPath)) {
+            //     fs.unlinkSync(filePath);
+            // } else {
+            //     ignorePub.push(this._buildFile['publish'][i]);
+            // }
+            if (opt === 1) {    // 강제 삭제
+                if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
             } else if (__checkChangeFile(filePath, oriPath)) {
                 fs.unlinkSync(filePath);
-            } else {
+            // 파일이 한쪽에라도 존재할 경우만 저장
+            } else if (fs.existsSync(filePath) || fs.existsSync(oriPath)) {
                 ignorePub.push(this._buildFile['publish'][i]);
             }
+
             // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
             // 폴더 경로 저장
             dir = path.dirname(filePath);
@@ -317,14 +329,14 @@ class AutoTemplate {
                 if (paths.length === 0) {
                     // fs.unlinkSync(dir); // 빈폴더이면 삭제
                     fs.rmdirSync(dir);
-                    console.log(`삭제폴더 :${dir}`);
+                    if (_this.isLog) console.log(`삭제폴더 :${dir}`);
                     return;
                 }
                 
                 for (let i = 0; i < paths.length; i++) {
                     file = paths[i];
                     if (file.isDirectory()) {
-                        delEmptyDir(dir + path.sep + file.name);
+                        delEmptyDir(path.join(dir, file.name));
                         isRecursive = true;
                     }
                 }
@@ -334,7 +346,7 @@ class AutoTemplate {
                     if (paths.length === 0) {
                         // fs.unlinkSync(dir); // 빈폴더이면 삭제
                         fs.rmdirSync(dir);
-                    console.log(`삭제폴더 :${dir}`);
+                        if (_this.isLog)console.log(`삭제폴더 :${dir}`);
                         return;
                     }
                 }
@@ -352,7 +364,7 @@ class AutoTemplate {
         // areaDirs.push(this.dir + path.sep + this.DIR['PUB']);
         // REVIEW: 코드 검토 필요
         for (const prop in this.DIR) {
-            if (Object.hasOwnProperty.call(this.DIR, prop)) areaDirs.push(this.dir + path.sep + this.DIR[prop]);
+            if (Object.hasOwnProperty.call(this.DIR, prop)) areaDirs.push(path.join(this.dir, this.DIR[prop]));
         }  
         dirs.forEach(delDir => {
             let areaDir, subDir, arr;
@@ -361,7 +373,7 @@ class AutoTemplate {
                 areaDir = areaDirs.find(arrDir => delDir.indexOf(arrDir) > -1 );
                 subDir = delDir.substring(areaDir.length + 1);
                 arr = subDir.split(path.sep);
-                delEmptyDir(areaDir + path.sep + arr[0]);
+                delEmptyDir(path.join(areaDir, arr[0]));
             }
         });
 
@@ -535,7 +547,7 @@ class AutoTemplate {
                     subPath = localData['path'];
                     subPath = subPath.replaceAll('/', path.sep);
                     subPath = subPath.replaceAll('\\', path.sep);
-                    compileSrc.savePath = _this.used.dir + path.sep + _this.DIR.PUB + path.sep + subPath;
+                    compileSrc.savePath = path.join(_this.used.dir, _this.DIR.PUB, subPath);
                 }
                 
                 // 단독저장의 경우 파일경로를 수정함
@@ -656,7 +668,7 @@ class AutoTemplate {
                             subPath = localData['path'];
                             subPath = subPath.replaceAll('/', path.sep);
                             subPath = subPath.replaceAll('\\', path.sep);
-                            compileSrc.savePath = _this.used.dir + path.sep + _this.DIR.PUB + path.sep + subPath;
+                            compileSrc.savePath = path.join(_this.used.dir, _this.DIR.PUB, subPath);
                         }
 
                         // if (isSave) {
@@ -741,12 +753,25 @@ class AutoTemplate {
      * @param {string} savePath 저장파일 경로
      * @param {string} type cover: 부모, 출판
      */
+    // _addBuildFile(savePath, type) {
+    //     if (type === 'cover' && !this._buildFile['cover'].find(val => val.tar === savePath.tar)) {
+    //         this._buildFile['cover'].push(savePath);
+    //     // } else if (type === 'publish' && this._buildFile['publish'].indexOf(savePath) < 0) {
+    //     } else if (type === 'publish' && !this._buildFile['publish'].find(val => val.tar === savePath.tar)) {
+    //         this._buildFile['publish'].push(savePath);
+    //     }
+    // }
     _addBuildFile(savePath, type) {
-        if (type === 'cover' && !this._buildFile['cover'].find(val => val.tar === savePath.tar)) {
-            this._buildFile['cover'].push(savePath);
-        // } else if (type === 'publish' && this._buildFile['publish'].indexOf(savePath) < 0) {
-        } else if (type === 'publish' && !this._buildFile['publish'].find(val => val.tar === savePath.tar)) {
-            this._buildFile['publish'].push(savePath);
+        const localPath = {
+            tar: path.relative(this.dir, savePath.tar), 
+            ori: savePath.ori
+        };
+
+        if (type === 'cover' && !this._buildFile['cover'].find(val => val.tar === localPath.tar)) {
+            this._buildFile['cover'].push(localPath);
+        } else if (type === 'publish' && !this._buildFile['publish'].find(val => val.tar === localPath.tar)) {
+            this._buildFile['focus'][localPath.tar] = localPath.ori; // focus 설정
+            this._buildFile['publish'].push(localPath);
         }
     }
 
@@ -758,11 +783,11 @@ class AutoTemplate {
         
         let savePath, data, dir = this.used.dir;
 
-        savePath = buildFile ? dir + path.sep + buildFile : dir + path.sep + this.FILE.BUILD;
+        savePath = buildFile ? path.join(dir, buildFile) : path.join(dir, this.FILE.BUILD);
         data = JSON.stringify(this._buildFile, null, '\t');
 
         fs.writeFileSync(savePath, data, 'utf8');
-        console.log(`빌드파일 저장 : ${savePath} `)
+        if (this.isLog) console.log(`빌드파일 저장 : ${savePath} `)
     }
 
     /**
@@ -803,7 +828,7 @@ class AutoTemplate {
                 src = collection[i];
                 filePath = src.filePath;
                 if (filePath === null) continue;    // 파일인 경우만
-                copyFilePath = dir + path.sep + src.localDir + path.sep + src.fileName;
+                copyFilePath = path.join(dir, src.localDir, src.fileName);
                 if (filePath !== null && !fs.existsSync(copyFilePath)) {
                     // 디렉토리 없으면 만들기
                     dirname = path.dirname(copyFilePath);   
@@ -832,7 +857,7 @@ class AutoTemplate {
 
     // _lookupSource(filePath) {
         
-    //     let source, _this = this;
+    //     let source, _this = this; 
         
     //     function __lookupCollection(col) {
     //         let srcFilePath;

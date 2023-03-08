@@ -46,12 +46,12 @@ class TemplateSource {
     // get localDir() { return this.areaDir + path.sep + this.subDir; }
     // get localPath() { return this.areaDir + path.sep + this.subPath; }
     // get name() { return path.basename(this.fullPath); }
-    get fullPath() { return this.#dir + path.sep + this.localPath; }
+    get fullPath() { return path.join(this.#dir, this.localPath); }
     get areaDir() { return this._template.DIR[this.#area]; }
     get subDir() { return path.dirname(this.#subPath) === '.' ? '' : path.dirname(this.#subPath); }
     get subPath() { return this.#subPath; }
-    get localDir() { return this.subDir === '' ? this.areaDir : this.areaDir + path.sep + this.subDir; }
-    get localPath() { return this.areaDir + path.sep + this.subPath; }
+    get localDir() { return this.subDir === '' ? this.areaDir : path.join(this.areaDir, this.subDir); }
+    get localPath() { return path.join(this.areaDir, this.subPath); }
     get name() { return path.basename(this.#subPath); }
     get fileName() { return this.#filePath !== null ? path.basename(this.#filePath) : null; }
     get filePath() { return this.#filePath; }
@@ -280,10 +280,10 @@ class TemplateCollection extends PropertyCollection {
         let localPattern, alias, content, subPath, idx;
 
         for (let i = 0; i < dirs.length; i++) {
-            localPattern = dirs[i] + sep + pattern;
+            localPattern = path.join(dirs[i], pattern);
             arrPath = glob.sync(localPattern);
             arrPath.forEach(val => { 
-                subPath = path.relative(dirs[i] + sep + areaDir, val)
+                subPath = path.relative(path.join(dirs[i], areaDir), val)
                 alias = _this._makeAlias(subPath);
                 content = require(val);
 

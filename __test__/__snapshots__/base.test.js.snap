@@ -10,9 +10,9 @@ exports[`task :: do_publish() [속성 비교] data : entity.json 1`] = `
 			20
 		]
 	},
-	"dir": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
+	"dir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
 	"area": "DATA",
-	"fullPath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/data/entity",
+	"fullPath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/data/entity",
 	"areaDir": "template/data",
 	"subDir": "",
 	"subPath": "entity",
@@ -20,16 +20,16 @@ exports[`task :: do_publish() [속성 비교] data : entity.json 1`] = `
 	"localPath": "template/data/entity",
 	"name": "entity",
 	"fileName": "entity.json",
-	"filePath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/data/entity.json"
+	"filePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/data/entity.json"
 }"
 `;
 
 exports[`task :: do_publish() [속성 비교] helper : bold.js 1`] = `
 "{
 	"isPublic": true,
-	"dir": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
+	"dir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
 	"area": "HELPER",
-	"fullPath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/helper/bold",
+	"fullPath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/helper/bold",
 	"areaDir": "template/helper",
 	"subDir": "",
 	"subPath": "bold",
@@ -37,7 +37,7 @@ exports[`task :: do_publish() [속성 비교] helper : bold.js 1`] = `
 	"localPath": "template/helper/bold",
 	"name": "bold",
 	"fileName": "bold.js",
-	"filePath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/helper/bold.js"
+	"filePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/helper/bold.js"
 }"
 `;
 
@@ -45,9 +45,9 @@ exports[`task :: do_publish() [속성 비교] part : inc/content.hbs 1`] = `
 "{
 	"isPublic": true,
 	"content": "@part/inc/content@\\n\\n내용임\\n",
-	"dir": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
+	"dir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
 	"area": "PART",
-	"fullPath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/content",
+	"fullPath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/content",
 	"areaDir": "template/part",
 	"subDir": "inc",
 	"subPath": "inc/content",
@@ -55,10 +55,10 @@ exports[`task :: do_publish() [속성 비교] part : inc/content.hbs 1`] = `
 	"localPath": "template/part/inc/content",
 	"name": "content",
 	"fileName": "content.hbs",
-	"filePath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/content.hbs",
+	"filePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/content.hbs",
 	"saveName": "content",
-	"saveDir": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc",
-	"savePath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/content",
+	"saveDir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc",
+	"savePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/content",
 	"origin": "inc/content"
 }"
 `;
@@ -67,9 +67,9 @@ exports[`task :: do_publish() [속성 비교] part : inc/foote.hbs 1`] = `
 "{
 	"isPublic": true,
 	"content": "@part/inc/footer@\\n<p>기본 footer. </p>\\n@entity.Table={{ entity.Table }}@",
-	"dir": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
+	"dir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
 	"area": "PART",
-	"fullPath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/footer",
+	"fullPath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/footer",
 	"areaDir": "template/part",
 	"subDir": "inc",
 	"subPath": "inc/footer",
@@ -77,10 +77,10 @@ exports[`task :: do_publish() [속성 비교] part : inc/foote.hbs 1`] = `
 	"localPath": "template/part/inc/footer",
 	"name": "footer",
 	"fileName": "footer.hbs",
-	"filePath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/footer.hbs",
+	"filePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/footer.hbs",
 	"saveName": "footer",
-	"saveDir": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc",
-	"savePath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/footer",
+	"saveDir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc",
+	"savePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/footer",
 	"origin": "inc/footer"
 }"
 `;
@@ -89,9 +89,9 @@ exports[`task :: do_publish() [속성 비교] part : inc/header.hbs 1`] = `
 "{
 	"isPublic": true,
 	"content": "@part/inc/header@\\n<div class=\\"header\\">\\n  header 내용입 \\n  X param:{{param}}\\n  X params.[0]:{{params.[0]}}\\n  X params.0:{{param}}\\n  @entity.Tables.[0]:{{ entity.Tables.[0] }}@\\n{{#each params}}\\n    {{this}} sss\\n{{/each}}\\n</div>\\n\\ninc 하단에 내용\\n{{> inc/content }}",
-	"dir": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
+	"dir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
 	"area": "PART",
-	"fullPath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/header",
+	"fullPath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/header",
 	"areaDir": "template/part",
 	"subDir": "inc",
 	"subPath": "inc/header",
@@ -99,10 +99,10 @@ exports[`task :: do_publish() [속성 비교] part : inc/header.hbs 1`] = `
 	"localPath": "template/part/inc/header",
 	"name": "header",
 	"fileName": "header.hbs",
-	"filePath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/header.hbs",
+	"filePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/header.hbs",
 	"saveName": "header",
-	"saveDir": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc",
-	"savePath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/header",
+	"saveDir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc",
+	"savePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/part/inc/header",
 	"origin": "inc/header"
 }"
 `;
@@ -111,9 +111,9 @@ exports[`task :: do_publish() [속성 비교] src : one.html.hbs 1`] = `
 "{
 	"isPublic": true,
 	"content": "{{> inc/footer }}\\n\\n{{#> inc/header }}\\n    @inc/header:none@ 없음\\n{{/inc/header }}\\n\\n@{{#bold }}BOLD{{/bold }}@\\n- End - ",
-	"dir": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
+	"dir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1",
 	"area": "SRC",
-	"fullPath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src/one.html",
+	"fullPath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src/one.html",
 	"areaDir": "src",
 	"subDir": "",
 	"subPath": "one.html",
@@ -121,10 +121,10 @@ exports[`task :: do_publish() [속성 비교] src : one.html.hbs 1`] = `
 	"localPath": "src/one.html",
 	"name": "one.html",
 	"fileName": "one.html.hbs",
-	"filePath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src/one.html.hbs",
+	"filePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src/one.html.hbs",
 	"saveName": "one.html",
-	"saveDir": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src",
-	"savePath": "/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src/one.html",
+	"saveDir": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src",
+	"savePath": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/src/one.html",
 	"origin": "one.html"
 }"
 `;

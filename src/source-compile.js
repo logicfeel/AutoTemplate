@@ -50,7 +50,7 @@ class CompileSource extends TemplateSource {
     // POINT:
     get savePath() {
         const dir = this._template.dir;    // 상속한 경우 최종 
-        const fullPath = dir + path.sep + this.localPath;
+        const fullPath = path.join(dir, this.localPath);
         return this.#savePath === null ? fullPath : this.#savePath;
     }
     set savePath(val) { this.#savePath = val; }
@@ -179,22 +179,61 @@ class CompileSource extends TemplateSource {
 
     // 원본을 비교해서 넣는다
     // oriPath 은 subPath 비슷한 성격이다.!
-    _setOrigin(oriPath, data) {
-        // template/__origin/ 폴더 없으면 만들기
-        // const dirname = this._template.DIR['ORIGIN'];
-        // const savePath = this._template.dir + path.sep + dirname + path.sep + oriPath;
-        const dirname = this._template.used.DIR['ORIGIN'];
-        const savePath = this._template.used.dir + path.sep + dirname + path.sep + oriPath;
-        const saveDir = path.dirname(savePath);   
+    // _setOrigin(oriPath, data) {
+    //     // template/__origin/ 폴더 없으면 만들기
+    //     // const dirname = this._template.DIR['ORIGIN'];
+    //     // const savePath = this._template.dir + path.sep + dirname + path.sep + oriPath;
+    //     const dirname = this._template.used.DIR['ORIGIN'];
+    //     const savePath = path.join(this._template.used.dir, dirname, oriPath);
+    //     const saveDir = path.dirname(savePath);   
 
-        if(!fs.existsSync(saveDir)) {
-            fs.mkdirSync(saveDir, {recursive: true} );
+    //     if(!fs.existsSync(saveDir)) {
+    //         fs.mkdirSync(saveDir, {recursive: true} );
+    //     }
+
+    //     // 경로에 파일 없으면 저장, 없으면 통과
+    //     if(!fs.existsSync(savePath)) fs.writeFileSync(savePath, data, 'utf8');;
+    //     // 리턴 오리진경로
+    //     return savePath;
+    // }
+    _setOrigin(oriPath, data) {
+        const orginDir = this._template.used.DIR['ORIGIN'];
+        let focusPath = this._template._buildFile['focus'][oriPath] 
+                ? this._template._buildFile['focus'][oriPath] 
+                : path.join(this._template.used.dir, orginDir, oriPath);
+        let savePath;
+
+        function saveFile(savePath, data) {
+            const saveDir = path.dirname(savePath);  
+            if(!fs.existsSync(saveDir)) {
+                fs.mkdirSync(saveDir, {recursive: true} );
+            }
+            fs.writeFileSync(savePath, data, 'utf8');
+        }
+        function getNewPath(focusPath) {
+            const MAX_COUNT = 10; // 최대 수정 갯수
+            const objPath = path.parse(focusPath);
+            let newPath;
+            for (let i = 0; i < MAX_COUNT; i++) {
+                const filename = '$'+ objPath.name;
+                newPath = path.join(objPath.dir, filename + objPath.ext);
+                if (!fs.existsSync(newPath)) return newPath;
+            }
+            throw new Error(`수정 최대 갯수 ${MAX_COUNT}개 초과`);
         }
 
-        // 경로에 파일 없으면 저장, 없으면 통과
-        if(!fs.existsSync(savePath)) fs.writeFileSync(savePath, data, 'utf8');;
-        // 리턴 오리진경로
-        return savePath;
+         // 파일이 없으면 저장
+        if (!fs.existsSync(focusPath)) {   
+            saveFile(focusPath, data);
+        } else {
+            // 파일 비교
+            if (data !== fs.readFileSync(focusPath,'utf-8')) {
+                focusPath = getNewPath(focusPath);
+                // this._template._buildFile['focus'][oriPath] = focusPath;
+                saveFile(focusPath, data);
+            }
+        }
+        return focusPath;
     }
 
     /*_______________________________________*/
@@ -362,10 +401,10 @@ class CompileCollection extends PropertyCollection {
         else dirs = [...dirs, ...this._onwer.dirs];
 
         for (let i = 0; i < dirs.length; i++) {
-            localPattern = dirs[i] + sep + pattern;
+            localPattern = path.join(dirs[i], pattern);
             arrPath = glob.sync(localPattern);
             arrPath.forEach(val => {
-                subPath = path.relative(dirs[i] + sep + areaDir, val)
+                subPath = path.relative(path.join(dirs[i], areaDir), val)
                 alias = _this._makeAlias(subPath);
                 content = fs.readFileSync(val,'utf-8');
                 
