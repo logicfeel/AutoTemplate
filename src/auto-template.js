@@ -192,12 +192,12 @@ class AutoTemplate {
         }
         
         // 지역 초기화
-        // this.helper.clear();
-        // this.data.clear();
-        // this.part.clear();
-        // this.src.clear();
-        // this.page.clear();
-        // this.group.clear();
+        this.helper.clear();
+        this.data.clear();
+        this.part.clear();
+        this.src.clear();
+        this.page.clear();
+        this.group.clear();
         // 적재
         this.helper.addGlob(this.GLOB.HELPER);
         this.data.addGlob(this.GLOB.DATA);
@@ -212,7 +212,8 @@ class AutoTemplate {
         // 사용처에서만 사용됨
         if (this === this.used) {
             if (fs.existsSync(path.join(this.dir, this.FILE.BUILD))) {
-                buildFile = require(path.join(this.dir, this.FILE.BUILD));
+                // buildFile = require(path.join(this.dir, this.FILE.BUILD));
+                buildFile = JSON.parse(fs.readFileSync(path.join(this.dir, this.FILE.BUILD),'utf-8'));
                 if (buildFile.cover) this._buildFile['cover'] = buildFile['cover'];
                 if (buildFile.publish) this._buildFile['publish'] = buildFile['publish'];
                 if (buildFile['focus']) this._buildFile['focus'] = buildFile['focus'];
@@ -311,8 +312,9 @@ class AutoTemplate {
 
 
 
-        if (this._buildFile['cover'].length === 0 &&  this._buildFile['publish'].length === 0 &&  
-            fs.existsSync(buildFile)) fs.unlinkSync(buildFile);
+        if (this._buildFile['cover'].length === 0 
+            &&  this._buildFile['publish'].length === 0 
+            &&  fs.existsSync(buildFile)) fs.unlinkSync(buildFile);
         else this._saveBuildFile();
 
         // 빈폴더 제거
@@ -470,8 +472,9 @@ class AutoTemplate {
      * @param {*} prefix 
      * @param {*} suffix 
      * @param {*} agrs 
+     * @param {*} dir 상위경로 
      */
-    attachGroup(obj, prefix = '', suffix = '', args = []) {
+    attachGroup(obj, prefix = '', suffix = '', args = [], dir = '') {
         
         let group = null, alias;
         
@@ -499,7 +502,8 @@ class AutoTemplate {
             data: {
                 prefix: prefix,
                 suffix: suffix,
-                args: args
+                args: args,
+                dir: dir
             }
         });
     }

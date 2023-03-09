@@ -1,0 +1,23 @@
+<one><!--src/one.html-->
+
+    # ns part 삽입
+    {{>ns/out1/inc/footer }}
+
+    # ns part 삽입
+    {{>ns/out1/inc/header }}
+
+    # ns helper 삽입
+    ${{#ns-out1-bold }}BOLD{{/ns-out1-bold }}$
+
+    # ns page 삽입
+    {{>ns/out1/page/p1.html }}
+
+    # ns data 조회
+    $entity.Tables={{ns.out1.entity.Tables}}$
+
+{{>ns/out1/group/all dir='inline/all' prefix='pre_' }}
+{{>ns/out1/group/double dir='inline' prefix='pre_' suffix='_suf' args='arg1_1/arg1_2,_arg2' }}
+{{>ns/out1/page/p1.html path='inline/new_p1.html' }}
+{{>group/double dir='inline2' }}
+</one>
+

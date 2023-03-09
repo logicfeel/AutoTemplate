@@ -1,29 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`task :: do_publish() - 파일 비교 : src/one.html 1`] = `
-"<one><!--src/one.html-->
-
-<header><!--part/inc/header-->
-  # data 삽입 
-  $entity.Tables.[0]:10$
-
-
-  # part 삽입
-  <content><!--part/inc/content-->
-      내용임
-  </content>
-</header>
-
-    <footer><!--part/inc/footer-->
-        <p>기본 footer. </p>
-        $entity.Table=1$
-    </footer>
-
-    @<div class="mybold">BOLD</div>@
-</one>"
-`;
-
-exports[`task :: do_publish() 속성  - data : entity.json 1`] = `
+exports[`task :: publish < 속성 검사 > - data : entity.json 1`] = `
 "{
 	"isPublic": true,
 	"content": {
@@ -47,7 +24,7 @@ exports[`task :: do_publish() 속성  - data : entity.json 1`] = `
 }"
 `;
 
-exports[`task :: do_publish() 속성  - helper : bold.js 1`] = `
+exports[`task :: publish < 속성 검사 > - helper : bold.js 1`] = `
 "{
 	"isPublic": true,
 	"dir": "@@",
@@ -64,7 +41,7 @@ exports[`task :: do_publish() 속성  - helper : bold.js 1`] = `
 }"
 `;
 
-exports[`task :: do_publish() 속성  - part : inc/content.hbs 1`] = `
+exports[`task :: publish < 속성 검사 > - part : inc/content.hbs 1`] = `
 "{
 	"isPublic": true,
 	"content": "<content><!--part/inc/content-->\\n    내용임\\n</content>",
@@ -86,7 +63,7 @@ exports[`task :: do_publish() 속성  - part : inc/content.hbs 1`] = `
 }"
 `;
 
-exports[`task :: do_publish() 속성  - part : inc/foote.hbs 1`] = `
+exports[`task :: publish < 속성 검사 > - part : inc/foote.hbs 1`] = `
 "{
 	"isPublic": true,
 	"content": "<footer><!--part/inc/footer-->\\n    <p>기본 footer. </p>\\n    $entity.Table={{ entity.Table }}$\\n</footer>\\n",
@@ -108,7 +85,7 @@ exports[`task :: do_publish() 속성  - part : inc/foote.hbs 1`] = `
 }"
 `;
 
-exports[`task :: do_publish() 속성  - part : inc/header.hbs 1`] = `
+exports[`task :: publish < 속성 검사 > - part : inc/header.hbs 1`] = `
 "{
 	"isPublic": true,
 	"content": "<header><!--part/inc/header-->\\n  # data 삽입 \\n  $entity.Tables.[0]:{{ entity.Tables.[0] }}$\\n\\n  {{#each params}}\\n      {{this}} sss\\n  {{/each}}\\n\\n  # part 삽입\\n  {{> inc/content }}\\n\\n</header>\\n",
@@ -130,7 +107,7 @@ exports[`task :: do_publish() 속성  - part : inc/header.hbs 1`] = `
 }"
 `;
 
-exports[`task :: do_publish() 속성  - src : one.html.hbs 1`] = `
+exports[`task :: publish < 속성 검사 > - src : one.html.hbs 1`] = `
 "{
 	"isPublic": true,
 	"content": "<one><!--src/one.html-->\\n\\n    {{#>inc/header }}\\n        @inc/header:none@ 없음\\n    {{/inc/header}}\\n\\n    {{> inc/footer }}\\n\\n    @{{#bold }}BOLD{{/bold }}@\\n</one>",
@@ -150,4 +127,27 @@ exports[`task :: do_publish() 속성  - src : one.html.hbs 1`] = `
 	"savePath": "@@/src/one.html",
 	"origin": "one.html"
 }"
+`;
+
+exports[`task :: publish - 파일 비교 : src/one.html 1`] = `
+"<one><!--src/one.html-->
+
+<header><!--part/inc/header-->
+  # data 삽입 
+  $entity.Tables.[0]:10$
+
+
+  # part 삽입
+  <content><!--part/inc/content-->
+      내용임
+  </content>
+</header>
+
+    <footer><!--part/inc/footer-->
+        <p>기본 footer. </p>
+        $entity.Table=1$
+    </footer>
+
+    @<div class="mybold">BOLD</div>@
+</one>"
 `;

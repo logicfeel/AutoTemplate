@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`task :: publish < *.hbs 검사 > - 파일 비교 : src/one.html 1`] = `
+"<one><!--src/one.html-->
+
+    # ns part 삽입
+    <footer><!--part/inc/footer-->
+        <p>기본 footer. </p>
+        $entity.Table=1$
+    </footer>
+    
+
+    # ns part 삽입
+    <header><!--part/inc/header-->
+      # data 삽입 
+      $entity.Tables.[0]:10$
+    
+    
+      # part 삽입
+      <content><!--part/inc/content-->
+          내용임
+      </content></header>
+
+    # ns helper 삽입
+    $<div class="mybold">BOLD</div>$
+
+    # ns page 삽입
+    <p1><!--page/p1.html-->
+        기본 페이지
+    </p1>
+
+    # ns data 조회
+    $entity.Tables=10,20$
+
+</one>
+
+"
+`;
+
+exports[`task :: publish < 파일 비교 > - page : p1.html 1`] = `
+"<p1><!--page/p1.html-->
+    기본 페이지
+</p1>"
+`;
+
+exports[`task :: publish < 파일 비교 > - page : p2.html 1`] = `
+"<p2><!--page/p2.html-->
+    # footer 조각 가져오기
+    <footer><!--part/inc/footer-->
+        <p>기본 footer. </p>
+        $entity.Table=1$
+    </footer>
+
+    # helper 가져오기
+    $<div class="mybold">BOLD</div>$
+</p2>"
+`;
+
+exports[`task :: publish < 파일 비교 > - page : p3.html 1`] = `
+"<p3><!--page/p3.html-->
+    # page p1 가져오기
+    <p1><!--page/p1.html-->
+        기본 페이지
+    </p1>
+</p3>
+"
+`;
