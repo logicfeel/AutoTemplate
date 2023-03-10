@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1678416081362" clover="3.2.0">
-  <project timestamp="1678416081362" name="All files">
+<coverage generated="1678428276319" clover="3.2.0">
+  <project timestamp="1678428276319" name="All files">
     <metrics statements="792" coveredstatements="709" conditionals="363" coveredconditionals="251" methods="159" coveredmethods="126" elements="1314" coveredelements="1086" complexity="0" loc="792" ncloc="792" packages="14" files="19" classes="19"/>
     <package name="__test__.base.mod1">
       <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
-      <file name="newTemplate.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/newTemplate.js">
+      <file name="newTemplate.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/newTemplate.js">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="2" count="1" type="stmt"/>
         <line num="5" count="2" type="stmt"/>
         <line num="7" count="2" type="stmt"/>
         <line num="13" count="1" type="stmt"/>
       </file>
-      <file name="template.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template.js">
+      <file name="template.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template.js">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="2" count="1" type="stmt"/>
         <line num="6" count="5" type="stmt"/>
@@ -20,7 +20,7 @@
     </package>
     <package name="__test__.base.mod1.template.helper">
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="bold.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/helper/bold.js">
+      <file name="bold.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/__test__/base/mod1/template/helper/bold.js">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -29,7 +29,7 @@
     </package>
     <package name="__test__.extends.mod1">
       <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
-      <file name="template.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/extends/mod1/template.js">
+      <file name="template.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/__test__/extends/mod1/template.js">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="4" count="1" type="stmt"/>
         <line num="10" count="4" type="stmt"/>
@@ -41,7 +41,7 @@
     </package>
     <package name="__test__.extends.mod1.template.helper">
       <metrics statements="3" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
-      <file name="bold.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/extends/mod1/template/helper/bold.js">
+      <file name="bold.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/__test__/extends/mod1/template/helper/bold.js">
         <metrics statements="3" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -50,7 +50,7 @@
     </package>
     <package name="__test__.extends.mod2">
       <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
-      <file name="template.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/extends/mod2/template.js">
+      <file name="template.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/__test__/extends/mod2/template.js">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
         <line num="4" count="1" type="stmt"/>
         <line num="10" count="4" type="stmt"/>
@@ -60,7 +60,7 @@
     </package>
     <package name="__test__.extends.mod2.template.helper">
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="bold.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/extends/mod2/template/helper/bold.js">
+      <file name="bold.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/__test__/extends/mod2/template/helper/bold.js">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -69,7 +69,7 @@
     </package>
     <package name="__test__.extends.mod3">
       <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
-      <file name="template.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/extends/mod3/template.js">
+      <file name="template.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/__test__/extends/mod3/template.js">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
         <line num="2" count="1" type="stmt"/>
         <line num="8" count="4" type="stmt"/>
@@ -79,7 +79,7 @@
     </package>
     <package name="__test__.extends.mod3.template.helper">
       <metrics statements="3" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
-      <file name="bold.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/extends/mod3/template/helper/bold.js">
+      <file name="bold.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/__test__/extends/mod3/template/helper/bold.js">
         <metrics statements="3" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -88,7 +88,7 @@
     </package>
     <package name="__test__.import.mod1">
       <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
-      <file name="template.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/import/mod1/template.js">
+      <file name="template.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/__test__/import/mod1/template.js">
         <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="2" count="1" type="stmt"/>
         <line num="5" count="1" type="stmt"/>
@@ -105,7 +105,7 @@
     </package>
     <package name="__test__.import.out1">
       <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
-      <file name="template.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/import/out1/template.js">
+      <file name="template.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/__test__/import/out1/template.js">
         <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="2" count="1" type="stmt"/>
         <line num="6" count="1" type="stmt"/>
@@ -118,7 +118,7 @@
     </package>
     <package name="__test__.import.out1.template.helper">
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="bold.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/import/out1/template/helper/bold.js">
+      <file name="bold.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/__test__/import/out1/template/helper/bold.js">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -127,7 +127,7 @@
     </package>
     <package name="__test__.pageGroup.mod1">
       <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
-      <file name="template.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/pageGroup/mod1/template.js">
+      <file name="template.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/__test__/pageGroup/mod1/template.js">
         <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="2" count="1" type="stmt"/>
         <line num="6" count="3" type="stmt"/>
@@ -141,7 +141,7 @@
     </package>
     <package name="__test__.pageGroup.mod1.template.helper">
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="bold.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/__test__/pageGroup/mod1/template/helper/bold.js">
+      <file name="bold.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/__test__/pageGroup/mod1/template/helper/bold.js">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -150,16 +150,16 @@
     </package>
     <package name="src">
       <metrics statements="727" coveredstatements="646" conditionals="363" coveredconditionals="251" methods="139" coveredmethods="110"/>
-      <file name="auto-task.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/src/auto-task.js">
+      <file name="auto-task.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/src/auto-task.js">
         <metrics statements="36" coveredstatements="32" conditionals="15" coveredconditionals="11" methods="6" coveredmethods="5"/>
-        <line num="1" count="5" type="stmt"/>
-        <line num="2" count="5" type="stmt"/>
-        <line num="3" count="5" type="stmt"/>
+        <line num="1" count="4" type="stmt"/>
+        <line num="2" count="4" type="stmt"/>
+        <line num="3" count="4" type="stmt"/>
         <line num="16" count="10" type="stmt"/>
         <line num="18" count="10" type="stmt"/>
         <line num="19" count="10" type="stmt"/>
         <line num="22" count="10" type="stmt"/>
-        <line num="26" count="5" type="stmt"/>
+        <line num="26" count="4" type="stmt"/>
         <line num="30" count="10" type="stmt"/>
         <line num="31" count="10" type="stmt"/>
         <line num="57" count="10" type="cond" truecount="3" falsecount="1"/>
@@ -187,9 +187,9 @@
         <line num="134" count="16" type="cond" truecount="2" falsecount="0"/>
         <line num="136" count="16" type="stmt"/>
         <line num="137" count="16" type="stmt"/>
-        <line num="176" count="5" type="stmt"/>
+        <line num="176" count="4" type="stmt"/>
       </file>
-      <file name="auto-template.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/src/auto-template.js">
+      <file name="auto-template.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/src/auto-template.js">
         <metrics statements="355" coveredstatements="329" conditionals="184" coveredconditionals="127" methods="57" coveredmethods="47"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -547,7 +547,7 @@
         <line num="933" count="2" type="stmt"/>
         <line num="939" count="4" type="stmt"/>
       </file>
-      <file name="page-group.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/src/page-group.js">
+      <file name="page-group.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/src/page-group.js">
         <metrics statements="89" coveredstatements="80" conditionals="62" coveredconditionals="41" methods="14" coveredmethods="12"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -639,7 +639,7 @@
         <line num="293" count="4" type="stmt"/>
         <line num="294" count="4" type="stmt"/>
       </file>
-      <file name="source-compile.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/src/source-compile.js">
+      <file name="source-compile.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/src/source-compile.js">
         <metrics statements="154" coveredstatements="126" conditionals="63" coveredconditionals="48" methods="37" coveredmethods="24"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -796,7 +796,7 @@
         <line num="473" count="4" type="stmt"/>
         <line num="474" count="4" type="stmt"/>
       </file>
-      <file name="source-template.js" path="/Users/kimneo/PJ-Git/AutoTemplate#v01/src/source-template.js">
+      <file name="source-template.js" path="/Users/logic/PJ-Git/AutoTemplate#v01/src/source-template.js">
         <metrics statements="93" coveredstatements="79" conditionals="39" coveredconditionals="24" methods="25" coveredmethods="22"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
