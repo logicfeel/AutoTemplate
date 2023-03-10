@@ -1,0 +1,20 @@
+<one><!--src/one.html-->
+
+  # part 삽입
+  {{>inc/footer }}
+
+  # part 삽입
+  {{>inc/header }}
+
+  # helper 삽입
+  ${{#bold }}BOLD{{/bold }}$
+
+  # page 삽입 
+  {{>page/p1.html }}
+
+  # data 조회
+  $entity.Tables={{entity.Tables}}$
+
+</one>
+{{>group/double dir='inline' prefix='pre_' suffix='_suf' args='arg1_1/arg1_2,_arg2' }}
+{{>page/p1.html path='inline/new_p1.html' }}

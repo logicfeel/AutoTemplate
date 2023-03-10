@@ -1,7 +1,7 @@
 const fs        = require("fs");
 const path      = require("path");
 const AutoTask  = require("../src/auto-task").AutoTask;
-const dirname   = __dirname + "/base/mod1";
+const dirname   = path.join(__dirname, "/base/mod1");
 let autoTask    = null;
 
 /**
