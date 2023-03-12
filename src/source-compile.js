@@ -62,9 +62,9 @@ class CompileSource extends TemplateSource {
     
     /*_______________________________________*/        
     // event property
-    set onCompile(fn) { this.#event.subscribe(fn, 'compile') }      // 컴파일 전
-    set onSave(fn) { this.#event.subscribe(fn, 'save') }            // 저장시 저장후
-    set onCompiled(fn) { this.#event.subscribe(fn, 'compiled') }    // 컴파일 전
+    set onCompile(fn) { this.#event.subscribe(fn, 'compile') }      // 컴파일 전    // COVER:
+    set onSave(fn) { this.#event.subscribe(fn, 'save') }            // 저장시 저장후    // COVER:
+    set onCompiled(fn) { this.#event.subscribe(fn, 'compiled') }    // 컴파일 전    // COVER:
 
     /*_______________________________________*/
     // constructor method
@@ -86,22 +86,22 @@ class CompileSource extends TemplateSource {
     }
 
     partials(pattern, opt) {
-        this.#part.push({glob: pattern, opt: opt});
+        this.#part.push({glob: pattern, opt: opt});     // COVER:
     }
 
     helpers(pattern, opt) {
-        this.#helper.push({glob: pattern, opt: opt});
+        this.#helper.push({glob: pattern, opt: opt});   // COVER:
     }
     
     data(pattern, opt) {
-        this.#data.push({glob: pattern, opt: opt});
+        this.#data.push({glob: pattern, opt: opt});     // COVER:
     }
     
     /**
      * 단독으로 컴파일할 경우 (빌드 로그 생성)
      * @param {*} data 
      */
-    build(data) {
+    build(data) {   // COVER:
         // 컴파일
         this._compile(data, true);
         // 빌드 파일 저장
@@ -161,7 +161,7 @@ class CompileSource extends TemplateSource {
                 // }
             } else {
                 // 저장
-                fs.writeFileSync(this.savePath, content, 'utf8');
+                fs.writeFileSync(this.savePath, content, 'utf8');   // COVER:
             }
 
             // 빌드 파일 추가
@@ -210,7 +210,7 @@ class CompileSource extends TemplateSource {
             }
             fs.writeFileSync(savePath, data, 'utf8');
         }
-        function getNewPath(focusPath) {
+        function getNewPath(focusPath) {    // COVER:
             const MAX_COUNT = 10; // 최대 수정 갯수
             const objPath = path.parse(focusPath);
             let newPath;
@@ -227,7 +227,7 @@ class CompileSource extends TemplateSource {
             saveFile(focusPath, data);
         } else {
             // 파일 비교
-            if (data !== fs.readFileSync(focusPath,'utf-8')) {
+            if (data !== fs.readFileSync(focusPath,'utf-8')) {  // COVER:
                 focusPath = getNewPath(focusPath);
                 // this._template._buildFile['focus'][oriPath] = focusPath;
                 saveFile(focusPath, data);
@@ -309,14 +309,14 @@ class CompileCollection extends PropertyCollection {
 
         // 유효성 검사
         if (typeof alias !== 'string' || alias.length === 0) {
-            throw new Error('alias에 string 만 지정할 수 있습니다.');
+            throw new Error('alias에 string 만 지정할 수 있습니다.');   // COVER:
         }
         if (typeof content === 'undefined' || content === null) {
-            throw new Error('value에 null 또는 undefined 지정할 수 없습니다. ');
+            throw new Error('value에 null 또는 undefined 지정할 수 없습니다. ');    // COVER:
         }
         // area별 타입 검사
         if (!(typeof content === 'function' || typeof content === 'string')) {
-            throw new Error('가능한 타입 : string, function');
+            throw new Error('가능한 타입 : string, function');  // COVER:
         }
 
 
@@ -325,7 +325,7 @@ class CompileCollection extends PropertyCollection {
             this._partSymbol.forEach(val => {
                 if ((val instanceof RegExp && val.test(alias)) || 
                     (typeof val === 'string' && val === alias)) {
-                    throw new Error('[part]에 예약어를 입력할 수 없습니다. : ns, page, group ');
+                    throw new Error('[part]에 예약어를 입력할 수 없습니다. : ns, page, group ');    // COVER:
                 }
             });
         }
@@ -373,7 +373,7 @@ class CompileCollection extends PropertyCollection {
         
         let alias;
         
-        for (let i = 0; i < collection.count; i++) {
+        for (let i = 0; i < collection.count; i++) {    // COVER:
             alias = collection.propertyOf(i);
             this.add(alias, collection[i]);
         }
@@ -453,7 +453,7 @@ class CompileCollection extends PropertyCollection {
     _getPropDescriptor(idx) {
         return {
             get: function() { return this._element[idx]; },
-            set: function(val) {
+            set: function(val) {    // COVER:
                 if (val instanceof CompileSource) {
                     this._element[idx].content = val.content;
                 } else {

@@ -83,7 +83,7 @@ class AutoTemplate {
     get used() { return this.#used === null ? this : this.#used; }
     set used(val) {
         if (val instanceof AutoTemplate) this.#used = val;
-        else throw new Error('AutoTemplate 타입만 설정할 수 있습니다.');
+        else throw new Error('AutoTemplate 타입만 설정할 수 있습니다.');    // COVER:
     }
     get dir() {
         let size = this.#dir.length;
@@ -92,7 +92,7 @@ class AutoTemplate {
     }
     set dir(val) {
         if (this.isFinal === true && this.#dir.length > 0) {
-            throw new Error('마지막 클래스(상속금지)는 dir 설정할 수 없습니다.');
+            throw new Error('마지막 클래스(상속금지)는 dir 설정할 수 없습니다.');   // COVER:
         } else if (this.#dir.indexOf(val) < 0) this.#dir.push(val);
     }
     get dirs() { return this.#dir; }
@@ -100,39 +100,39 @@ class AutoTemplate {
     get ns() {return this.namespace }
     get helper() { return this.#helper }
     set helper(val) {
-        if (val instanceof TemplateCollection && val.area === this.AREA.HELPER) {
+        if (val instanceof TemplateCollection && val.area === this.AREA.HELPER) {   // COVER: ~
             this.#helper.addCollectoin(val);
         } else {
-            throw new Error('[helper] TemplateCollection 타입만 설정할 수 있습니다.');
+            throw new Error('[helper] TemplateCollection 타입만 설정할 수 있습니다.');     // ~ COVER:
         } 
     }
     get data() { return this.#data }
     set data(val) {
-        if (val instanceof TemplateCollection && val.area === this.AREA.DATA) {
+        if (val instanceof TemplateCollection && val.area === this.AREA.DATA) { // COVER: ~
             this.#data.addCollectoin(val);
         } else {
-            throw new Error('[data] TemplateCollection 타입만 설정할 수 있습니다.');
+            throw new Error('[data] TemplateCollection 타입만 설정할 수 있습니다.');    // ~ COVER:
         } 
     }
     get part() { return this.#part }
     set part(val) {
-        if (val instanceof CompileCollection) this.#part.addCollectoin(val);
-        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+        if (val instanceof CompileCollection) this.#part.addCollectoin(val);    // COVER: ~
+        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');   // ~ COVER:
     }
     get src() { return this.#src }
     set src(val) {  // REVIEW:
-        if (val instanceof CompileCollection) this.#src.addCollectoin(val);
-        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+        if (val instanceof CompileCollection) this.#src.addCollectoin(val); // COVER: ~
+        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');   // ~ COVER:
     }
     get page() { return this.#page }
     set page(val) { // REVIEW:
-        if (val instanceof CompileCollection) this.#page.addCollectoin(val);
-        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+        if (val instanceof CompileCollection) this.#page.addCollectoin(val);    // COVER: ~
+        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');   // ~ COVER:
     }
     get group() { return this.#group }
     set group(val) {    // REVIEW:
-        if (val instanceof PageGroupCollection) this.#group.addCollectoin(val);
-        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+        if (val instanceof PageGroupCollection) this.#group.addCollectoin(val); // COVER: ~
+        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');   // ~ COVER:
     }
     get localScope() { 
         if (this.#localScope === null) this.#localScope = this._getLocalScope();
@@ -145,10 +145,10 @@ class AutoTemplate {
 
     /*_______________________________________*/        
     // event property
-    set onInit(fn) { this.#event.subscribe(fn, 'init') }        // 초기화 전
-    set onInited(fn) { this.#event.subscribe(fn, 'inited') }    // 초기화 전
-    set onBuild(fn) { this.#event.subscribe(fn, 'build') }      // 빌드 전
-    set onBuilded(fn) { this.#event.subscribe(fn, 'builded') }  // 빌드 전
+    set onInit(fn) { this.#event.subscribe(fn, 'init') }        // 초기화 전    // COVER:
+    set onInited(fn) { this.#event.subscribe(fn, 'inited') }    // 초기화 전    // COVER:
+    set onBuild(fn) { this.#event.subscribe(fn, 'build') }      // 빌드 전     // COVER:
+    set onBuilded(fn) { this.#event.subscribe(fn, 'builded') }  // 빌드 전     // COVER:
 
     /**
      * 오토템플릿 생성자
@@ -241,10 +241,10 @@ class AutoTemplate {
             // return true; 디버깅용
             // if (opt === 1) return true;
             if(fs.existsSync(tarPath)) tarData = fs.readFileSync(tarPath,'utf-8');
-            else return false;  // 대상파일이 없으니 수정없음 처리
+            else return false;  // 대상파일이 없으니 수정없음 처리  // COVER:
             
             if(fs.existsSync(oriPath)) oriData = fs.readFileSync(oriPath,'utf-8');
-            else return false;   // 원본파일이 없는 경우 
+            else return false;   // 원본파일이 없는 경우    // COVER:
             // 파일내용 비교
             // if (oriData.trim() === tarData.trim()) return true;
             if (oriData === tarData) return true;
@@ -354,7 +354,7 @@ class AutoTemplate {
                 }
 
               } catch(e) {
-                  return console.error('Delete Error', e);
+                  return console.error('Delete Error', e);  // COVER:
               }
         }
 
@@ -494,7 +494,7 @@ class AutoTemplate {
         // group = this.group[alias] || null;
 
         if (!(group instanceof PageGroup)) {
-            throw new Error('[필수] group 명이 존재하지 않습니다.');
+            throw new Error('[필수] group 명이 존재하지 않습니다.');    // COVER:
         }
 
         this._groupInstance.push({
@@ -584,7 +584,7 @@ class AutoTemplate {
                 // 단독저장의 경우 파일경로를 수정함
                 // if (isSave) {
                 //     compileSrc.savePath = _this.dir + path.sep + _this.PATH.SRC + path.sep + compileSrc.subPath.replace('.hbs','');
-                // }
+                // } 
                 
                 // TODO: dir, path 받아서 적용해야함
                 // prefix = localData.prefix;
@@ -744,7 +744,7 @@ class AutoTemplate {
                         obj['data']['ns'][alias] = {};
                         obj['data']['ns'][alias][outAlias] = outTemplate.data[ii].content;
                     } else {    
-                        obj['data'][key] = outTemplate.data[ii].content;
+                        obj['data'][key] = outTemplate.data[ii].content;    // COVER:
                     }
                 }
             }
@@ -837,7 +837,7 @@ class AutoTemplate {
                     // 디렉토리 없으면 만들기
                     dirname = path.dirname(copyFilePath);   
                     if(!fs.existsSync(dirname)) {
-                        fs.mkdirSync(dirname, {recursive: true} );
+                        fs.mkdirSync(dirname, {recursive: true} );  // COVER:
                     }
                     fs.copyFileSync(filePath, copyFilePath);
                     // fs.writeFileSync(filePath, src.content, 'utf-8');

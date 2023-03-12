@@ -209,12 +209,12 @@ class TemplateCollection extends PropertyCollection {
         // 초기값 설정
         // content = obj instanceof TemplateSource ? obj.content : obj;
         if (obj instanceof TemplateSource) {
-            alias = obj.alias;
-            value = obj;
+            alias = obj.alias;  // COVER:
+            value = obj;    // COVER:
         } else alias = obj;
 
         if (obj instanceof TemplateSource) {
-            content = function(data, hb) {
+            content = function(data, hb) {  // COVER:
                 return value._compile(data, false);
             }
         } else content = value;
@@ -222,16 +222,16 @@ class TemplateCollection extends PropertyCollection {
 
         // 유효성 검사
         if (typeof alias !== 'string' || alias.length === 0) {
-            throw new Error('alias에 string 만 지정할 수 있습니다.');
+            throw new Error('alias에 string 만 지정할 수 있습니다.');   // COVER:
         }
         if (typeof content === 'undefined' || content === null) {
-            throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');
+            throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');  // COVER:
         }
         // area별 타입 검사
         if (this.area === 'DATA' && !(typeof content === 'function' || typeof content === 'object')) {
-            throw new Error('area[DATA] 가능한 타입 : object(null 제외), function');
+            throw new Error('area[DATA] 가능한 타입 : object(null 제외), function');    // COVER:
         } else if (this.area === 'HELPER' && !(typeof content === 'function')) {
-            throw new Error('area[HELPER] 가능한 타입 : function');
+            throw new Error('area[HELPER] 가능한 타입 : function'); // COVER:
         }
 
         // TODO: this.add('별칭', out.part['sss'] 삽입시)
@@ -258,7 +258,7 @@ class TemplateCollection extends PropertyCollection {
         
         let alias;
         
-        for (let i = 0; i < collection.count; i++) {
+        for (let i = 0; i < collection.count; i++) {    // COVER:
             alias = collection.propertyOf(i);
             this.add(alias, collection[i]);
         }
@@ -331,7 +331,7 @@ class TemplateCollection extends PropertyCollection {
     _getPropDescriptor(idx) {
         return {
             get: function() { return this._element[idx]; },
-            set: function(val) {    // REVIEW: 컬렉션이 임의 삽입 확인필요
+            set: function(val) {    // REVIEW: 컬렉션이 임의 삽입 확인필요  // COVER:
                 if (val instanceof TemplateSource && val.area === this.area) {
                     this._element[idx].content = val.content;
                 } else {

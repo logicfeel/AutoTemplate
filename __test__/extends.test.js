@@ -116,9 +116,73 @@ describe("task :: publish", () => {
         });
     });
     
+    
+
+    describe("수정 후 초기화", () => {
+        it("[ 수정 >> do_clear() ]", () => {
+            const fullPath1 = path.join(dirname, "src/one.html");
+            const fullPath2 = path.join(dirname, "src/inline/new_p1.html");
+            const data1 = fs.readFileSync(fullPath1, "utf-8");
+            const data2 = fs.readFileSync(fullPath2, "utf-8");
+
+            // 1.수정
+            fs.writeFileSync(fullPath1, data1 + " [EDIT]", "utf8");
+            fs.writeFileSync(fullPath2, data2 + " [EDIT]", "utf8");
+
+            // 2.초기화 
+            autoTask.do_clear();
+        });
+
+        describe("< src 파일 >", ()=>{
+            it("- 수정 파일 여부 : src/one.html ", () => {
+                const fullPath = path.join(dirname, "src/one.html");
+                const data = fs.readFileSync(fullPath,"utf-8");
+                expect(fs.existsSync(fullPath)).toBeTruthy();
+                expect(data).toMatch("[EDIT]");
+            });
+            it("- 수정 파일 여부 : src/inline/new_p1.html ", () => {
+                const fullPath = path.join(dirname, "src/inline/new_p1.html");
+                const data = fs.readFileSync(fullPath,"utf-8");
+                expect(fs.existsSync(fullPath)).toBeTruthy();
+                expect(data).toMatch("[EDIT]");
+            });
+        });
+        describe("< src 파일 >", ()=>{
+            it("- 파일 유무 : src/ready/pre_p1_suf.html (X)", () => {
+                const fullPath = path.join(dirname, "src/ready/pre_p1_suf.html");
+                expect(fs.existsSync(fullPath)).toBeFalsy();
+            });
+            it("- 파일 유무 : src/ready/pre_p2_suf.html (X)", () => {
+                const fullPath = path.join(dirname, "src/ready/pre_p2_suf.html");
+                expect(fs.existsSync(fullPath)).toBeFalsy();
+            });
+            it("- 파일 유무 : src/ready/pre_p3_suf.html (X)", () => {
+                const fullPath = path.join(dirname, "src/ready/pre_p3_suf.html");
+                expect(fs.existsSync(fullPath)).toBeFalsy();
+            });
+            it("- 파일 유무 : src/inline/arg1_1/arg1_2/group_arg2/pre_p1_suf.html (X)", () => {
+                const fullPath = path.join(dirname, "src/inline/arg1_1/arg1_2/group_arg2/pre_p1_suf.html");
+                expect(fs.existsSync(fullPath)).toBeFalsy();
+            });
+            it("- 파일 유무 : src/inline/arg1_1/arg1_2/group_arg2/pre_p2_suf.html (X)", () => {
+                const fullPath = path.join(dirname, "src/inline/arg1_1/arg1_2/group_arg2/pre_p2_suf.html");
+                expect(fs.existsSync(fullPath)).toBeFalsy();
+            });
+        });
+
+    });
+    
+});
+
+
+describe("task :: cover", () => {
     it("[ 생성 및 do_cover() ]", () => {
+        // AutoTask.destructor();
+        autoTask = AutoTask.create(dirname);
+        autoTask.isLog = false;
         autoTask.do_cover();
     });
+
     describe("< 커버 파일 검사 >", ()=>{
         it("- 파일 유무 : template/page/p1.html.hbs", () => {
             const fullPath = path.join(dirname, "template/page/p1.html.hbs");
@@ -165,21 +229,17 @@ describe("task :: publish", () => {
 
     describe("수정 후 초기화", () => {
         it("[ 수정 >> do_clear() ]", () => {
-            const fullPath1 = path.join(dirname, "src/one.html");
-            const fullPath2 = path.join(dirname, "src/inline/new_p1.html");
+
             const fullPath3 = path.join(dirname, "template/page/p1.html.hbs");
             const fullPath4 = path.join(dirname, "template/part/title.hbs");
             const fullPath5 = path.join(dirname, "template/part/inc/footer.hbs");
             const fullPath6 = path.join(dirname, "template/helper/bold.js");
-            const data1 = fs.readFileSync(fullPath1, "utf-8");
-            const data2 = fs.readFileSync(fullPath2, "utf-8");
+
             const data3 = fs.readFileSync(fullPath3, "utf-8");
             const data4 = fs.readFileSync(fullPath4, "utf-8");
             const data5 = fs.readFileSync(fullPath5, "utf-8");
             const data6 = fs.readFileSync(fullPath6, "utf-8");
             // 1.수정
-            fs.writeFileSync(fullPath1, data1 + " [EDIT]", "utf8");
-            fs.writeFileSync(fullPath2, data2 + " [EDIT]", "utf8");
             fs.writeFileSync(fullPath3, data3 + " [EDIT]", "utf8");
             fs.writeFileSync(fullPath4, data4 + " [EDIT]", "utf8");
             if (data5.indexOf("[EDIT]") < 0) {
@@ -189,87 +249,47 @@ describe("task :: publish", () => {
             // 2.초기화 
             autoTask.do_clear();
         });
-
-        describe("< 수정 파일 파일 >", ()=>{
-            describe("< src 파일 >", ()=>{
-                it("- 수정 파일 여부 : src/one.html ", () => {
-                    const fullPath = path.join(dirname, "src/one.html");
-                    const data = fs.readFileSync(fullPath,"utf-8");
-                    expect(fs.existsSync(fullPath)).toBeTruthy();
-                    expect(data).toMatch("[EDIT]");
-                });
-                it("- 수정 파일 여부 : src/inline/new_p1.html ", () => {
-                    const fullPath = path.join(dirname, "src/inline/new_p1.html");
-                    const data = fs.readFileSync(fullPath,"utf-8");
-                    expect(fs.existsSync(fullPath)).toBeTruthy();
-                    expect(data).toMatch("[EDIT]");
-                });
+            
+        describe("< template 파일 >", ()=>{
+            it("- 수정 파일 여부 : template/page/p1.html.hbs ", () => {
+                const fullPath = path.join(dirname, "template/page/p1.html.hbs");
+                const data = fs.readFileSync(fullPath,"utf-8");
+                expect(fs.existsSync(fullPath)).toBeTruthy();
+                expect(data).toMatch("[EDIT]");
             });
-            describe("< template 파일 >", ()=>{
-                it("- 수정 파일 여부 : template/page/p1.html.hbs ", () => {
-                    const fullPath = path.join(dirname, "template/page/p1.html.hbs");
-                    const data = fs.readFileSync(fullPath,"utf-8");
-                    expect(fs.existsSync(fullPath)).toBeTruthy();
-                    expect(data).toMatch("[EDIT]");
-                });
-                it("- 수정 파일 여부 : template/part/title.hbs ", () => {
-                    const fullPath = path.join(dirname, "template/part/title.hbs");
-                    const data = fs.readFileSync(fullPath,"utf-8");
-                    expect(fs.existsSync(fullPath)).toBeTruthy();
-                    expect(data).toMatch("[EDIT]");
-                });
-                it("- 수정 파일 여부 : template/part/inc/footer.hbs ", () => {
-                    const fullPath = path.join(dirname, "template/part/inc/footer.hbs");
-                    const data = fs.readFileSync(fullPath,"utf-8");
-                    expect(fs.existsSync(fullPath)).toBeTruthy();
-                    expect(data).toMatch("[EDIT]");
-                });
-                it("- 수정 파일 여부 : template/helper/bold.js ", () => {
-                    const fullPath = path.join(dirname, "template/helper/bold.js");
-                    const data = fs.readFileSync(fullPath,"utf-8");
-                    expect(fs.existsSync(fullPath)).toBeTruthy();
-                    expect(data).toMatch("[EDIT]");
-                });
+            it("- 수정 파일 여부 : template/part/title.hbs ", () => {
+                const fullPath = path.join(dirname, "template/part/title.hbs");
+                const data = fs.readFileSync(fullPath,"utf-8");
+                expect(fs.existsSync(fullPath)).toBeTruthy();
+                expect(data).toMatch("[EDIT]");
+            });
+            it("- 수정 파일 여부 : template/part/inc/footer.hbs ", () => {
+                const fullPath = path.join(dirname, "template/part/inc/footer.hbs");
+                const data = fs.readFileSync(fullPath,"utf-8");
+                expect(fs.existsSync(fullPath)).toBeTruthy();
+                expect(data).toMatch("[EDIT]");
+            });
+            it("- 수정 파일 여부 : template/helper/bold.js ", () => {
+                const fullPath = path.join(dirname, "template/helper/bold.js");
+                const data = fs.readFileSync(fullPath,"utf-8");
+                expect(fs.existsSync(fullPath)).toBeTruthy();
+                expect(data).toMatch("[EDIT]");
             });
         });
-        describe("< 초기화 파일 : 삭제 ) >", ()=>{
-            describe("< src 파일 >", ()=>{
-                it("- 파일 유무 : src/ready/pre_p1_suf.html (X)", () => {
-                    const fullPath = path.join(dirname, "src/ready/pre_p1_suf.html");
-                    expect(fs.existsSync(fullPath)).toBeFalsy();
-                });
-                it("- 파일 유무 : src/ready/pre_p2_suf.html (X)", () => {
-                    const fullPath = path.join(dirname, "src/ready/pre_p2_suf.html");
-                    expect(fs.existsSync(fullPath)).toBeFalsy();
-                });
-                it("- 파일 유무 : src/ready/pre_p3_suf.html (X)", () => {
-                    const fullPath = path.join(dirname, "src/ready/pre_p3_suf.html");
-                    expect(fs.existsSync(fullPath)).toBeFalsy();
-                });
-                it("- 파일 유무 : src/inline/arg1_1/arg1_2/group_arg2/pre_p1_suf.html (X)", () => {
-                    const fullPath = path.join(dirname, "src/inline/arg1_1/arg1_2/group_arg2/pre_p1_suf.html");
-                    expect(fs.existsSync(fullPath)).toBeFalsy();
-                });
-                it("- 파일 유무 : src/inline/arg1_1/arg1_2/group_arg2/pre_p2_suf.html (X)", () => {
-                    const fullPath = path.join(dirname, "src/inline/arg1_1/arg1_2/group_arg2/pre_p2_suf.html");
-                    expect(fs.existsSync(fullPath)).toBeFalsy();
-                });
+
+        describe("< template 파일 >", ()=>{
+            it("- 파일 유무 : template/page/p2.html.hbs (X)", () => {
+                const fullPath = path.join(dirname, "template/page/p2.html.hbs");
+                expect(fs.existsSync(fullPath)).toBeFalsy();
             });
-            describe("< template 파일 >", ()=>{
-                it("- 파일 유무 : template/page/p2.html.hbs (X)", () => {
-                    const fullPath = path.join(dirname, "template/page/p2.html.hbs");
-                    expect(fs.existsSync(fullPath)).toBeFalsy();
-                });
-                it("- 파일 유무 : template/part/content.hbs (X)", () => {
-                    const fullPath = path.join(dirname, "template/part/content.hbs");
-                    expect(fs.existsSync(fullPath)).toBeFalsy();
-                });
-                it("- 파일 유무 : template/part/inc/header.hbs (X)", () => {
-                    const fullPath = path.join(dirname, "template/part/inc/header.hbs");
-                    expect(fs.existsSync(fullPath)).toBeFalsy();
-                });
+            it("- 파일 유무 : template/part/content.hbs (X)", () => {
+                const fullPath = path.join(dirname, "template/part/content.hbs");
+                expect(fs.existsSync(fullPath)).toBeFalsy();
+            });
+            it("- 파일 유무 : template/part/inc/header.hbs (X)", () => {
+                const fullPath = path.join(dirname, "template/part/inc/header.hbs");
+                expect(fs.existsSync(fullPath)).toBeFalsy();
             });
         });
     });
-    
 });

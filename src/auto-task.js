@@ -53,6 +53,12 @@ class AutoTask {
     /**
      * taask 생성
      */
+    /**
+     * 
+     * @param {*} dir 시작 디렉토리
+     * @param {*} entry 엔트라 피일명
+     * @returns 
+     */
     static create(dir, entry) {
         if (typeof dir !== 'string' || dir.length === 0) {
             throw new Error(' start [dir] request fail...');
@@ -122,9 +128,11 @@ class AutoTask {
     /*_______________________________________*/
     // protected method
 
-    #init(entry) {
+    // #init(entry) {
+    #init() {
         // 현재 폴더의 auto.js 파일 로딩
-        const entryFile  = entry ? path.join(this.#dir, entry) : path.join(this.#dir, this.FILE.TEMPLATE);
+        // const entryFile  = entry ? path.join(this.#dir, entry) : path.join(this.#dir, this.FILE.TEMPLATE);
+        const entryFile = path.join(this.#dir, this.FILE.TEMPLATE);
         // 다양한 조건에 예외조건을 수용해야함
         
         const EntryTemplate = require(entryFile);

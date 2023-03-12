@@ -30,13 +30,13 @@ class PageGroup {
     }
     get prefix() { return this.#prefix };
     set prefix(val) {
-        if (typeof val !== 'string') throw new Error('prefix 가능한 타입 : string ');
-        this.#prefix = val;
+        if (typeof val !== 'string') throw new Error('prefix 가능한 타입 : string ');   // COVER:
+        this.#prefix = val; // COVER:
     }
     get suffix() { return this.#suffix };
     set suffix(val) {
-        if (typeof val !== 'string') throw new Error('suffix 가능한 타입 : string ');
-        this.#suffix = val;
+        if (typeof val !== 'string') throw new Error('suffix 가능한 타입 : string ');   // COVER:
+        this.#suffix = val; // COVER:
     }
     
     constructor(template, alias) {
@@ -66,7 +66,7 @@ class PageGroup {
             src = this._template.page[alias] || null;
 
             if (src === null){
-                throw new Error(`page에  ${alias} 존재하지 않습니다.`);
+                throw new Error(`page에  ${alias} 존재하지 않습니다.`); // COVER:
             }
     
             if (context === '' || typeof context !== 'string') {
@@ -241,20 +241,20 @@ class PageGroupCollection extends PropertyCollection {
 
         // 유효성 검사
         if (typeof alias !== 'string' || alias.length === 0) {
-            throw new Error('alias에 string 만 지정할 수 있습니다.');
+            throw new Error('alias에 string 만 지정할 수 있습니다.');       // COVER:
         }
         if (!Array.isArray(pages)) {
-            throw new Error('pages array<object> 만 지정할 수 있습니다.');
+            throw new Error('pages array<object> 만 지정할 수 있습니다.');  // COVER:
         }
         if (!Array.isArray(deffix)) {
-            throw new Error('deffix 는 array<object> 만 지정할 수 있습니다.');
+            throw new Error('deffix 는 array<object> 만 지정할 수 있습니다.');      // COVER:
         }
 
         // 별칭 규칙 검사
         this._groupSymbol.forEach(val => {
             if ((val instanceof RegExp && val.test(alias)) || 
                 (typeof val === 'string' && val === alias)) {
-                throw new Error('[group]에 예약어를 입력할 수 없습니다. : all');
+                throw new Error('[group]에 예약어를 입력할 수 없습니다. : all');    // COVER:
             }
         });
 
