@@ -29,14 +29,14 @@ class PageGroup {
         this.#argfix = val;
     }
     get prefix() { return this.#prefix };
-    set prefix(val) {
-        if (typeof val !== 'string') throw new Error('prefix 가능한 타입 : string ');   // COVER:
-        this.#prefix = val; // COVER:
+    set prefix(val) {   // COVER:
+        if (typeof val !== 'string') throw new Error('prefix 가능한 타입 : string ');   
+        this.#prefix = val;
     }
     get suffix() { return this.#suffix };
-    set suffix(val) {
-        if (typeof val !== 'string') throw new Error('suffix 가능한 타입 : string ');   // COVER:
-        this.#suffix = val; // COVER:
+    set suffix(val) {   // COVER:
+        if (typeof val !== 'string') throw new Error('suffix 가능한 타입 : string ');   
+        this.#suffix = val;
     }
     
     constructor(template, alias) {

@@ -100,39 +100,39 @@ class AutoTemplate {
     get ns() {return this.namespace }
     get helper() { return this.#helper }
     set helper(val) {
-        if (val instanceof TemplateCollection && val.area === this.AREA.HELPER) {   // COVER: ~
-            this.#helper.addCollectoin(val);
+        if (val instanceof TemplateCollection && val.area === this.AREA.HELPER) {
+            this.#helper.addCollection(val);
         } else {
-            throw new Error('[helper] TemplateCollection 타입만 설정할 수 있습니다.');     // ~ COVER:
+            throw new Error('[helper] TemplateCollection 타입만 설정할 수 있습니다.');
         } 
     }
     get data() { return this.#data }
     set data(val) {
-        if (val instanceof TemplateCollection && val.area === this.AREA.DATA) { // COVER: ~
-            this.#data.addCollectoin(val);
+        if (val instanceof TemplateCollection && val.area === this.AREA.DATA) { 
+            this.#data.addCollection(val);
         } else {
-            throw new Error('[data] TemplateCollection 타입만 설정할 수 있습니다.');    // ~ COVER:
+            throw new Error('[data] TemplateCollection 타입만 설정할 수 있습니다.');
         } 
     }
     get part() { return this.#part }
     set part(val) {
-        if (val instanceof CompileCollection) this.#part.addCollectoin(val);    // COVER: ~
-        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');   // ~ COVER:
+        if (val instanceof CompileCollection) this.#part.addCollection(val);    
+        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
     get src() { return this.#src }
-    set src(val) {  // REVIEW:
-        if (val instanceof CompileCollection) this.#src.addCollectoin(val); // COVER: ~
-        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');   // ~ COVER:
+    set src(val) {
+        if (val instanceof CompileCollection) this.#src.addCollection(val); 
+        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
     get page() { return this.#page }
-    set page(val) { // REVIEW:
-        if (val instanceof CompileCollection) this.#page.addCollectoin(val);    // COVER: ~
-        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');   // ~ COVER:
+    set page(val) {
+        if (val instanceof CompileCollection) this.#page.addCollection(val);    
+        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
     get group() { return this.#group }
-    set group(val) {    // REVIEW:
-        if (val instanceof PageGroupCollection) this.#group.addCollectoin(val); // COVER: ~
-        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');   // ~ COVER:
+    set group(val) {    // REVIEW: // COVER:
+        if (val instanceof PageGroupCollection) this.#group.addCollection(val); 
+        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
     get localScope() { 
         if (this.#localScope === null) this.#localScope = this._getLocalScope();
@@ -363,7 +363,7 @@ class AutoTemplate {
         // areaDirs.push(this.dir + path.sep + this.DIR['DATA']);
         // areaDirs.push(this.dir + path.sep + this.DIR['PART']);
         // areaDirs.push(this.dir + path.sep + this.DIR['SRC']);
-        // areaDirs.push(this.dir + path.sep + this.DIR['PUB']);
+        // areaDirs.push(this.dir + path.sep + this.DIR['PUB']); 
         // REVIEW: 코드 검토 필요
         for (const prop in this.DIR) {
             if (Object.hasOwnProperty.call(this.DIR, prop)) areaDirs.push(path.join(this.dir, this.DIR[prop]));
@@ -440,6 +440,7 @@ class AutoTemplate {
         //         group[ii].pageGroup
         //     }
             
+        // TODO:
             
         //     this.src._group[i].compile();
         // }
@@ -494,7 +495,7 @@ class AutoTemplate {
         // group = this.group[alias] || null;
 
         if (!(group instanceof PageGroup)) {
-            throw new Error('[필수] group 명이 존재하지 않습니다.');    // COVER:
+            throw new Error('[필수] group 이 존재하지 않습니다.');    // COVER:
         }
 
         this._groupInstance.push({

@@ -1075,9 +1075,9 @@ class CompileSource extends TemplateSource {
     
     /*_______________________________________*/        
     // event property
-<span class="fstat-no" title="function not covered" >    se</span>t onCompile(fn) { <span class="cstat-no" title="statement not covered" >this.#event.subscribe(fn, 'compile') </span>}      // 컴파일 전
-<span class="fstat-no" title="function not covered" >    se</span>t onSave(fn) { <span class="cstat-no" title="statement not covered" >this.#event.subscribe(fn, 'save') </span>}            // 저장시 저장후
-<span class="fstat-no" title="function not covered" >    se</span>t onCompiled(fn) { <span class="cstat-no" title="statement not covered" >this.#event.subscribe(fn, 'compiled') </span>}    // 컴파일 전
+<span class="fstat-no" title="function not covered" >    se</span>t onCompile(fn) { <span class="cstat-no" title="statement not covered" >this.#event.subscribe(fn, 'compile') </span>}      // 컴파일 전    // COVER:
+<span class="fstat-no" title="function not covered" >    se</span>t onSave(fn) { <span class="cstat-no" title="statement not covered" >this.#event.subscribe(fn, 'save') </span>}            // 저장시 저장후    // COVER:
+<span class="fstat-no" title="function not covered" >    se</span>t onCompiled(fn) { <span class="cstat-no" title="statement not covered" >this.#event.subscribe(fn, 'compiled') </span>}    // 컴파일 전    // COVER:
 &nbsp;
     /*_______________________________________*/
     // constructor method
@@ -1099,22 +1099,22 @@ class CompileSource extends TemplateSource {
     }
 &nbsp;
 <span class="fstat-no" title="function not covered" >    pa</span>rtials(pattern, opt) {
-<span class="cstat-no" title="statement not covered" >        this.#part.push({glob: pattern, opt: opt});</span>
+<span class="cstat-no" title="statement not covered" >        this.#part.push({glob: pattern, opt: opt}); </span>    // COVER:
     }
 &nbsp;
 <span class="fstat-no" title="function not covered" >    he</span>lpers(pattern, opt) {
-<span class="cstat-no" title="statement not covered" >        this.#helper.push({glob: pattern, opt: opt});</span>
+<span class="cstat-no" title="statement not covered" >        this.#helper.push({glob: pattern, opt: opt}); </span>  // COVER:
     }
     
 <span class="fstat-no" title="function not covered" >    da</span>ta(pattern, opt) {
-<span class="cstat-no" title="statement not covered" >        this.#data.push({glob: pattern, opt: opt});</span>
+<span class="cstat-no" title="statement not covered" >        this.#data.push({glob: pattern, opt: opt}); </span>    // COVER:
     }
     
     /**
      * 단독으로 컴파일할 경우 (빌드 로그 생성)
      * @param {*} data 
      */
-<span class="fstat-no" title="function not covered" >    bu</span>ild(data) {
+<span class="fstat-no" title="function not covered" >    bu</span>ild(data) {   // COVER:
         // 컴파일
 <span class="cstat-no" title="statement not covered" >        this._compile(data, true);</span>
         // 빌드 파일 저장
@@ -1174,7 +1174,7 @@ class CompileSource extends TemplateSource {
                 // }
             } else <span class="missing-if-branch" title="else path not taken" >E</span>{
                 // 저장
-<span class="cstat-no" title="statement not covered" >                fs.writeFileSync(this.savePath, content, 'utf8');</span>
+<span class="cstat-no" title="statement not covered" >                fs.writeFileSync(this.savePath, content, 'utf8'); </span>  // COVER:
             }
 &nbsp;
             // 빌드 파일 추가
@@ -1223,7 +1223,7 @@ class CompileSource extends TemplateSource {
             }
             fs.writeFileSync(savePath, data, 'utf8');
         }
-        function <span class="fstat-no" title="function not covered" >getNewPath(</span>focusPath) {
+        function <span class="fstat-no" title="function not covered" >getNewPath(</span>focusPath) {    // COVER:
             const MAX_COUNT = <span class="cstat-no" title="statement not covered" >10;</span> // 최대 수정 갯수
             const objPath = <span class="cstat-no" title="statement not covered" >path.parse(focusPath);</span>
             let newPath;
@@ -1240,7 +1240,7 @@ class CompileSource extends TemplateSource {
             saveFile(focusPath, data);
         } else {
             // 파일 비교
-            <span class="missing-if-branch" title="if path not taken" >I</span>if (data !== fs.readFileSync(focusPath,'utf-8')) {
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (data !== fs.readFileSync(focusPath,'utf-8')) {  // COVER:
 <span class="cstat-no" title="statement not covered" >                focusPath = getNewPath(focusPath);</span>
                 // this._template._buildFile['focus'][oriPath] = focusPath;
 <span class="cstat-no" title="statement not covered" >                saveFile(focusPath, data);</span>
@@ -1322,14 +1322,14 @@ class CompileCollection extends PropertyCollection {
 &nbsp;
         // 유효성 검사
         <span class="missing-if-branch" title="if path not taken" >I</span>if (typeof alias !== 'string' || alias.length === 0) {
-<span class="cstat-no" title="statement not covered" >            throw new Error('alias에 string 만 지정할 수 있습니다.');</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('alias에 string 만 지정할 수 있습니다.'); </span>  // COVER:
         }
         <span class="missing-if-branch" title="if path not taken" >I</span>if (typeof content === 'undefined' || content === null) {
-<span class="cstat-no" title="statement not covered" >            throw new Error('value에 null 또는 undefined 지정할 수 없습니다. ');</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('value에 null 또는 undefined 지정할 수 없습니다. '); </span>   // COVER:
         }
         // area별 타입 검사
         <span class="missing-if-branch" title="if path not taken" >I</span>if (!(typeof content === 'function' || typeof content === 'string')) {
-<span class="cstat-no" title="statement not covered" >            throw new Error('가능한 타입 : string, function');</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('가능한 타입 : string, function'); </span> // COVER:
         }
 &nbsp;
 &nbsp;
@@ -1338,7 +1338,7 @@ class CompileCollection extends PropertyCollection {
             this._partSymbol.forEach(val =&gt; {
                 <span class="missing-if-branch" title="if path not taken" >I</span>if ((val instanceof RegExp &amp;&amp; val.test(alias)) || 
                     (typeof val === 'string' &amp;&amp; <span class="branch-3 cbranch-no" title="branch not covered" >val === alias)</span>) {
-<span class="cstat-no" title="statement not covered" >                    throw new Error('[part]에 예약어를 입력할 수 없습니다. : ns, page, group ');</span>
+<span class="cstat-no" title="statement not covered" >                    throw new Error('[part]에 예약어를 입력할 수 없습니다. : ns, page, group '); </span>   // COVER:
                 }
             });
         }
@@ -1386,7 +1386,7 @@ class CompileCollection extends PropertyCollection {
         
         let alias;
         
-<span class="cstat-no" title="statement not covered" >        for (let i = <span class="cstat-no" title="statement not covered" >0;</span> i &lt; collection.count; i++) {</span>
+<span class="cstat-no" title="statement not covered" >        for (let i = <span class="cstat-no" title="statement not covered" >0;</span> i &lt; collection.count; i++) {    // COVER:</span>
 <span class="cstat-no" title="statement not covered" >            alias = collection.propertyOf(i);</span>
 <span class="cstat-no" title="statement not covered" >            this.add(alias, collection[i]);</span>
         }
@@ -1466,7 +1466,7 @@ class CompileCollection extends PropertyCollection {
     _getPropDescriptor(idx) {
         return {
             get: function() { return this._element[idx]; },
-            set: <span class="fstat-no" title="function not covered" >fu</span>nction(val) {
+            set: <span class="fstat-no" title="function not covered" >fu</span>nction(val) {    // COVER:
 <span class="cstat-no" title="statement not covered" >                if (val instanceof CompileSource) {</span>
 <span class="cstat-no" title="statement not covered" >                    this._element[idx].content = val.content;</span>
                 } else {
@@ -1492,7 +1492,7 @@ exports.CompileCollection = CompileCollection;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-10T09:04:28.532Z
+                at 2023-03-13T00:11:24.401Z
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -2026,7 +2026,7 @@ class AutoTemplate {
     get used() { return this.#used === null ? this : this.#used; }
     set used(val) {
         if (val instanceof AutoTemplate) this.#used = val;
-        else <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="else path not taken" >E</span>throw new Error('AutoTemplate 타입만 설정할 수 있습니다.');</span>
+        else <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="else path not taken" >E</span>throw new Error('AutoTemplate 타입만 설정할 수 있습니다.'); </span>   // COVER:
     }
     get dir() {
         let size = this.#dir.length;
@@ -2035,7 +2035,7 @@ class AutoTemplate {
     }
     set dir(val) {
         <span class="missing-if-branch" title="if path not taken" >I</span>if (this.isFinal === true &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >this.#dir.length &gt; 0)</span> {
-<span class="cstat-no" title="statement not covered" >            throw new Error('마지막 클래스(상속금지)는 dir 설정할 수 없습니다.');</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('마지막 클래스(상속금지)는 dir 설정할 수 없습니다.'); </span>  // COVER:
         } else <span class="missing-if-branch" title="else path not taken" >E</span>if (this.#dir.indexOf(val) &lt; 0) this.#dir.push(val);
     }
     get dirs() { return this.#dir; }
@@ -2043,39 +2043,39 @@ class AutoTemplate {
     get ns() {return this.namespace }
     get helper() { return this.#helper }
 <span class="fstat-no" title="function not covered" >    se</span>t helper(val) {
-<span class="cstat-no" title="statement not covered" >        if (val instanceof TemplateCollection &amp;&amp; val.area === this.AREA.HELPER) {</span>
+<span class="cstat-no" title="statement not covered" >        if (val instanceof TemplateCollection &amp;&amp; val.area === this.AREA.HELPER) {   // COVER: ~</span>
 <span class="cstat-no" title="statement not covered" >            this.#helper.addCollectoin(val);</span>
         } else {
-<span class="cstat-no" title="statement not covered" >            throw new Error('[helper] TemplateCollection 타입만 설정할 수 있습니다.');</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('[helper] TemplateCollection 타입만 설정할 수 있습니다.'); </span>    // ~ COVER:
         } 
     }
     get data() { return this.#data }
 <span class="fstat-no" title="function not covered" >    se</span>t data(val) {
-<span class="cstat-no" title="statement not covered" >        if (val instanceof TemplateCollection &amp;&amp; val.area === this.AREA.DATA) {</span>
+<span class="cstat-no" title="statement not covered" >        if (val instanceof TemplateCollection &amp;&amp; val.area === this.AREA.DATA) { // COVER: ~</span>
 <span class="cstat-no" title="statement not covered" >            this.#data.addCollectoin(val);</span>
         } else {
-<span class="cstat-no" title="statement not covered" >            throw new Error('[data] TemplateCollection 타입만 설정할 수 있습니다.');</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('[data] TemplateCollection 타입만 설정할 수 있습니다.'); </span>   // ~ COVER:
         } 
     }
     get part() { return this.#part }
 <span class="fstat-no" title="function not covered" >    se</span>t part(val) {
-<span class="cstat-no" title="statement not covered" >        if (val instanceof CompileCollection) <span class="cstat-no" title="statement not covered" >this.#part.addCollectoin(val);</span></span>
-        else <span class="cstat-no" title="statement not covered" >throw new Error('CompileCollection 타입만 설정할 수 있습니다.');</span>
+<span class="cstat-no" title="statement not covered" >        if (val instanceof CompileCollection) <span class="cstat-no" title="statement not covered" >this.#part.addCollectoin(val); </span>   // COVER: ~</span>
+        else <span class="cstat-no" title="statement not covered" >throw new Error('CompileCollection 타입만 설정할 수 있습니다.'); </span>  // ~ COVER:
     }
     get src() { return this.#src }
 <span class="fstat-no" title="function not covered" >    se</span>t src(val) {  // REVIEW:
-<span class="cstat-no" title="statement not covered" >        if (val instanceof CompileCollection) <span class="cstat-no" title="statement not covered" >this.#src.addCollectoin(val);</span></span>
-        else <span class="cstat-no" title="statement not covered" >throw new Error('CompileCollection 타입만 설정할 수 있습니다.');</span>
+<span class="cstat-no" title="statement not covered" >        if (val instanceof CompileCollection) <span class="cstat-no" title="statement not covered" >this.#src.addCollectoin(val); </span>// COVER: ~</span>
+        else <span class="cstat-no" title="statement not covered" >throw new Error('CompileCollection 타입만 설정할 수 있습니다.'); </span>  // ~ COVER:
     }
     get page() { return this.#page }
 <span class="fstat-no" title="function not covered" >    se</span>t page(val) { // REVIEW:
-<span class="cstat-no" title="statement not covered" >        if (val instanceof CompileCollection) <span class="cstat-no" title="statement not covered" >this.#page.addCollectoin(val);</span></span>
-        else <span class="cstat-no" title="statement not covered" >throw new Error('CompileCollection 타입만 설정할 수 있습니다.');</span>
+<span class="cstat-no" title="statement not covered" >        if (val instanceof CompileCollection) <span class="cstat-no" title="statement not covered" >this.#page.addCollectoin(val); </span>   // COVER: ~</span>
+        else <span class="cstat-no" title="statement not covered" >throw new Error('CompileCollection 타입만 설정할 수 있습니다.'); </span>  // ~ COVER:
     }
     get group() { return this.#group }
 <span class="fstat-no" title="function not covered" >    se</span>t group(val) {    // REVIEW:
-<span class="cstat-no" title="statement not covered" >        if (val instanceof PageGroupCollection) <span class="cstat-no" title="statement not covered" >this.#group.addCollectoin(val);</span></span>
-        else <span class="cstat-no" title="statement not covered" >throw new Error('CompileCollection 타입만 설정할 수 있습니다.');</span>
+<span class="cstat-no" title="statement not covered" >        if (val instanceof PageGroupCollection) <span class="cstat-no" title="statement not covered" >this.#group.addCollectoin(val); </span>// COVER: ~</span>
+        else <span class="cstat-no" title="statement not covered" >throw new Error('CompileCollection 타입만 설정할 수 있습니다.'); </span>  // ~ COVER:
     }
     get localScope() { 
         if (this.#localScope === null) this.#localScope = this._getLocalScope();
@@ -2088,10 +2088,10 @@ class AutoTemplate {
 &nbsp;
     /*_______________________________________*/        
     // event property
-<span class="fstat-no" title="function not covered" >    se</span>t onInit(fn) { <span class="cstat-no" title="statement not covered" >this.#event.subscribe(fn, 'init') </span>}        // 초기화 전
-<span class="fstat-no" title="function not covered" >    se</span>t onInited(fn) { <span class="cstat-no" title="statement not covered" >this.#event.subscribe(fn, 'inited') </span>}    // 초기화 전
-<span class="fstat-no" title="function not covered" >    se</span>t onBuild(fn) { <span class="cstat-no" title="statement not covered" >this.#event.subscribe(fn, 'build') </span>}      // 빌드 전
-<span class="fstat-no" title="function not covered" >    se</span>t onBuilded(fn) { <span class="cstat-no" title="statement not covered" >this.#event.subscribe(fn, 'builded') </span>}  // 빌드 전
+<span class="fstat-no" title="function not covered" >    se</span>t onInit(fn) { <span class="cstat-no" title="statement not covered" >this.#event.subscribe(fn, 'init') </span>}        // 초기화 전    // COVER:
+<span class="fstat-no" title="function not covered" >    se</span>t onInited(fn) { <span class="cstat-no" title="statement not covered" >this.#event.subscribe(fn, 'inited') </span>}    // 초기화 전    // COVER:
+<span class="fstat-no" title="function not covered" >    se</span>t onBuild(fn) { <span class="cstat-no" title="statement not covered" >this.#event.subscribe(fn, 'build') </span>}      // 빌드 전     // COVER:
+<span class="fstat-no" title="function not covered" >    se</span>t onBuilded(fn) { <span class="cstat-no" title="statement not covered" >this.#event.subscribe(fn, 'builded') </span>}  // 빌드 전     // COVER:
 &nbsp;
     /**
      * 오토템플릿 생성자
@@ -2184,10 +2184,10 @@ class AutoTemplate {
             // return true; 디버깅용
             // if (opt === 1) return true;
             if(fs.existsSync(tarPath)) tarData = fs.readFileSync(tarPath,'utf-8');
-            else <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="else path not taken" >E</span>return false; </span> // 대상파일이 없으니 수정없음 처리
+            else <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="else path not taken" >E</span>return false; </span> // 대상파일이 없으니 수정없음 처리  // COVER:
             
             if(fs.existsSync(oriPath)) oriData = fs.readFileSync(oriPath,'utf-8');
-            else <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="else path not taken" >E</span>return false; </span>  // 원본파일이 없는 경우 
+            else <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="else path not taken" >E</span>return false; </span>  // 원본파일이 없는 경우    // COVER:
             // 파일내용 비교
             // if (oriData.trim() === tarData.trim()) return true;
             if (oriData === tarData) return true;
@@ -2297,7 +2297,7 @@ class AutoTemplate {
                 }
 &nbsp;
               } catch(e) {
-<span class="cstat-no" title="statement not covered" >                  return console.error('Delete Error', e);</span>
+<span class="cstat-no" title="statement not covered" >                  return console.error('Delete Error', e); </span> // COVER:
               }
         }
 &nbsp;
@@ -2437,7 +2437,7 @@ class AutoTemplate {
         // group = this.group[alias] || null;
 &nbsp;
         <span class="missing-if-branch" title="if path not taken" >I</span>if (!(group instanceof PageGroup)) {
-<span class="cstat-no" title="statement not covered" >            throw new Error('[필수] group 명이 존재하지 않습니다.');</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('[필수] group 명이 존재하지 않습니다.'); </span>   // COVER:
         }
 &nbsp;
         this._groupInstance.push({
@@ -2687,7 +2687,7 @@ class AutoTemplate {
                         obj['data']['ns'][alias] = {};
                         obj['data']['ns'][alias][outAlias] = outTemplate.data[ii].content;
                     } else <span class="missing-if-branch" title="else path not taken" >E</span>{    
-<span class="cstat-no" title="statement not covered" >                        obj['data'][key] = outTemplate.data[ii].content;</span>
+<span class="cstat-no" title="statement not covered" >                        obj['data'][key] = outTemplate.data[ii].content; </span>   // COVER:
                     }
                 }
             }
@@ -2780,7 +2780,7 @@ class AutoTemplate {
                     // 디렉토리 없으면 만들기
                     dirname = path.dirname(copyFilePath);   
                     <span class="missing-if-branch" title="if path not taken" >I</span>if(!fs.existsSync(dirname)) {
-<span class="cstat-no" title="statement not covered" >                        fs.mkdirSync(dirname, {recursive: true} );</span>
+<span class="cstat-no" title="statement not covered" >                        fs.mkdirSync(dirname, {recursive: true} ); </span> // COVER:
                     }
                     fs.copyFileSync(filePath, copyFilePath);
                     // fs.writeFileSync(filePath, src.content, 'utf-8');
@@ -2887,7 +2887,7 @@ exports.AutoTemplate = AutoTemplate;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-10T09:04:28.532Z
+                at 2023-03-13T00:11:24.401Z
             </div>
         <script src="../prettify.js"></script>
         <script>

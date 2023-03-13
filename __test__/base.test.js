@@ -114,6 +114,8 @@ describe("change File", () => {
         autoTask = AutoTask.create(dirname);    // 생성
         autoTask.isLog = false;
         autoTask.do_clear(1);   // 강제 클리어
+        autoTask = AutoTask.create(dirname);    // 생성
+        autoTask.isLog = false;
         autoTask.do_publish();
         const fullPath = path.join(dirname, "/src/one.html");
         const data = fs.readFileSync(fullPath,"utf-8");
@@ -136,6 +138,8 @@ describe("rename template.js", () => {
         autoTask = AutoTask.create(dirname, "newTemplate.js");
         autoTask.isLog = false;
         autoTask.do_clear(1);   // 강제 초기화 (별도이 스코프!!)
+        autoTask = AutoTask.create(dirname, "newTemplate.js");
+        autoTask.isLog = false;
         autoTask.do_publish();
     });
     it("- 생성 여부 : src/one.html", () => {

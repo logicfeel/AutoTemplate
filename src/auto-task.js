@@ -19,7 +19,7 @@ class AutoTask {
     FILE = {
         TEMPLATE: 'template.js',
     };
-    isLog = true;
+    // isLog = true;
 
     /*_______________________________________*/        
     // protected
@@ -27,6 +27,7 @@ class AutoTask {
     
     /*_______________________________________*/        
     // private
+    #isLog = true;
     #dir = null;
     #event = new Observer(this, this);
     
@@ -41,6 +42,12 @@ class AutoTask {
     // set onSaved(fun) {
     //     this.#event.subscribe(fun, 'saved');
     // }
+    get isLog() { return this.#isLog };
+    set isLog(val) { 
+        if (typeof val !== 'boolean') throw new Error('boolean 타입만 설정할 수 있습니다.');
+        this.entry.isLog = val;
+        this.#isLog = val;
+    };
 
     constructor() {
         // this.batch = SourceBatch.getInstance();
@@ -69,6 +76,10 @@ class AutoTask {
             this._instance.FILE.TEMPLATE = entry;
         }
         this._instance.#dir = dir;
+        
+        // POINT:
+        this._instance.#init();
+
         return this._instance;
     }
     
@@ -94,7 +105,7 @@ class AutoTask {
 
         // 로딩
         // this.#init();
-        this.#init();
+        // this.#init();
         // 빌드 파일 삭제
         this.entry.clear(opt);
         // if (this.entry !== null) this.entry.clear();
@@ -108,7 +119,7 @@ class AutoTask {
     do_publish(isKeep) {
         this.cursor = 'PUBLISH';
         // 로딩
-        this.#init();
+        // this.#init();
         // 빌드
         this.entry.build(isKeep);
     }
@@ -120,7 +131,7 @@ class AutoTask {
     do_cover(template = this.entry) {
         this.cursor = 'COVER';
         // 로딩
-        this.#init();
+        // this.#init();
         // 부모 파일 쓰기
         this.entry._writeParentObject();
     }

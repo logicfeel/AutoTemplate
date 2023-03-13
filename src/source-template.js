@@ -259,8 +259,9 @@ class TemplateCollection extends PropertyCollection {
         let alias;
         
         for (let i = 0; i < collection.count; i++) {    // COVER:
-            alias = collection.propertyOf(i);
-            this.add(alias, collection[i]);
+            // alias = collection.propertyOf(i);
+            // this.add(alias, collection[i]);
+            this.add(collection[i]);
         }
     }
 
