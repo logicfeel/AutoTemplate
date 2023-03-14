@@ -214,9 +214,10 @@ class TemplateCollection extends PropertyCollection {
         } else alias = obj;
 
         if (obj instanceof TemplateSource) {
-            content = function(data, hb) {  // COVER:
-                return value._compile(data, false);
-            }
+            // content = function(data, hb) {  // COVER:
+            //     return value._compile(data, false);
+            // }
+            content = obj.content;
         } else content = value;
 
 

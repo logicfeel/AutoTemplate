@@ -2,7 +2,17 @@
 const {AutoTemplate} = require('../../../src/auto-template');
 // const Out1 = require('../out1/template');
 // const out1 = new Out1();
+// delete require.cache['../out1/template'];
+// delete require.cache[require.resolve('../out1/template')]
 const out1 = new (require('../out1/template').AutoTemplate);
+// const {AutoTemplate: Out1} = require('../out1/template');
+// const Out1 = require('../out1/template').AutoTemplate;
+// const fs                = require('fs');
+
+// const out1 = new Out1();
+
+
+// console.log('T');
 
 class Template extends AutoTemplate {
     constructor() {

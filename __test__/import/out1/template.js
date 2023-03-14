@@ -6,6 +6,8 @@ class Template extends AutoTemplate {
         super(__dirname);
 
         // this.
+        // console.log('out1');
+        
     }
     
     ready() {

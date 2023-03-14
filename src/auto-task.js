@@ -146,6 +146,8 @@ class AutoTask {
         const entryFile = path.join(this.#dir, this.FILE.TEMPLATE);
         // 다양한 조건에 예외조건을 수용해야함
         
+        // 캐쉬 삭제
+        delete require.cache[require.resolve(entryFile)]
         const EntryTemplate = require(entryFile);
         // import {AutoTemplate} from entryFile;
         // const {AutoTemplate} = await import(entryFile);

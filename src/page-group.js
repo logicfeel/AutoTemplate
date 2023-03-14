@@ -80,6 +80,11 @@ class PageGroup {
             });
         }
     }
+    remove(alias) {
+        for (let i = 0; i < this._pages.length; i++) {
+            if (this._pages[i].page === alias) return splice(i, 1);
+        }
+    }
 
     // build(data, owner = this._owner) {
     build(data) {
@@ -168,6 +173,11 @@ class PageGroupCollection extends PropertyCollection {
     constructor(owner) {
         super(owner);
         this._owner = owner;
+        // all 기본 그룹 추가
+        this.#setAllGroup();
+
+        // console.log('ww');
+        
     }
 
     // * this.group.add('spring', [ 
@@ -269,6 +279,27 @@ class PageGroupCollection extends PropertyCollection {
 
         super.add(alias, pg);
     }
+
+        /**
+     * 컬렉션 타입 추가하기
+     * @param {*} collection 
+     */
+    addCollection(collection) {
+        let alias;
+        
+        // 지우기
+        // this.clear();
+        
+        if (!(collection instanceof PageGroupCollection)) throw new Error('PageGroupCollection 타입만 설정할 수 있습니다.');
+
+        // 등록
+        for (let i = 0; i < collection.count; i++) {    // COVER:
+            alias = collection.propertyOf(i);
+            super.add(alias, collection[i]);
+        }
+    }
+
+        
     /**
      * group.all 컬렉션 설정 setPropDefault
      * 
@@ -288,7 +319,15 @@ class PageGroupCollection extends PropertyCollection {
         }
         super.add(pg.alias, pg);
     }
+
+    #setAllGroup() {
+        const symbol = 'all';
+        super.add(symbol, new PageGroup(this._owner, symbol));
+    }
+
 }
+
+
 
 exports.PageGroupCollection = PageGroupCollection;
 exports.PageGroup = PageGroup;

@@ -89,6 +89,10 @@ describe("task :: clear", () => {
 });
 
 describe("task :: publish", () => {
+    beforeAll(() => {
+        jest.resetModules();
+    });
+
     it("[ 생성 및 do_publish() ]", () => {
         autoTask = AutoTask.create(dirname);
         autoTask.isLog = false;

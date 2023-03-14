@@ -101,38 +101,44 @@ class AutoTemplate {
     get helper() { return this.#helper }
     set helper(val) {
         if (val instanceof TemplateCollection && val.area === this.AREA.HELPER) {
+            this.#helper.clear();
             this.#helper.addCollection(val);
-        } else {
-            throw new Error('[helper] TemplateCollection 타입만 설정할 수 있습니다.');
-        } 
+        } else throw new Error('[helper] TemplateCollection 타입만 설정할 수 있습니다.');
     }
     get data() { return this.#data }
     set data(val) {
         if (val instanceof TemplateCollection && val.area === this.AREA.DATA) { 
+            this.#data.clear();
             this.#data.addCollection(val);
-        } else {
-            throw new Error('[data] TemplateCollection 타입만 설정할 수 있습니다.');
-        } 
+        } else throw new Error('[data] TemplateCollection 타입만 설정할 수 있습니다.');
     }
     get part() { return this.#part }
     set part(val) {
-        if (val instanceof CompileCollection) this.#part.addCollection(val);    
-        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+        if (val instanceof CompileCollection) {
+            this.#part.clear();
+            this.#part.addCollection(val);    
+        } else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
     get src() { return this.#src }
     set src(val) {
-        if (val instanceof CompileCollection) this.#src.addCollection(val); 
-        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+        if (val instanceof CompileCollection) {
+            this.#src.clear();
+            this.#src.addCollection(val); 
+        } else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
     get page() { return this.#page }
     set page(val) {
-        if (val instanceof CompileCollection) this.#page.addCollection(val);    
-        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+        if (val instanceof CompileCollection) {
+            this.#page.clear();
+            this.#page.addCollection(val);    
+        } else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
     get group() { return this.#group }
     set group(val) {    // REVIEW: // COVER:
-        if (val instanceof PageGroupCollection) this.#group.addCollection(val); 
-        else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
+        if (val instanceof PageGroupCollection) {
+            this.#group.clear();
+            this.#group.addCollection(val); 
+        } else throw new Error('PageGroupCollection 타입만 설정할 수 있습니다.');
     }
     get localScope() { 
         if (this.#localScope === null) this.#localScope = this._getLocalScope();
@@ -159,12 +165,15 @@ class AutoTemplate {
         if (dir) this.dir = dir;      // Automation 설정시 사용
         if (auto) this._auto = auto;     // Automation 설정시 사용
         this.#namespace = new NamespaceCollection(this);
+        this.#group     = new PageGroupCollection(this);
         this.#helper    = new TemplateCollection(this, this.AREA.HELPER);
         this.#data      = new TemplateCollection(this, this.AREA.DATA);
         this.#part      = new CompileCollection(this, this.AREA.PART);
         this.#src       = new CompileCollection(this, this.AREA.SRC);
         this.#page      = new CompileCollection(this, this.AREA.PAGE);
-        this.#group     = new PageGroupCollection(this);
+        // 이벤트 설정
+        // this.#page.onAdd = () => {
+        // };
     }
 
     /*_______________________________________*/        
@@ -192,19 +201,19 @@ class AutoTemplate {
         }
         
         // 지역 초기화
-        this.helper.clear();
-        this.data.clear();
-        this.part.clear();
-        this.src.clear();
-        this.page.clear();
-        this.group.clear();
+        // this.helper.clear();
+        // this.data.clear();
+        // this.part.clear();
+        // this.src.clear();
+        // this.page.clear();
+        // this.group.clear();
         // 적재
         this.helper.addGlob(this.GLOB.HELPER);
         this.data.addGlob(this.GLOB.DATA);
         this.part.addGlob(this.GLOB.PART);
         this.src.addGlob(this.GLOB.SRC);
         this.page.addGlob(this.GLOB.PAGE);
-        this.group._setDefaultProp();   // group.all 컬렉션 추가
+        // this.group._setDefaultProp();   // group.all 컬렉션 추가
 
         // 이벤트 발생
         this._onInited(this, this._auto);
@@ -385,7 +394,6 @@ class AutoTemplate {
         this.src.clear();
         this.page.clear();
         this.group.clear();
-
     }
 
     /**

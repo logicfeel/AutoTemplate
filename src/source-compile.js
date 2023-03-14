@@ -360,9 +360,13 @@ class CompileCollection extends PropertyCollection {
         // } else if (obj instanceof TemplateSource) {
         // } else {
         // }
-
+        
         // 추가
         super.add(alias, tarSrc);
+
+        if (this.area === 'PAGE') {
+            this._addAllGroup(alias, tarSrc);
+        }
     }
 
     /**
@@ -422,6 +426,20 @@ class CompileCollection extends PropertyCollection {
         }
     }
 
+    /**
+     * 
+     * @param {*} cSrc 
+     * @override
+     */
+    remove(cSrc) {
+        super.remove(cSrc);
+        // page['all'] 에서 제거
+        if (this.area === 'PAGE') {
+            const group = this._owner.group;
+            group['all'].remove(cSrc.alias);
+        }
+    }
+
     /*_______________________________________*/
     // protected method
     /**
@@ -441,6 +459,12 @@ class CompileCollection extends PropertyCollection {
         dir = dir.replace(/\//g, delimiter);                   // 구분 문자 변경
         dir = dir.length > 0 ? dir + delimiter : dir;
         return dir + fileName;
+    }
+
+    _addAllGroup(alias, cSrc) {
+        const group = this._owner.group;
+
+        group['all'].add({ page: alias, context: cSrc.subPath });
     }
 
     /**
