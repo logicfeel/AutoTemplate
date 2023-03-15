@@ -125,6 +125,16 @@ class TemplateSource {
         // }
         return obj;
     }     
+
+    clone() {
+        const clone = new TemplateSource(this._template, this.#dir, this.#area, this.#alias, this.#filePath);
+        
+        clone.isPublic  = this.isPublic;
+        clone.content   = this.content;
+        clone._template = this._template;
+        clone._ref      = this._ref;
+        return clone;
+    }
 }
 
 /**

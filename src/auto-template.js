@@ -134,7 +134,7 @@ class AutoTemplate {
         } else throw new Error('CompileCollection 타입만 설정할 수 있습니다.');
     }
     get group() { return this.#group }
-    set group(val) {    // REVIEW: // COVER:
+    set group(val) {
         if (val instanceof PageGroupCollection) {
             this.#group.clear();
             this.#group.addCollection(val); 

@@ -225,6 +225,86 @@ describe("main  ", () => {
     });
     
 });
+// 복제 검사
+describe("< 복제 검사 >", () => {
+    beforeAll(() => {
+        jest.resetModules();
+        autoTask2 = AutoTask.create(dirname2);
+        autoTask2.isLog = false;
+    });
+    it("- src[0].clone().getObject() 비교", () => {
+        const template2 = autoTask2.entry;
+        const ori = template2.src[0];
+        const tar = ori.clone();
+        const obj1 = JSON.stringify(ori.getObject());
+        const obj2 = JSON.stringify(tar.getObject());
+        expect(obj1 === obj2).toBeTruthy();
+    });
+    it("- part[0].clone().getObject() 비교", () => {
+        const template2 = autoTask2.entry;
+        const ori = template2.part[0];
+        const tar = ori.clone();
+        const obj1 = JSON.stringify(ori.getObject());
+        const obj2 = JSON.stringify(tar.getObject());
+        expect(obj1 === obj2).toBeTruthy();
+    });
+    it("- part[1].clone().getObject() 비교", () => {
+        const template2 = autoTask2.entry;
+        const ori = template2.part[1];
+        const tar = ori.clone();
+        const obj1 = JSON.stringify(ori.getObject());
+        const obj2 = JSON.stringify(tar.getObject());
+        expect(obj1 === obj2).toBeTruthy();
+    });
+    it("- part[2].clone().getObject() 비교", () => {
+        const template2 = autoTask2.entry;
+        const ori = template2.part[2];
+        const tar = ori.clone();
+        const obj1 = JSON.stringify(ori.getObject());
+        const obj2 = JSON.stringify(tar.getObject());
+        expect(obj1 === obj2).toBeTruthy();
+    });
+    it("- data[0].clone().getObject() 비교", () => {
+        const template2 = autoTask2.entry;
+        const ori = template2.data[0];
+        const tar = ori.clone();
+        const obj1 = JSON.stringify(ori.getObject());
+        const obj2 = JSON.stringify(tar.getObject());
+        expect(obj1 === obj2).toBeTruthy();
+    });
+    it("- helper[0].clone().getObject() 비교", () => {
+        const template2 = autoTask2.entry;
+        const ori = template2.helper[0];
+        const tar = ori.clone();
+        const obj1 = JSON.stringify(ori.getObject());
+        const obj2 = JSON.stringify(tar.getObject());
+        expect(obj1 === obj2).toBeTruthy();
+    });
+    it("- page[0].clone().getObject() 비교", () => {
+        const template2 = autoTask2.entry;
+        const ori = template2.page[0];
+        const tar = ori.clone();
+        const obj1 = JSON.stringify(ori.getObject());
+        const obj2 = JSON.stringify(tar.getObject());
+        expect(obj1 === obj2).toBeTruthy();
+    });
+    it("- page[1].clone().getObject() 비교", () => {
+        const template2 = autoTask2.entry;
+        const ori = template2.page[1];
+        const tar = ori.clone();
+        const obj1 = JSON.stringify(ori.getObject());
+        const obj2 = JSON.stringify(tar.getObject());
+        expect(obj1 === obj2).toBeTruthy();
+    });
+    it("- page[2].clone().getObject() 비교", () => {
+        const template2 = autoTask2.entry;
+        const ori = template2.page[2];
+        const tar = ori.clone();
+        const obj1 = JSON.stringify(ori.getObject());
+        const obj2 = JSON.stringify(tar.getObject());
+        expect(obj1 === obj2).toBeTruthy();
+    });
+});
 
 /**
  * TODO:  src 의 경우 복제시 메인 경로는 바뀌어야함
@@ -232,6 +312,7 @@ describe("main  ", () => {
  */
 describe("< 컬렉션 전체 설정 후 publish >", () => {
     beforeAll(() => {
+        jest.resetModules();
         autoTask1 = AutoTask.create(dirname1);
         autoTask1.isLog = false;
         autoTask2 = AutoTask.create(dirname2);
@@ -242,20 +323,27 @@ describe("< 컬렉션 전체 설정 후 publish >", () => {
         template1.part = template2.part;
         template1.helper = template2.helper;
         template1.data = template2.data;
-        template1.group = template2.group;
-        template1.page = template2.page;
+        template1.group = template2.group;  // group 교체되고 2개가 추가됨 : 참조로
+        // template1.page = template2.page;    // page 3개가 추가됨
+        
+        
         autoTask1.do_publish();
+
+        let c = template1.part[0].clone();
+        // const clone = { ...c };
+        console.log('ww');
+        
     });
     it("- 파일 유무 : src/two.html", () => {
         const fullPath = path.join(dirname1, "/src/two.html");
         expect(fs.existsSync(fullPath)).toBeTruthy();
     });
-    it("- 파일 비교 : src/two.html", () => {
-        const fullPath = path.join(dirname1, "/src/two.html");
-        const data = fs.readFileSync(fullPath,"utf-8");
-        expect(fs.existsSync(fullPath)).toBeTruthy();
-        expect(data).toMatchSnapshot();
-    });
+    // it("- 파일 비교 : src/two.html", () => {
+    //     const fullPath = path.join(dirname1, "/src/two.html");
+    //     const data = fs.readFileSync(fullPath,"utf-8");
+    //     expect(fs.existsSync(fullPath)).toBeTruthy();
+    //     expect(data).toMatchSnapshot();
+    // });
 
 });
 

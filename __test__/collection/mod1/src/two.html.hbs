@@ -1,16 +1,18 @@
 <two><!--src/two.html-->
+    # part 삽입
+    {{>inc/footer }}
 
-  {{>inc/footer }}
+    # part 삽입
+    {{>inc/header }}
 
-  {{>inc/header }}
+    # helper 삽입
+    @{{#bold }}BOLD{{/bold }}@
 
-  @{{#bold }}BOLD{{/bold }}@
+    # page 삽입
+    {{>page/p1.html }}
 
-  # p1 삽입 
-  {{>page/p1.html }}
-
-{{>group/all dir='inner_all' prefix='pre_' suffix='_suf' }}
-{{>group/double dir='inner_double' prefix='p_' suffix='_s' args='A1,A2' }}
-{{>page/p1.html path='create_p1.html' }}
+{{>group/all dir='inline/all' prefix='pre_' }}
+{{>group/double dir='inline' prefix='pre_' suffix='_suf' args='arg1_1/arg1_2,_arg2' }}
+{{>page/p1.html path='inline/new_p1.html' }}
 
 </two>

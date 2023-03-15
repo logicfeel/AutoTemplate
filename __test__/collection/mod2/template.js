@@ -12,6 +12,8 @@ class Template extends AutoTemplate {
             { page: 'p1.html', context: '{0}/group{1}/p1.html' },
             { page: 'p2.html', context: '{0}/group{1}/p2.html' },
         ], ['', '']);
+
+        this.attachGroup(this.group['all'], 'PRE_', '_SUF', [], 'ready');
     }
 }
 

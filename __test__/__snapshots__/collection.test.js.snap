@@ -2,27 +2,29 @@
 
 exports[`< 컬렉션 전체 설정 후 publish > - 파일 비교 : src/two.html 1`] = `
 "<two><!--src/two.html-->
-
-  <footer><!--part/inc/footer-->
-      <p>기본 footer. </p>
-      $entity.Table=1$
-  </footer>
-
-  <header><!--part/inc/header-->
-    # data 삽입 
-    $entity.Tables.[0]:10$
-  
-  
     # part 삽입
-    <content><!--part/inc/content-->
-        내용임
-    </content></header>
-  @<div class="mybold">BOLD</div>@
+    <footer><!--part/inc/footer-->
+        <p>기본 footer. </p>
+        $entity.Table=1$
+    </footer>
 
-  # p1 삽입 
-  <p1><!--page/p1.html-->
-      기본 페이지
-  </p1>
+    # part 삽입
+    <header><!--part/inc/header-->
+      # data 삽입 
+      $entity.Tables.[0]:10$
+    
+    
+      # part 삽입
+      <content><!--part/inc/content-->
+          내용임
+      </content></header>
+    # helper 삽입
+    @<div class="mybold">BOLD</div>@
+
+    # page 삽입
+    <p1><!--page/p1.html-->
+        기본 페이지
+    </p1>
 
 
 </two>"

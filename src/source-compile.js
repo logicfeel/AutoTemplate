@@ -85,6 +85,19 @@ class CompileSource extends TemplateSource {
         return { ...obj1, ...obj2 };
     }
 
+    clone(isEvent = false) {    // REVIEW: 이벤트 복사가 필요한지?
+        const parent = super.clone();
+        const clone = new CompileSource(parent._template, parent.dir, parent.area, parent.alias, parent.filePath);
+
+        if (this.origin) clone.origin       = this.#origin;
+        if (this.savePath) clone.savePath   = this.#savePath;
+        if (this.content) clone['content']  = this.content;
+
+        // clone.savePath  = this.#savePath;
+        // if (isEvent === true) this.#event; 
+        return clone;
+    }
+
     partials(pattern, opt) {
         this.#part.push({glob: pattern, opt: opt});     // COVER:
     }
@@ -477,7 +490,7 @@ class CompileCollection extends PropertyCollection {
     _getPropDescriptor(idx) {
         return {
             get: function() { return this._element[idx]; },
-            set: function(val) {    // COVER:
+            set: function(val) {    // COVER:  TODO: area 에 따라 제약 조건 추가해야함
                 if (val instanceof CompileSource) {
                     this._element[idx].content = val.content;
                 } else {
