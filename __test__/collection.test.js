@@ -58,13 +58,6 @@ describe("main  ", () => {
             //     expect(template1.src.count === 2).toBeTruthy();
             // });
 
-            it("- autoTemplate.src = src : 설정", () => {
-                const template1 = autoTask1.entry;
-                const template2 = autoTask2.entry;
-                template1.src = template2.src;
-                expect(template1.src['one.html']).toBeDefined();
-                expect(template1.src.count === 1).toBeTruthy();
-            });
             it("- autoTemplate.src = part : 설정", () => {
                 const template1 = autoTask1.entry;
                 const template2 = autoTask2.entry;
@@ -82,6 +75,13 @@ describe("main  ", () => {
                 expect(template1.src['p2.html']).toBeDefined();
                 expect(template1.src['p3.html']).toBeDefined();
                 expect(template1.src.count === 3).toBeTruthy();
+            });
+            it("- autoTemplate.src = src : 설정", () => {
+                const template1 = autoTask1.entry;
+                const template2 = autoTask2.entry;
+                template1.src = template2.src;
+                expect(template1.src['one.html']).toBeDefined();
+                expect(template1.src.count === 1).toBeTruthy();
             });
             it("- autoTemplate.src = helper : 예외", () => {
                 const template1 = autoTask1.entry;
@@ -134,23 +134,13 @@ describe("main  ", () => {
         });
 
         describe("< page >", () => {
-            it("- autoTemplate.page = page : 설정", () => {
-                const template1 = autoTask1.entry;
-                const template2 = autoTask2.entry;
-                template1.page = template2.page;
-                expect(template1.page['p1.html']).toBeDefined();
-                expect(template1.page['p2.html']).toBeDefined();
-                expect(template1.page['p3.html']).toBeDefined();
-                expect(template1.page.count === 3).toBeTruthy();
-                // expect(template1.page['p4.html']).toBeUndefined();
-            });
             it("- autoTemplate.page = src : 설정", () => {
                 const template1 = autoTask1.entry;
                 const template2 = autoTask2.entry;
                 template1.page = template2.src;
                 expect(template1.page['one.html']).toBeDefined();
                 expect(template1.page.count === 1).toBeTruthy();
-                // expect(template1.page['p4.html']).toBeUndefined();
+                expect(template1.group['all']._pages.length === 1).toBeTruthy();
             });
             it("- autoTemplate.page = part : 설정", () => {
                 const template1 = autoTask1.entry;
@@ -160,6 +150,18 @@ describe("main  ", () => {
                 expect(template1.page['inc/footer']).toBeDefined();
                 expect(template1.page['inc/header']).toBeDefined();
                 expect(template1.page.count === 3).toBeTruthy();
+                expect(template1.group['all']._pages.length === 3).toBeTruthy();
+            });
+            it("- autoTemplate.page = page : 설정", () => {
+                const template1 = autoTask1.entry;
+                const template2 = autoTask2.entry;
+                template1.page = template2.page;
+                expect(template1.page['p1.html']).toBeDefined();
+                expect(template1.page['p2.html']).toBeDefined();
+                expect(template1.page['p3.html']).toBeDefined();
+                expect(template1.page.count === 3).toBeTruthy();
+                expect(template1.page['p4.html']).toBeUndefined();
+                expect(template1.group['all']._pages.length === 3).toBeTruthy();
             });
             it("- autoTemplate.part = helper : 예외", () => {
                 const template1 = autoTask1.entry;
@@ -191,7 +193,7 @@ describe("main  ", () => {
                 const template2 = autoTask2.entry;
                 template1.group = template2.group;
                 expect(template1.group['double']).toBeDefined();
-                expect(template1.group['all']).toBeDefined();
+                expect(template1.group['all']).toBeDefined();   // 기존꺼 유지
                 expect(template1.group.count === 2).toBeTruthy();
             });
             it("- autoTemplate.group = helper : 예외", () => {
@@ -327,17 +329,45 @@ describe("< 컬렉션 전체 설정 후 publish >", () => {
         // template1.page = template2.page;    // page 3개가 추가됨
         
         
-        autoTask1.do_publish();
+        // autoTask1.do_publish();
 
-        let c = template1.part[0].clone();
+        // let c = template1.part[0].clone();
         // const clone = { ...c };
-        console.log('ww');
+        // console.log('ww');
         
     });
-    it("- 파일 유무 : src/two.html", () => {
-        const fullPath = path.join(dirname1, "/src/two.html");
-        expect(fs.existsSync(fullPath)).toBeTruthy();
+    describe("< 켈렉션 설정 검사 >", () => {
+        it("- autoTemplate.page : 그룹 소속 page ", () => {
+            const template1 = autoTask1.entry;
+            expect(template1.page['p1.html']).toBeDefined();
+            expect(template1.page['p2.html']).toBeDefined();
+            expect(template1.page['p4.html']).toBeDefined();
+            expect(template1.page.count === 3).toBeTruthy();
+        });
+        it("- autoTemplate.group : 검사 ", () => {
+            const template1 = autoTask1.entry;
+            expect(template1.group['double']).toBeDefined();
+            expect(template1.group['all']._pages.length === 3).toBeDefined();
+        });
     });
+
+
+    describe("< 출판 검사 >", () => {
+        beforeAll(() => {
+            autoTask1.do_publish();
+        });
+        it("- 파일 유무 : src/two.html", () => {
+            const fullPath = path.join(dirname1, "/src/two.html");
+            expect(fs.existsSync(fullPath)).toBeTruthy();
+        });
+
+    });
+
+
+
+
+
+
     // it("- 파일 비교 : src/two.html", () => {
     //     const fullPath = path.join(dirname1, "/src/two.html");
     //     const data = fs.readFileSync(fullPath,"utf-8");
@@ -347,4 +377,4 @@ describe("< 컬렉션 전체 설정 후 publish >", () => {
 
 });
 
-// 클래어 까지 테스트
+// 클래어 까지 테스트 한글이 잘써저야합니다. 무엇이 문제 인지는 확인해 보면 압니다.

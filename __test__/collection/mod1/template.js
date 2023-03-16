@@ -17,7 +17,7 @@ class Template extends AutoTemplate {
         // 내부에서 추가함
         // this.helper = out1.helper;
 
-        this.attachGroup(this.group['all'], 'pre_', '_suf', [], 'ready');
+        this.attachGroup(this.group['all'], 'pre_', '_suf', [], 'ready/all');
         this.src.add('ready/new_p4.html', this.page['p4.html']);
     }
 }

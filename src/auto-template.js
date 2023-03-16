@@ -137,6 +137,7 @@ class AutoTemplate {
     set group(val) {
         if (val instanceof PageGroupCollection) {
             this.#group.clear();
+            // this.#group = new PageGroupCollection(this);    // REVIEW:
             this.#group.addCollection(val); 
         } else throw new Error('PageGroupCollection 타입만 설정할 수 있습니다.');
     }

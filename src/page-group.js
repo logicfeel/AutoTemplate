@@ -80,10 +80,23 @@ class PageGroup {
             });
         }
     }
+
+    /**
+     * 개별 페이지 삭제
+     * @param {*} alias 
+     * @returns 
+     */
     remove(alias) {
         for (let i = 0; i < this._pages.length; i++) {
-            if (this._pages[i].page === alias) return splice(i, 1);
+            if (this._pages[i].page === alias) return this._pages.splice(i, 1);
         }
+    }
+
+    /**
+     * 모든 _page 삭제
+     */
+    clear() {
+        this._pages = [];
     }
 
     // build(data, owner = this._owner) {
@@ -280,13 +293,40 @@ class PageGroupCollection extends PropertyCollection {
         super.add(alias, pg);
     }
 
-        /**
+    /**
+     * 
+     * @param {*} cSrc 
+     * @override
+     */
+    remove(cSrc) {
+        super.remove(cSrc);
+        
+        // group['all'] 에서 제거 금지
+        if (this.area === 'PAGE') {
+            const group = this._owner.group;
+            group['all'].remove(cSrc.alias);
+        }
+    }
+
+    /**
+     * 컬렉션 모두 지우기 : all 은 제외
+     * @override
+     */
+    clear() {
+        // super.clear();
+        
+        for(let i = 0; i < this.count; i++) {
+            const propName = this.propertyOf(i);
+            if (propName !== 'all') this.removeAt(i);
+        }
+    }
+
+    /**
      * 컬렉션 타입 추가하기
      * @param {*} collection 
      */
     addCollection(collection) {
         let alias;
-        
         // 지우기
         // this.clear();
         
@@ -296,8 +336,8 @@ class PageGroupCollection extends PropertyCollection {
         for (let i = 0; i < collection.count; i++) {    // COVER:
             alias = collection.propertyOf(i);
             if (alias !== 'all') {
-                super.add(alias, collection[i]);
-                this.#clonePage(collection[i]);
+                const pageGroup = this.#clonePage(collection[i]);
+                super.add(alias, pageGroup);
             }
         }
     }
@@ -328,7 +368,7 @@ class PageGroupCollection extends PropertyCollection {
      * @param {*} pageGroup 
      */
     #clonePage(pageGroup) {
-        if (!(collection instanceof PageGroup)) throw new Error('PageGroup 타입만 설정할 수 있습니다.');
+        if (!(pageGroup instanceof PageGroup)) throw new Error('PageGroup 타입만 설정할 수 있습니다.');
         const pages = pageGroup._pages;
         
         for (let i = 0; i < pages.length; i++) {
@@ -338,10 +378,15 @@ class PageGroupCollection extends PropertyCollection {
                 this._owner.page[alias] = src; // content 를 덮어씀
             } else {
                 const clone = src.clone();
-                // POINT: 경로 조정해야함
+                // POINT: 경로 조정해야함 ==> 자동 조정되는듯
                 this._owner.page.add(clone);
             }
+            // 복제 페이지 갱싱
+            // pages[i].src = this._owner.page[i];
+            // pages._template = this._owner;
         }
+        pageGroup._template = this._owner;
+        return pageGroup;
     }
 
 

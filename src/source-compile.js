@@ -453,6 +453,20 @@ class CompileCollection extends PropertyCollection {
         }
     }
 
+    /**
+     * 컬렉션 모두 지우기
+     * @override
+     */
+    clear() {
+        super.clear();
+        // page['all'] 에서 제거
+        if (this.area === 'PAGE') {
+            const group = this._owner.group;
+            group['all'].clear();
+        }
+    }
+
+
     /*_______________________________________*/
     // protected method
     /**
