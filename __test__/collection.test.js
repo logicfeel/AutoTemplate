@@ -4,6 +4,7 @@ const AutoTask  = require("../src/auto-task").AutoTask;
 const dirname1   = path.join(__dirname, "/collection/mod1");
 const dirname2   = path.join(__dirname, "/collection/mod2");
 let autoTask1, autoTask2
+// TODO: template 호이스팅
 /**
  * 2개의 템플릿을 만들고 가져오기
  */
