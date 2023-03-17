@@ -70,7 +70,7 @@ class PageGroup {
             }
     
             if (context === '' || typeof context !== 'string') {
-                context = src.subPath;
+                context = src.subPath;  // COVER:
             }
     
             this._pages.push({            
@@ -86,7 +86,7 @@ class PageGroup {
      * @param {*} alias 
      * @returns 
      */
-    remove(alias) {
+    remove(alias) { // COVER:
         for (let i = 0; i < this._pages.length; i++) {
             if (this._pages[i].page === alias) return this._pages.splice(i, 1);
         }
@@ -178,6 +178,7 @@ class PageGroupCollection extends PropertyCollection {
     _owner = null;
     // all 예약어
     _groupSymbol = [/^[\\\/]?all([\\\/]|$)/];
+    _ALL = 'all';
 
     /**
      * 네임스페이스컬렉션, import한 외부 Tempalate들
@@ -298,13 +299,13 @@ class PageGroupCollection extends PropertyCollection {
      * @param {*} cSrc 
      * @override
      */
-    remove(cSrc) {
+    remove(cSrc) {  // COVER:
         super.remove(cSrc);
         
         // group['all'] 에서 제거 금지
         if (this.area === 'PAGE') {
             const group = this._owner.group;
-            group['all'].remove(cSrc.alias);
+            group[this._ALL].remove(cSrc.alias);
         }
     }
 
@@ -317,7 +318,7 @@ class PageGroupCollection extends PropertyCollection {
         
         for(let i = 0; i < this.count; i++) {
             const propName = this.propertyOf(i);
-            if (propName !== 'all') this.removeAt(i);
+            if (propName !== this._ALL) this.removeAt(i);
         }
     }
 
@@ -335,36 +336,15 @@ class PageGroupCollection extends PropertyCollection {
         // 등록
         for (let i = 0; i < collection.count; i++) {    // COVER:
             alias = collection.propertyOf(i);
-            if (alias !== 'all') {
+            if (alias !== this._ALL) {
                 const pageGroup = this.#clonePage(collection[i]);
                 super.add(alias, pageGroup);
             }
         }
     }
 
-        
     /**
-     * group.all 컬렉션 설정 setPropDefault
-     * 
-     */
-    _setDefaultProp() {
-
-        // const pg = new PageGroup(this._owner, 'all', pages, defaltFix);
-        const pg = new PageGroup(this._owner, 'all');
-        let alias;
-
-        for (let i = 0; i < this._owner.page.count; i++) {
-            alias = this._owner.page.propertyOf(i);
-            pg.add({ 
-                page: alias,
-                context: this._owner.page.subPath
-            });
-        }
-        super.add(pg.alias, pg);
-    }
-
-    /**
-     * vp
+     * PageGroup의 page 를 복제하고, 소유자(_template)를 변경한다.
      * @param {*} pageGroup 
      */
     #clonePage(pageGroup) {
@@ -378,27 +358,22 @@ class PageGroupCollection extends PropertyCollection {
                 this._owner.page[alias] = src; // content 를 덮어씀
             } else {
                 const clone = src.clone();
-                // POINT: 경로 조정해야함 ==> 자동 조정되는듯
                 this._owner.page.add(clone);
             }
             // 복제 페이지 갱싱
-            // pages[i].src = this._owner.page[i];
-            // pages._template = this._owner;
+            pages[i].src = this._owner.page[alias];
         }
         pageGroup._template = this._owner;
         return pageGroup;
     }
 
-
+    /**
+     * group['all'] 추가
+     */
     #setAllGroup() {
-        const symbol = 'all';
-        super.add(symbol, new PageGroup(this._owner, symbol));
+        super.add(this._ALL, new PageGroup(this._owner, this._ALL));
     }
-
 }
-
-
 
 exports.PageGroupCollection = PageGroupCollection;
 exports.PageGroup = PageGroup;
-// export { PageGroupCollection, PageGroup }

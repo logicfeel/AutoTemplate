@@ -4,6 +4,11 @@ const AutoTask  = require("../src/auto-task").AutoTask;
 const dirname   = path.join(__dirname, "/auto-task/mod1");
 let autoTask    = null;
 
+
+/**
+ * auto-task.js 에 대한 테스트 파일
+ */
+
 describe("create()", () => {
     it("- AutoTask.create(null) : 예외", () => {
         expect(() => autoTask = AutoTask.create(null)).toThrow();

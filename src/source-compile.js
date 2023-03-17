@@ -121,6 +121,12 @@ class CompileSource extends TemplateSource {
         this._template.used._saveBuildFile();
     }
 
+    /**
+     * 
+     * @param {*} data 데이터
+     * @param {*} isSave 저장유무
+     * @returns 
+     */
     _compile(data = {}, isSave = true) {
 
         const localScope = this._template.localScope;
@@ -178,7 +184,7 @@ class CompileSource extends TemplateSource {
             }
 
             // 빌드 파일 추가
-            used._addBuildFile({tar:this.savePath, ori: originPath}, 'publish');
+            used._addBuildFile({tar: this.savePath, ori: originPath}, 'publish');
 
             // 이벤트 발생
             this._onSave(this, this.savePath);

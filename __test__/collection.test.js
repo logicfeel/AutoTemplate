@@ -4,7 +4,9 @@ const AutoTask  = require("../src/auto-task").AutoTask;
 const dirname1   = path.join(__dirname, "/collection/mod1");
 const dirname2   = path.join(__dirname, "/collection/mod2");
 let autoTask1, autoTask2
-// TODO: template 호이스팅
+
+
+
 /**
  * 2개의 템플릿을 만들고 가져오기
  */
@@ -18,7 +20,7 @@ describe("main  ", () => {
     });
     // 테스트를 통해서 제어하기
     describe("< 컬렉션 속성 설정 >", () => {
-
+        
         describe("< helper >", () => {
             it("- autoTemplate.helper = helper : 설정", () => {
                 const template1 = autoTask1.entry;
@@ -361,21 +363,118 @@ describe("< 컬렉션 전체 설정 후 publish >", () => {
             const fullPath = path.join(dirname1, "/src/two.html");
             expect(fs.existsSync(fullPath)).toBeTruthy();
         });
-
+        describe("< *.hbs 내부 >", () => {
+            describe("< group/all dir='inline' prefix='pre_' >", () => {
+                it("- 파일 유무 : src/inline/all/pre_p1.html", () => {
+                    const fullPath = path.join(dirname1, "src/inline/all/pre_p1.html");
+                    expect(fs.existsSync(fullPath)).toBeTruthy();
+                });
+                it("- 파일 유무 : src/inline/all/pre_p2.html", () => {
+                    const fullPath = path.join(dirname1, "src/inline/all/pre_p2.html");
+                    expect(fs.existsSync(fullPath)).toBeTruthy();
+                });
+                it("- 파일 유무 : src/inline/all/pre_p4.html", () => {
+                    const fullPath = path.join(dirname1, "src/inline/all/pre_p4.html");
+                    expect(fs.existsSync(fullPath)).toBeTruthy();
+                });
+            });
+            describe("< group/double dir='inline' prefix='pre_' suffix='_suf' args='_arg1,arg2' >", () => {
+                it("- 파일 유무 : src/inline/group_arg1/arg2/pre_p1_suf.html", () => {
+                    const fullPath = path.join(dirname1, "src/inline/group_arg1/arg2/pre_p1_suf.html");
+                    expect(fs.existsSync(fullPath)).toBeTruthy();
+                });
+                it("- 파일 유무 : src/inline/group_arg1/pre_p2_suf.html", () => {
+                    const fullPath = path.join(dirname1, "src/inline/group_arg1/pre_p2_suf.html");
+                    expect(fs.existsSync(fullPath)).toBeTruthy();
+                });                
+            });
+            describe("< page/p1.html path='inline/new_p1.html' >", () => {
+                it("- 파일 유무 : src/inline/new_p1.html", () => {
+                    const fullPath = path.join(dirname1, "src/inline/new_p1.html");
+                    expect(fs.existsSync(fullPath)).toBeTruthy();
+                });
+            });
+        });
+        describe("< template.ready() >", () => {
+            describe("< this.attachGroup(this.group['all'], 'pre_', '_suf', [], 'ready/all'); >", () => {
+                it("- 파일 유무 : src/ready/all/pre_p1_suf.html", () => {
+                    const fullPath = path.join(dirname1, "src/ready/all/pre_p1_suf.html");
+                    expect(fs.existsSync(fullPath)).toBeTruthy();
+                });
+                it("- 파일 유무 : src/ready/all/pre_p2_suf.html", () => {
+                    const fullPath = path.join(dirname1, "src/ready/all/pre_p2_suf.html");
+                    expect(fs.existsSync(fullPath)).toBeTruthy();
+                });
+                it("- 파일 유무 : src/ready/all/pre_p4_suf.html", () => {
+                    const fullPath = path.join(dirname1, "src/ready/all/pre_p4_suf.html");
+                    expect(fs.existsSync(fullPath)).toBeTruthy();
+                });
+            });
+            describe("< page/p1.html path='ready/new_p1.html' >", () => {
+                it("- 파일 유무 : src/ready/new_p4.html", () => {
+                    const fullPath = path.join(dirname1, "src/ready/new_p4.html");
+                    expect(fs.existsSync(fullPath)).toBeTruthy();
+                });
+            });
+        });
     });
 
-
-
-
-
-
-    // it("- 파일 비교 : src/two.html", () => {
-    //     const fullPath = path.join(dirname1, "/src/two.html");
-    //     const data = fs.readFileSync(fullPath,"utf-8");
-    //     expect(fs.existsSync(fullPath)).toBeTruthy();
-    //     expect(data).toMatchSnapshot();
-    // });
-
 });
+
+// 초기화
+describe("task :: clear", () => {
+    it("[ 생성 및 do_clear(1) ]", () => {
+        autoTask = AutoTask.create(dirname1);
+        autoTask.isLog = false;
+        autoTask.do_clear(1);   // 강제 클리어
+    });
+    describe("< 출판 파일 검사 >", ()=>{
+        it("- 파일 유무 : src/two.html (X)", () => {
+            const fullPath = path.join(dirname1, "src/two.htmll");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+        it("- 파일 유무 : src/inline/all/pre_p1.html (X)", () => {
+            const fullPath = path.join(dirname1, "src/inline/all/pre_p1.html");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+        it("- 파일 유무 : src/inline/all/pre_p2.html (X)", () => {
+            const fullPath = path.join(dirname1, "src/inline/all/pre_p2.html");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+        it("- 파일 유무 : src/inline/all/pre_p4.html (X)", () => {
+            const fullPath = path.join(dirname1, "src/inline/all/pre_p4.html");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+        it("- 파일 유무 : src/inline/group_arg1/arg2/pre_p1_suf.html (X)", () => {
+            const fullPath = path.join(dirname1, "src/inline/group_arg1/arg2/pre_p1_suf.html");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+        it("- 파일 유무 : src/inline/group_arg1/pre_p2_suf.html (X)", () => {
+            const fullPath = path.join(dirname1, "src/inline/group_arg1/pre_p2_suf.html");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+        it("- 파일 유무 : src/inline/new_p1.html (X)", () => {
+            const fullPath = path.join(dirname1, "src/inline/new_p1.html");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+        it("- 파일 유무 : src/ready/all/pre_p1_suf.html (X)", () => {
+            const fullPath = path.join(dirname1, "src/ready/all/pre_p1_suf.html");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+        it("- 파일 유무 : src/ready/all/pre_p2_suf.html (X)", () => {
+            const fullPath = path.join(dirname1, "src/ready/all/pre_p2_suf.html");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+        it("- 파일 유무 : src/ready/all/pre_p4_suf.html (X)", () => {
+            const fullPath = path.join(dirname1, "src/ready/all/pre_p4_suf.html");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+        it("- 파일 유무 : src/ready/new_p4.html (X)", () => {
+            const fullPath = path.join(dirname1, "src/ready/new_p4.html");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+    });
+});
+
 
 // 클래어 까지 테스트 한글이 잘써저야합니다. 무엇이 문제 인지는 확인해 보면 압니다.
