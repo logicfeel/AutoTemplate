@@ -17,9 +17,9 @@ class PageGroup {
 
     /*_______________________________________*/
     // private
-    #argfix = [];
-    #prefix = '';
-    #suffix = '';
+    #argfix = [];   // 기본값 아규먼트
+    #prefix = '';   // 기본값 접두사
+    #suffix = '';   // 기본값 접미사
 
     /*_______________________________________*/        
     // property
@@ -29,12 +29,12 @@ class PageGroup {
         this.#argfix = val;
     }
     get prefix() { return this.#prefix };
-    set prefix(val) {   // COVER:
+    set prefix(val) {
         if (typeof val !== 'string') throw new Error('prefix 가능한 타입 : string ');   
         this.#prefix = val;
     }
     get suffix() { return this.#suffix };
-    set suffix(val) {   // COVER:
+    set suffix(val) {
         if (typeof val !== 'string') throw new Error('suffix 가능한 타입 : string ');   
         this.#suffix = val;
     }
@@ -66,11 +66,11 @@ class PageGroup {
             src = this._template.page[alias] || null;
 
             if (src === null){
-                throw new Error(`page에  ${alias} 존재하지 않습니다.`); // COVER:
+                throw new Error(`page에  ${alias} 존재하지 않습니다.`);
             }
     
             if (context === '' || typeof context !== 'string') {
-                context = src.subPath;  // COVER:
+                context = src.subPath;
             }
     
             this._pages.push({            
@@ -86,7 +86,7 @@ class PageGroup {
      * @param {*} alias 
      * @returns 
      */
-    remove(alias) { // COVER:
+    remove(alias) {
         for (let i = 0; i < this._pages.length; i++) {
             if (this._pages[i].page === alias) return this._pages.splice(i, 1);
         }
@@ -100,8 +100,8 @@ class PageGroup {
     }
 
     // build(data, owner = this._owner) {
-    build(data) {
-        
+    build(data = {}) {
+        if (typeof data !== 'object') throw new Error('[data] Object 타입만 설정할 수 있습니다.');
         // const owner = this._owner;
         const used = this._template.used;
         let page, src, context, subPath;
@@ -127,8 +127,6 @@ class PageGroup {
             
             src.savePath = path.join(used.dir, used.DIR.PUB, subPath);  // 이름 재설정
             src._compile(data, true);
-
-            // }
         }
 
     }
@@ -149,21 +147,6 @@ class PageGroup {
         subPath = subDir === '' ? filename : path.join(subDir, filename);
         return subPath;
     }
-    
-    // #linkSource() {
-        
-    //     let src = null;
-
-    //     for (let i = 0; i < this._pages.length; i++) {
-    //         src = this._auto.page[this._pages[i]] || null;
-    //         if (src === null){
-    //             throw new Error(`page에  ${alias} 존재하지 않습니다. build 시점에 로딩이 필요한 경우 생성자 (,,true) 설정하세요.`);
-    //         }
-    //         this._pages[i]['src'] = src;
-    //     }
-    // }
-
-
 }
 
 /**
@@ -171,14 +154,11 @@ class PageGroup {
  */
 class PageGroupCollection extends PropertyCollection {
     
-
-
     /*_______________________________________*/        
     // protected
     _owner = null;
-    // all 예약어
-    _groupSymbol = [/^[\\\/]?all([\\\/]|$)/];
-    _ALL = 'all';
+    _GROUP_REG  = [/^[\\\/]?all([\\\/]|$)/];
+    _ALL        = 'all';
 
     /**
      * 네임스페이스컬렉션, import한 외부 Tempalate들
@@ -189,16 +169,7 @@ class PageGroupCollection extends PropertyCollection {
         this._owner = owner;
         // all 기본 그룹 추가
         this.#setAllGroup();
-
-        // console.log('ww');
-        
     }
-
-    // * this.group.add('spring', [ 
-    // *  {page: 'aaa.c', page: '{0}inc/fileA{1}'},   // A 그룹설정
-    // *  {page: 'bbb.c', page: '{0}inc/fileB{1}'},   // B 그룹설정
-    // * ],
-    // * ['A','B']);  // 접두접미사의 기본값
 
     /**
      * 페이지 그룹 추가
@@ -206,38 +177,6 @@ class PageGroupCollection extends PropertyCollection {
      * @param {array<object> | PageGroup} pages config<obj> | PageGroup
      * @param {array<string>?} defaltFix 
      */
-    // add(alias, pages, deffix) {
-
-    //     let pg = null;
-
-    //     // 유효성 검사
-    //     if (typeof alias !== 'string' || alias.length === 0) {
-    //         throw new Error('alias에 string 만 지정할 수 있습니다.');
-    //     }
-    //     if (!Array.isArray(pages)) {
-    //         throw new Error('pages array<object> 만 지정할 수 있습니다.');
-    //     }
-    //     if (!Array.isArray(deffix)) {
-    //         throw new Error('alias에 array<object> 만 지정할 수 있습니다.');
-    //     }
-
-    //     // 별칭 규칙 검사
-    //     this._groupSymbol.forEach(val => {
-    //         if ((val instanceof RegExp && val.test(alias)) || 
-    //             (typeof val === 'string' && val === alias)) {
-    //             throw new Error('[group]에 예약어를 입력할 수 없습니다. : all');
-    //         }
-    //     });
-
-    //     pg = new PageGroup(this._owner, alias);
-    //     pg.add(pages, deffix);
-    //     // pg.argfix = deffix;
-    //     // pg.fixs = ['aa', 'Aa'];
-    //     // pg.prefix = 'aa';
-    //     // pg.suffix = 'BB';
-
-    //     super.add(alias, pg);
-    // }
     add(obj, value, deffix = []) {
 
         let pg = null;
@@ -265,20 +204,20 @@ class PageGroupCollection extends PropertyCollection {
 
         // 유효성 검사
         if (typeof alias !== 'string' || alias.length === 0) {
-            throw new Error('alias에 string 만 지정할 수 있습니다.');       // COVER:
+            throw new Error('alias에 string 만 지정할 수 있습니다.');
         }
         if (!Array.isArray(pages)) {
-            throw new Error('pages array<object> 만 지정할 수 있습니다.');  // COVER:
+            throw new Error('pages array<object> 만 지정할 수 있습니다.');
         }
         if (!Array.isArray(deffix)) {
-            throw new Error('deffix 는 array<object> 만 지정할 수 있습니다.');      // COVER:
+            throw new Error('deffix 는 array<object> 만 지정할 수 있습니다.');
         }
 
         // 별칭 규칙 검사
-        this._groupSymbol.forEach(val => {
+        this._GROUP_REG.forEach(val => {
             if ((val instanceof RegExp && val.test(alias)) || 
                 (typeof val === 'string' && val === alias)) {
-                throw new Error('[group]에 예약어를 입력할 수 없습니다. : all');    // COVER:
+                throw new Error(`[group]에 예약어를 입력할 수 없습니다. : ${val}`);
             }
         });
 
@@ -299,14 +238,17 @@ class PageGroupCollection extends PropertyCollection {
      * @param {*} cSrc 
      * @override
      */
-    remove(cSrc) {  // COVER:
-        super.remove(cSrc);
+    remove(alias) {  // COVER:
+        const pageGroup = this[alias];
+        if (!(pageGroup instanceof PageGroup)) throw new Error(`${alias} pageGroup 존재하지 않습니다.`);
+        if (alias === this._ALL) throw new Error(`${alias} 예약된 페이지그룹은 삭제 할 수 없습니다.`);
+        else super.remove(this[alias]);
         
         // group['all'] 에서 제거 금지
-        if (this.area === 'PAGE') {
-            const group = this._owner.group;
-            group[this._ALL].remove(cSrc.alias);
-        }
+        // if (this.area === 'PAGE') {
+        //     const group = this._owner.group;
+        //     group[this._ALL].remove(cSrc.alias);
+        // }
     }
 
     /**
@@ -334,7 +276,7 @@ class PageGroupCollection extends PropertyCollection {
         if (!(collection instanceof PageGroupCollection)) throw new Error('PageGroupCollection 타입만 설정할 수 있습니다.');
 
         // 등록
-        for (let i = 0; i < collection.count; i++) {    // COVER:
+        for (let i = 0; i < collection.count; i++) {
             alias = collection.propertyOf(i);
             if (alias !== this._ALL) {
                 const pageGroup = this.#clonePage(collection[i]);

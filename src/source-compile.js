@@ -5,16 +5,6 @@ const handlebars                        = require('handlebars');
 const handlebarsWax                     = require('handlebars-wax');
 const { PropertyCollection, Observer }  = require('entitybind');
 const { TemplateSource }                = require('./source-template');
-// import fs from "fs";
-// import path from "path";
-// import glob from "glob";
-// import handlebars from "handlebars";
-// import handlebarsWax from "handlebars-wax";
-// // import * as handlebarsWax from "handlebarsWax";
-// import { PropertyCollection, Observer } from "entitybind";
-// import { TemplateSource } from "./source-template.js";
-
-
 
 /**
  * 컴파일소스 클래스
@@ -23,7 +13,6 @@ class CompileSource extends TemplateSource {
     
     /*_______________________________________*/        
     // public
-    // wax = null;
     
     /*_______________________________________*/        
     // protected
@@ -42,12 +31,6 @@ class CompileSource extends TemplateSource {
     // property
     get saveName() { return path.basename(this.savePath); }
     get saveDir() { return path.dirname(this.savePath); }
-    // get savePath() {
-    //     const dir = this._template.dir;    // 상속한 경우 최종 
-    //     const fullPath = dir + path.sep + this.localPath;
-    //     return this.#savePath === '' ? fullPath.replace('.hbs','') : this.#savePath;
-    // }
-    // POINT:
     get savePath() {
         const dir = this._template.dir;    // 상속한 경우 최종 
         const fullPath = path.join(dir, this.localPath);
@@ -196,25 +179,12 @@ class CompileSource extends TemplateSource {
         return content;
     }
 
-    // 원본을 비교해서 넣는다
-    // oriPath 은 subPath 비슷한 성격이다.!
-    // _setOrigin(oriPath, data) {
-    //     // template/__origin/ 폴더 없으면 만들기
-    //     // const dirname = this._template.DIR['ORIGIN'];
-    //     // const savePath = this._template.dir + path.sep + dirname + path.sep + oriPath;
-    //     const dirname = this._template.used.DIR['ORIGIN'];
-    //     const savePath = path.join(this._template.used.dir, dirname, oriPath);
-    //     const saveDir = path.dirname(savePath);   
-
-    //     if(!fs.existsSync(saveDir)) {
-    //         fs.mkdirSync(saveDir, {recursive: true} );
-    //     }
-
-    //     // 경로에 파일 없으면 저장, 없으면 통과
-    //     if(!fs.existsSync(savePath)) fs.writeFileSync(savePath, data, 'utf8');;
-    //     // 리턴 오리진경로
-    //     return savePath;
-    // }
+    /**
+     * 원본 경로 설정
+     * @param {*} oriPath 
+     * @param {*} data 
+     * @returns 
+     */
     _setOrigin(oriPath, data) {
         const orginDir = this._template.used.DIR['ORIGIN'];
         let focusPath = this._template._buildFile['focus'][oriPath] 
@@ -229,7 +199,7 @@ class CompileSource extends TemplateSource {
             }
             fs.writeFileSync(savePath, data, 'utf8');
         }
-        function getNewPath(focusPath) {    // COVER:
+        function getNewPath(focusPath) {
             const MAX_COUNT = 10; // 최대 수정 갯수
             const objPath = path.parse(focusPath);
             let newPath;
@@ -238,7 +208,7 @@ class CompileSource extends TemplateSource {
                 newPath = path.join(objPath.dir, filename + objPath.ext);
                 if (!fs.existsSync(newPath)) return newPath;
             }
-            throw new Error(`수정 최대 갯수 ${MAX_COUNT}개 초과`);
+            throw new Error(`수정 최대 갯수 ${MAX_COUNT}개 초과`);  // COVER:
         }
 
          // 파일이 없으면 저장
@@ -246,7 +216,7 @@ class CompileSource extends TemplateSource {
             saveFile(focusPath, data);
         } else {
             // 파일 비교
-            if (data !== fs.readFileSync(focusPath,'utf-8')) {  // COVER:
+            if (data !== fs.readFileSync(focusPath,'utf-8')) {
                 focusPath = getNewPath(focusPath);
                 // this._template._buildFile['focus'][oriPath] = focusPath;
                 saveFile(focusPath, data);
@@ -368,7 +338,6 @@ class CompileCollection extends PropertyCollection {
         // } else {
         //     tarSrc.content = content;
         // }
-        // POINT:
         tarSrc.content = content;
 
         /**
@@ -396,7 +365,7 @@ class CompileCollection extends PropertyCollection {
         
         let alias;
         
-        for (let i = 0; i < collection.count; i++) {    // COVER:
+        for (let i = 0; i < collection.count; i++) {
             alias = collection.propertyOf(i);
             this.add(alias, collection[i]);
         }
@@ -450,7 +419,7 @@ class CompileCollection extends PropertyCollection {
      * @param {*} cSrc 
      * @override
      */
-    remove(cSrc) {
+    remove(cSrc) {  // COVER:
         super.remove(cSrc);
         // page['all'] 에서 제거
         if (this.area === 'PAGE') {
@@ -510,11 +479,11 @@ class CompileCollection extends PropertyCollection {
     _getPropDescriptor(idx) {
         return {
             get: function() { return this._element[idx]; },
-            set: function(val) {    // COVER:  TODO: area 에 따라 제약 조건 추가해야함
+            set: function(val) {    //  TODO: area 에 따라 제약 조건 추가해야함
                 if (val instanceof CompileSource) {
                     this._element[idx].content = val.content;
                 } else {
-                    throw new Error('CompileSource 타입만 설정할 수 있습니다.');
+                    throw new Error('CompileSource 타입만 설정할 수 있습니다.');    // COVER:
                 }
             },
             enumerable: true,
