@@ -704,7 +704,42 @@ describe("< PageGroup 예외 >", () => {
         const template2 = autoTask2.entry;
         expect(() => template2.group.add('three', [{page: 'p3.html'}], 'notArray')).toThrow(/deffix 는 array<object>/);
     });
-    
+});
 
+describe("< 단독 빌드 >", () => {
+    beforeAll(() => {
+        jest.resetModules();
+        autoTask2 = AutoTask.create(dirname2);
+        autoTask2.isLog = false;
+    });
+    it("- page['p1.html'].build()", () => {
+        const fullPath = path.join(dirname2, "/template/page/p1.html");
+        const template = autoTask2.entry;
+        template.page['p1.html'].build()
+        expect(fs.existsSync(fullPath)).toBeTruthy();
+    });
+    it("- part['inc/header'].build()", () => {
+        const fullPath = path.join(dirname2, "/template/part/inc/header");
+        const template = autoTask2.entry;
+        template.part['inc/header'].build()
+        expect(fs.existsSync(fullPath)).toBeTruthy();
+
+    });
+    // 초기화
+    describe("task :: clear", () => {
+        it("[ 생성 및 do_clear(1) ]", () => {
+            autoTask2.do_clear(1);   // 강제 클리어
+        });
+        describe("< 생성 파일 지우기 >", ()=>{
+            it("- 파일 유무 : src/page/p1.html (X)", () => {
+                const fullPath = path.join(dirname1, "src/page/p1.html");
+                expect(fs.existsSync(fullPath)).toBeFalsy();
+            });
+            it("- 파일 유무 : src/part/inc/header (X)", () => {
+                const fullPath = path.join(dirname1, "src/part/inc/header");
+                expect(fs.existsSync(fullPath)).toBeFalsy();
+            });
+        });
+    });
 });
 // 클래어 까지 테스트 한글이 잘써저야합니다. 무엇이 문제 인지는 확인해 보면 압니다.

@@ -42,3 +42,18 @@ describe("< 인스턴스 생성 >", () => {
         expect(() => autoTask.isLog = 3).toThrow(/boolean/);
     });
 });
+
+
+describe("< 예외 >", () => {
+    beforeAll(() => {
+        jest.resetModules();
+        autoTask = AutoTask.create(dirname);
+        autoTask.isLog = false;
+    });
+    it("- autoTemplate.used = true, 1, 'str' : 예외", () => {
+        const template = autoTask.entry;
+        expect(() => template.used = true).toThrow(/타입만/);
+        expect(() => template.used = 1).toThrow(/타입만/);
+        expect(() => template.used = 'str').toThrow(/타입만/);
+    });
+});

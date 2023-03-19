@@ -77,7 +77,6 @@ class AutoTask {
         }
         this._instance.#dir = dir;
         
-        // POINT:
         this._instance.#init();
 
         return this._instance;

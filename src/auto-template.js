@@ -65,7 +65,7 @@ class AutoTemplate {
     
     /*_______________________________________*/
     // private
-    #used               = null;
+    #used               = null;     // import, group.build 에서 사용됨 
     #dir                = [];
     #event              = new Observer(this, this);
     #namespace          = null;
@@ -83,7 +83,7 @@ class AutoTemplate {
     get used() { return this.#used === null ? this : this.#used; }
     set used(val) {
         if (val instanceof AutoTemplate) this.#used = val;
-        else throw new Error('AutoTemplate 타입만 설정할 수 있습니다.');    // COVER:
+        else throw new Error('AutoTemplate 타입만 설정할 수 있습니다.');
     }
     get dir() {
         let size = this.#dir.length;
@@ -92,7 +92,7 @@ class AutoTemplate {
     }
     set dir(val) {
         if (this.isFinal === true && this.#dir.length > 0) {
-            throw new Error('마지막 클래스(상속금지)는 dir 설정할 수 없습니다.');   // COVER:
+            throw new Error('마지막 클래스(상속금지)는 dir 설정할 수 없습니다.');
         } else if (this.#dir.indexOf(val) < 0) this.#dir.push(val);
     }
     get dirs() { return this.#dir; }
@@ -137,7 +137,6 @@ class AutoTemplate {
     set group(val) {
         if (val instanceof PageGroupCollection) {
             this.#group.clear();
-            // this.#group = new PageGroupCollection(this);    // REVIEW:
             this.#group.addCollection(val); 
         } else throw new Error('PageGroupCollection 타입만 설정할 수 있습니다.');
     }
@@ -152,10 +151,10 @@ class AutoTemplate {
 
     /*_______________________________________*/        
     // event property
-    set onInit(fn) { this.#event.subscribe(fn, 'init') }        // 초기화 전    // COVER:
-    set onInited(fn) { this.#event.subscribe(fn, 'inited') }    // 초기화 전    // COVER:
-    set onBuild(fn) { this.#event.subscribe(fn, 'build') }      // 빌드 전     // COVER:
-    set onBuilded(fn) { this.#event.subscribe(fn, 'builded') }  // 빌드 전     // COVER:
+    set onInit(fn) { this.#event.subscribe(fn, 'init') }        // 초기화 전
+    set onInited(fn) { this.#event.subscribe(fn, 'inited') }    // 초기화 전
+    set onBuild(fn) { this.#event.subscribe(fn, 'build') }      // 빌드 전
+    set onBuilded(fn) { this.#event.subscribe(fn, 'builded') }  // 빌드 전
 
     /**
      * 오토템플릿 생성자
@@ -441,16 +440,12 @@ class AutoTemplate {
         // for (let i = 0; i < this.src._group.length; i++) {
         //     this.src._group[i].pageGroup.build();
         // }
-
         // page 그룹 컴파일
         // for (let i = 0; i < this.src._group.length; i++) {
         //     group = this.src._group[i];
         //     for (let ii = 0; ii < group.length; ii++) {
         //         group[ii].pageGroup
         //     }
-            
-        // TODO:
-            
         //     this.src._group[i].compile();
         // }
 

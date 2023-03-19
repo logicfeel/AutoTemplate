@@ -1,0 +1,17 @@
+{
+	"cover": [],
+	"publish": [
+		{
+			"tar": "template/page/p4.html",
+			"ori": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/etc/mod1/template/__cache/p4.html"
+		},
+		{
+			"tar": "src/single.html",
+			"ori": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/etc/mod1/template/__cache/single.html"
+		}
+	],
+	"focus": {
+		"template/page/p4.html": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/etc/mod1/template/__cache/p4.html",
+		"src/single.html": "/Users/logic/PJ-Git/AutoTemplate#v01/__test__/etc/mod1/template/__cache/single.html"
+	}
+}

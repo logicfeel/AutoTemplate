@@ -45,9 +45,9 @@ class CompileSource extends TemplateSource {
     
     /*_______________________________________*/        
     // event property
-    set onCompile(fn) { this.#event.subscribe(fn, 'compile') }      // 컴파일 전    // COVER:
-    set onSave(fn) { this.#event.subscribe(fn, 'save') }            // 저장시 저장후    // COVER:
-    set onCompiled(fn) { this.#event.subscribe(fn, 'compiled') }    // 컴파일 전    // COVER:
+    set onCompile(fn) { this.#event.subscribe(fn, 'compile') }      // 컴파일 전
+    set onSave(fn) { this.#event.subscribe(fn, 'save') }            // 저장시 저장후
+    set onCompiled(fn) { this.#event.subscribe(fn, 'compiled') }    // 컴파일 전
 
     /*_______________________________________*/
     // constructor method
@@ -97,7 +97,7 @@ class CompileSource extends TemplateSource {
      * 단독으로 컴파일할 경우 (빌드 로그 생성)
      * @param {*} data 
      */
-    build(data) {   // COVER:
+    build(data) {
         // 컴파일
         this._compile(data, true);
         // 빌드 파일 저장

@@ -293,3 +293,15 @@ describe("task :: cover", () => {
         });
     });
 });
+
+/**
+ * 예외처리
+ */
+describe("< 예외 >", () => {
+    beforeAll(() => {
+        jest.resetModules();
+    });
+    it("- autoTemplate.isFinal = true : 예외", () => {
+        expect(() => autoTask = AutoTask.create(dirname, "extendsTemplate.js")).toThrow(/상속금지/);
+    });
+});

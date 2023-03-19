@@ -1,5 +1,5 @@
 
-const {AutoTemplate} = require('../mod2/template');
+const {AutoTemplate} = require('../mod2/finalTemplate');
 
 class Template extends AutoTemplate {
     constructor() {
