@@ -111,12 +111,11 @@ class CompileSource extends TemplateSource {
      * @returns 
      */
     _compile(data = {}, isSave = true) {
-
         const localScope = this._template.localScope;
         const outerScope = this._template.outerScope;
         const used = this._template.used;
         const isKeepEdit = this._template.isKeepEdit;
-        let _this = this;
+        const _this = this;
         let template, content, dirname, originPath, oriData;
 
         // 이벤트 발생
@@ -149,7 +148,6 @@ class CompileSource extends TemplateSource {
             }
             // 원본 저장
             originPath = this._setOrigin(this.origin, content);
-            
             
             // 편집 유지일 경우
             if (isKeepEdit) {
@@ -190,7 +188,7 @@ class CompileSource extends TemplateSource {
         let focusPath = this._template._buildFile['focus'][oriPath] 
                 ? this._template._buildFile['focus'][oriPath] 
                 : path.join(this._template.used.dir, orginDir, oriPath);
-        let savePath;
+        // let savePath;
 
         function saveFile(savePath, data) {
             const saveDir = path.dirname(savePath);  
@@ -258,6 +256,7 @@ class CompileCollection extends PropertyCollection {
      */
     constructor(owner, area) {
         super(owner);
+
         this.area = area;
         this._owner = owner;
     }
@@ -270,11 +269,9 @@ class CompileCollection extends PropertyCollection {
      * @param {function | object | string | CompileSource} value  대상
      * dss
      * @param {*} filePath glob를 통해서 입력한 경우만 
-     * @overloading 상위 add(..) 호출함
+     * @override 상위 add(..) 호출함
      */
     add(obj, value, filePath = null, dir = this._owner.dir) {
-        
-        // const delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
         const delimiter = this._owner.DELIMITER.PART;
         const sep = path.sep;
         // const areaDir = this._owner.DIR[this.area.toUpperCase()];
@@ -294,18 +291,17 @@ class CompileCollection extends PropertyCollection {
                 return value._compile(data, false);
             }
         } else content = value;
-        
 
         // 유효성 검사
         if (typeof alias !== 'string' || alias.length === 0) {
-            throw new Error('alias에 string 만 지정할 수 있습니다.');   // COVER:
+            throw new Error('alias에 string 만 지정할 수 있습니다.');
         }
         if (typeof content === 'undefined' || content === null) {
-            throw new Error('value에 null 또는 undefined 지정할 수 없습니다. ');    // COVER:
+            throw new Error('value에 null 또는 undefined 지정할 수 없습니다. ');
         }
         // area별 타입 검사
         if (!(typeof content === 'function' || typeof content === 'string')) {
-            throw new Error('가능한 타입 : string, function');  // COVER:
+            throw new Error('가능한 타입 : string, function');
         }
 
 
@@ -362,7 +358,6 @@ class CompileCollection extends PropertyCollection {
      * @param {*} collection 
      */
     addCollection(collection) {
-        
         let alias;
         
         for (let i = 0; i < collection.count; i++) {
@@ -377,9 +372,8 @@ class CompileCollection extends PropertyCollection {
      * @param {*} opt TODO:: glob 옵션으로 활용
      */
      addGlob(pattern, opt) {
-        
         const _this = this;
-        const sep = path.sep;
+        // const sep = path.sep;
         // const delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
         // const delimiter = this._owner.DELIMITER.PART;
         // const areaDir = this._owner.DIR[this.area.toUpperCase()];
@@ -419,12 +413,24 @@ class CompileCollection extends PropertyCollection {
      * @param {*} cSrc 
      * @override
      */
-    remove(cSrc) {  // COVER:
-        super.remove(cSrc);
-        // page['all'] 에서 제거
+    // remove(cSrc) {  
+    //     super.remove(cSrc);
+    //     // page['all'] 에서 제거
+    //     if (this.area === 'PAGE') {
+    //         const group = this._owner.group;
+    //         group['all'].remove(cSrc.alias);
+    //     }
+    // }
+    remove(alias) {
+        const compileSource = this[alias];
+
+        if (!(compileSource instanceof CompileSource)) throw new Error(`${alias} CompileSource 존재하지 않습니다.`);
+        
+        super.remove(compileSource);
+        
         if (this.area === 'PAGE') {
             const group = this._owner.group;
-            group['all'].remove(cSrc.alias);
+            group['all'].remove(compileSource.alias);
         }
     }
 
@@ -451,7 +457,6 @@ class CompileCollection extends PropertyCollection {
      * @returns {string} 별칭
      */
     _makeAlias(subPath) {
-
         let fileName, delimiter, dir;
         
         // delimiter = this._owner.DELIMITER[this.area.toUpperCase()];
@@ -479,12 +484,22 @@ class CompileCollection extends PropertyCollection {
     _getPropDescriptor(idx) {
         return {
             get: function() { return this._element[idx]; },
-            set: function(val) {    //  TODO: area 에 따라 제약 조건 추가해야함
-                if (val instanceof CompileSource) {
-                    this._element[idx].content = val.content;
-                } else {
-                    throw new Error('CompileSource 타입만 설정할 수 있습니다.');    // COVER:
+            set: function(val) {
+                let content;
+                
+                if (val instanceof CompileSource) content = val.content;
+                else content = val;
+
+                if (!(typeof content === 'function' || typeof content === 'string')) {
+                    throw new Error('가능한 타입 : string, function');
                 }
+                this._element[idx].content = content;
+                
+                // if (val instanceof CompileSource) {
+                //     this._element[idx].content = val.content;
+                // } else {
+                //     throw new Error('CompileSource 타입만 설정할 수 있습니다.');
+                // }
             },
             enumerable: true,
             configurable: true
@@ -498,4 +513,3 @@ class CompileCollection extends PropertyCollection {
 
 exports.CompileSource = CompileSource;
 exports.CompileCollection = CompileCollection;
-// export { CompileSource, CompileCollection }

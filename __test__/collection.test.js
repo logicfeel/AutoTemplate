@@ -166,6 +166,16 @@ describe("main  ", () => {
                 expect(template1.page['p4.html']).toBeUndefined();
                 expect(template1.group['all']._pages.length === 3).toBeTruthy();
             });
+            it("- autoTemplate.page.remove('p1.html') : 삭제", () => {
+                const template1 = autoTask1.entry;
+                const template2 = autoTask2.entry;
+                template1.page = template2.page;
+                expect(template1.page['p1.html']).toBeDefined();
+                expect(template1.group['all']._pages.length === 3).toBeTruthy();
+                template1.page.remove('p1.html');
+                expect(template1.page['p4.html']).toBeUndefined();
+                expect(template1.group['all']._pages.length === 2).toBeTruthy();
+            });
             it("- autoTemplate.part = helper : 예외", () => {
                 const template1 = autoTask1.entry;
                 const template2 = autoTask2.entry;
@@ -715,13 +725,13 @@ describe("< 단독 빌드 >", () => {
     it("- page['p1.html'].build()", () => {
         const fullPath = path.join(dirname2, "/template/page/p1.html");
         const template = autoTask2.entry;
-        template.page['p1.html'].build()
+        template.page['p1.html'].build();
         expect(fs.existsSync(fullPath)).toBeTruthy();
     });
     it("- part['inc/header'].build()", () => {
         const fullPath = path.join(dirname2, "/template/part/inc/header");
         const template = autoTask2.entry;
-        template.part['inc/header'].build()
+        template.part['inc/header'].build();
         expect(fs.existsSync(fullPath)).toBeTruthy();
 
     });
@@ -742,4 +752,148 @@ describe("< 단독 빌드 >", () => {
         });
     });
 });
-// 클래어 까지 테스트 한글이 잘써저야합니다. 무엇이 문제 인지는 확인해 보면 압니다.
+
+/**
+ * mod2 >> mod1 로 독립적으로 삽입 예외 처리 합니다.
+ */
+describe("< data | helper .add() 예외 >", () => {
+    beforeAll(() => {
+        jest.resetModules();
+        autoTask1 = AutoTask.create(dirname1);
+        autoTask1.isLog = false;
+    });
+    it("- autoTemplate.data.add(숫자) : 예외", () => {
+        const template2 = autoTask2.entry;
+        expect(() => template2.data.add(0)).toThrow(/alias에 string/);
+    });
+    it("- autoTemplate.data.add('test', 내용없음) : 예외", () => {
+        const template2 = autoTask2.entry;
+        expect(() => template2.data.add('test')).toThrow(/null 또는 undefined/);
+        expect(() => template2.data.add('test', 'str')).toThrow(/타입 : object/);
+        expect(() => template2.data.add('test', 1)).toThrow(/타입 : object/);
+    });
+
+    it("- autoTemplate.helper.add(숫자) : 예외", () => {
+        const template2 = autoTask2.entry;
+        expect(() => template2.helper.add(0)).toThrow(/alias에 string/);
+    });
+    it("- autoTemplate.helper.add('test', 내용없음) : 예외", () => {
+        const template2 = autoTask2.entry;
+        expect(() => template2.helper.add('test')).toThrow(/null 또는 undefined/);
+        expect(() => template2.helper.add('test', 'str')).toThrow(/타입 : function/);
+        expect(() => template2.helper.add('test', {})).toThrow(/타입 : function/);
+    });
+});
+
+describe("< [part, page, src].add() 예외 >", () => {
+    beforeAll(() => {
+        jest.resetModules();
+        autoTask1 = AutoTask.create(dirname1);
+        autoTask1.isLog = false;
+    });
+    it("- autoTemplate.part.add(숫자) : 예외", () => {
+        const template2 = autoTask2.entry;
+        expect(() => template2.part.add(0)).toThrow(/alias에 string/);
+    });
+    it("- autoTemplate.part.add('test', 내용없음) : 예외", () => {
+        const template2 = autoTask2.entry;
+        expect(() => template2.part.add('test')).toThrow(/null 또는 undefined/);
+        expect(() => template2.part.add('test', {})).toThrow(/타입 : string/);
+        expect(() => template2.part.add('test', 1)).toThrow(/타입 : string/);
+    });
+    it("- autoTemplate.part.add('ns | page | group', 'text') 예약어 : 예외", () => {
+        const template2 = autoTask2.entry;
+        expect(() => template2.part.add('ns', 'text')).toThrow(/예약어를/);
+        expect(() => template2.part.add('page', 'text')).toThrow(/예약어를/);
+        expect(() => template2.part.add('group', 'text')).toThrow(/예약어를/);
+    });
+    
+});
+
+/**
+ * 오버라이딩 : 컬렉션, 맞는 타입
+ */
+describe("< add() >> 속성 덮어쓰기 및 예외 처리 >", () => {
+    beforeAll(() => {
+        jest.resetModules();
+        autoTask1 = AutoTask.create(dirname1);
+        autoTask1.isLog = false;
+        autoTask2 = AutoTask.create(dirname2);
+        autoTask2.isLog = false;
+    });
+    it("- temp2.helper['bold'] = temp1.helper['sharp'] ", () => {
+        const template1 = autoTask1.entry;
+        const template2 = autoTask2.entry;
+        template2.helper['bold'] = template1.helper['sharp'];
+    });
+    it("- temp2.helper['bold'] = 다른객체, 다른타입 : 예외 ", () => {
+        const template1 = autoTask1.entry;
+        const template2 = autoTask2.entry;
+        expect(() => template2.helper['bold'] = {}).toThrow(/타입 : function/);
+    });
+    it("- temp2.data['entity'] = temp1.data['first'], {} ", () => {
+        const template1 = autoTask1.entry;
+        const template2 = autoTask2.entry;
+        template2.data['entity'] = {};
+        template2.data['entity'] = template1.data['first'];
+    });
+    it("- temp2.data['entity'] = 다른객체, 다른타입 : 예외 ", () => {
+        const template1 = autoTask1.entry;
+        const template2 = autoTask2.entry;
+        expect(() => template2.data['entity'] = 'str').toThrow(/타입 : object/);
+    });
+
+    it("- temp2.part['inc/footer'] = temp1.part['title'] ", () => {
+        const template1 = autoTask1.entry;
+        const template2 = autoTask2.entry;
+        template2.part['inc/footer'] = "inc/footer : overwrite";
+        expect(template2.part['inc/footer'].content).toMatch(/overwrite/);
+        template2.part['inc/footer'] = template1.part['title'];
+    });
+    it("- temp2.part['inc/footer'] = {} : 예외 ", () => {
+        const template1 = autoTask1.entry;
+        const template2 = autoTask2.entry;
+        expect(() => template2.part['inc/footer'] = {}).toThrow(/타입 : string, function/);
+    });
+
+
+
+    // it("- temp2.part['inc/footer'] = 'overwrite' ", () => {
+    //     const template1 = autoTask1.entry;
+    //     const template2 = autoTask2.entry;
+    //     template2.part['inc/footer'] = "inc/footer :: overwrite";
+    //     expect(template2.part['inc/footer'].content).toMatch(/overwrite/);
+    // });
+    // it("- temp2.part['inc/footer'] = 다른객체, 다른타입 : 예외 ", () => {
+    //     const template1 = autoTask1.entry;
+    //     const template2 = autoTask2.entry;
+    //     expect(() => template2.part['inc/footer'] = {}).toThrow(/타입 : function/);
+        
+    //     expect(template2.part['inc/footer'].content).toMatch(/overwrite/);
+    // });
+
+
+    // it("- part['inc/header'].build()", () => {
+    //     const fullPath = path.join(dirname2, "/template/part/inc/header");
+    //     const template = autoTask2.entry;
+    //     template.part['inc/header'].build();
+    //     expect(fs.existsSync(fullPath)).toBeTruthy();
+
+    // });
+    // // 초기화
+    // describe("task :: clear", () => {
+    //     it("[ 생성 및 do_clear(1) ]", () => {
+    //         autoTask2.do_clear(1);   // 강제 클리어
+    //     });
+    //     describe("< 생성 파일 지우기 >", ()=>{
+    //         it("- 파일 유무 : src/page/p1.html (X)", () => {
+    //             const fullPath = path.join(dirname1, "src/page/p1.html");
+    //             expect(fs.existsSync(fullPath)).toBeFalsy();
+    //         });
+    //         it("- 파일 유무 : src/part/inc/header (X)", () => {
+    //             const fullPath = path.join(dirname1, "src/part/inc/header");
+    //             expect(fs.existsSync(fullPath)).toBeFalsy();
+    //         });
+    //     });
+    // });
+});

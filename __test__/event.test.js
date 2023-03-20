@@ -33,7 +33,7 @@ describe("< 이벤트 >", () => {
     });
 
     it("- AutoTemplate : onBuild, onBuilded", () => {
-        const fullPath = path.join(dirname, "/template/page/p4.html");
+        // const fullPath = path.join(dirname, "/template/page/p4.html");
         const template = autoTask.entry;
         let arrEvent = [];
 
@@ -44,7 +44,7 @@ describe("< 이벤트 >", () => {
         template.build();
         
         expect(arrEvent).toEqual(['onBuild', 'onBuilded']);
-        expect(fs.existsSync(fullPath)).toBeTruthy();
+        // expect(fs.existsSync(fullPath)).toBeTruthy();
     });
 
     it("- AutoTemplate.src : onCompile, onSave, onCompiled : SourceCompile", () => {

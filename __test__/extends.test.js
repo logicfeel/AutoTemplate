@@ -232,7 +232,7 @@ describe("task :: cover", () => {
 
             const fullPath3 = path.join(dirname, "template/page/p1.html.hbs");
             const fullPath4 = path.join(dirname, "template/part/title.hbs");
-            const fullPath5 = path.join(dirname, "template/part/inc/footer.hbs");
+            const fullPath5 = path.join(dirname, "template/part/footer.hbs");
             const fullPath6 = path.join(dirname, "template/helper/bold.js");
 
             const data3 = fs.readFileSync(fullPath3, "utf-8");
@@ -263,8 +263,8 @@ describe("task :: cover", () => {
                 expect(fs.existsSync(fullPath)).toBeTruthy();
                 expect(data).toMatch("[EDIT]");
             });
-            it("- 수정 파일 여부 : template/part/inc/footer.hbs ", () => {
-                const fullPath = path.join(dirname, "template/part/inc/footer.hbs");
+            it("- 수정 파일 여부 : template/part/footer.hbs ", () => {
+                const fullPath = path.join(dirname, "template/part/footer.hbs");
                 const data = fs.readFileSync(fullPath,"utf-8");
                 expect(fs.existsSync(fullPath)).toBeTruthy();
                 expect(data).toMatch("[EDIT]");

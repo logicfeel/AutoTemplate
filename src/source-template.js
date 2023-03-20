@@ -38,14 +38,6 @@ class TemplateSource {
     get dir() { return this.#dir; }
     get area() { return this.#area; }
     get alias() { return this.#alias; }
-    // POINT:
-    // get fullPath() { return this.#fullPath; }
-    // get areaDir() { return this._template.DIR[this.#area]; }
-    // get subDir() { return path.dirname(this.subPath) === '.' ? '' : path.dirname(this.subPath); }
-    // get subPath() { return path.relative(this.dir + path.sep + this.areaDir, this.fullPath); }
-    // get localDir() { return this.areaDir + path.sep + this.subDir; }
-    // get localPath() { return this.areaDir + path.sep + this.subPath; }
-    // get name() { return path.basename(this.fullPath); }
     get fullPath() { return path.join(this.#dir, this.localPath); }
     get areaDir() { return this._template.DIR[this.#area]; }
     get subDir() { return path.dirname(this.#subPath) === '.' ? '' : path.dirname(this.#subPath); }
@@ -56,8 +48,6 @@ class TemplateSource {
     get fileName() { return this.#filePath !== null ? path.basename(this.#filePath) : null; }
     get filePath() { return this.#filePath; }
 
-
-    
     /**
      * 템플릿소스 생성자
      * @param {AutoTemplate} owner 소속된 템플릿
@@ -76,15 +66,9 @@ class TemplateSource {
         this.#area = area;
         this.#alias = alias;
         this.isPublic = this._template.defaultPublic;
-        // POINT: 하단 추가
-        // if (fullPath !== null) {
-        //     this.#fullPath = fullPath;
-        // }
         delimiter = template.DELIMITER[area];
         this.#subPath = alias.replaceAll(delimiter, path.sep);
         this.#filePath = filePath;
-
-        // Object.defineProperty(this.prototype, 'fullPath', {enumerable: true});
     }
 
     getObject() {
@@ -103,26 +87,6 @@ class TemplateSource {
             fileName: this.fileName,
             filePath: this.filePath,
         };
-        // let super = getObject();
-
-        // for (var prop in this) {
-        //     // if (this[prop] instanceof TemplateSource) {
-        //     //     obj[prop] = this[prop].getObject(p_context);
-        //     // } else if (typeof this[prop] !== 'function' && prop.substr(0, 1) !== '_') {
-        //     //     obj[prop] = this[prop];
-        //     // }
-        //     if (typeof this[prop] !== 'function' && prop.substring(0, 1) !== '_') {
-        //         obj[prop] = this[prop];
-        //     }
-
-        //     // for(var prop in p_option) {
-        //     //     if (p_option.hasOwnProperty(prop) && 
-        //     //         ['domType', 'isReadOnly', 'isHide', 'element', 'selector', 'getFilter', 'setFilter'].indexOf(prop) > -1) {
-        //     //         this[prop] = p_option[prop];
-        //     //     }
-        //     // }
-        
-        // }
         return obj;
     }     
 
@@ -152,6 +116,7 @@ class TemplateCollection extends PropertyCollection {
      */
     constructor(owner, area) {
         super(owner);
+
         this.area = area;
         this._owner = owner;
     }
@@ -160,71 +125,26 @@ class TemplateCollection extends PropertyCollection {
     // public method
     /**
      * 컬렉션에 객체를 생성하여 추가
-     * @param {*} alias 별칭
-     * @param {function | object | TemplateSource} obj  대상
-     * @param {*?} fullPath glob를 통해서 입력한 경우만 
-     * @param {string?} dir 
-     * @overloading 상위 add(..) 호출함
-     */
-    // POINT:
-    // add(alias, obj, fullPath = null, dir = this._owner.dir) {
-        
-    //     // const localDir = this._owner.AREA[this.area];
-    //     const localDir = this._owner.DIR[this.area];
-    //     let tarSrc;
-
-    //     // 유효성 검사
-    //     if (typeof alias !== 'string' || alias.length === 0) {
-    //         throw new Error('alias에 string 만 지정할 수 있습니다.');
-    //     }
-    //     if (typeof obj === 'undefined' || obj === null) {
-    //         throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');
-    //     }
-    //     if (this.area === 'DATA' && !(typeof obj === 'function' || typeof obj === 'object')) {
-    //         throw new Error('area[DATA] 가능한 타입 : object(null 제외), function');
-    //     }
-    //     if (this.area === 'HELPER' && !(typeof obj === 'function')) {
-    //         throw new Error('area[HELPER] 가능한 타입 : function');
-    //     }
-
-    //     // POINT:
-    //     // TODO: this.add('별칭', out.part['sss'] 삽입시)
-    //     if (obj instanceof TemplateSource) {
-    //         fullPath = obj.fullPath ?? dir + path.sep + localDir + path.sep + obj.subPath;
-    //         tarSrc = new TemplateSource(this._owner, dir, this.area, alias, fullPath);
-    //         tarSrc.content = obj.content;
-    //     } else {
-    //         tarSrc = new TemplateSource(this._owner, dir, this.area, alias, fullPath);
-    //         tarSrc.content = obj;
-    //     }
-
-    //     super.add(alias, tarSrc);
-    // }
-
-    /**
-     * 컬렉션에 객체를 생성하여 추가
+     * TODO: this.add('별칭', out.part['sss'] 삽입시)
      * @param {string | TemplateSource} obj 별칭
      * @param {function | object | TemplateSource} value  대상
      * @param {*?} filePath glob를 통해서 입력한 경우만 
      * @param {string?} dir 
-     * @overloading 상위 add(..) 호출함
+     * @override 상위 add(..) 호출함
      */
     add(obj, value, filePath = null, dir = this._owner.dir) {
-        
-        // const localDir = this._owner.AREA[this.area];
-        // const localDir = this._owner.DIR[this.area];
         let tarSrc, content;
         let alias;
 
         // 초기값 설정
         // content = obj instanceof TemplateSource ? obj.content : obj;
         if (obj instanceof TemplateSource) {
-            alias = obj.alias;  // COVER:
-            value = obj;    // COVER:
+            alias = obj.alias;
+            value = obj;
         } else alias = obj;
 
         if (obj instanceof TemplateSource) {
-            // content = function(data, hb) {  // COVER:
+            // content = function(data, hb) { 
             //     return value._compile(data, false);
             // }
             content = obj.content;
@@ -233,27 +153,17 @@ class TemplateCollection extends PropertyCollection {
 
         // 유효성 검사
         if (typeof alias !== 'string' || alias.length === 0) {
-            throw new Error('alias에 string 만 지정할 수 있습니다.');   // COVER:
+            throw new Error('alias에 string 만 지정할 수 있습니다.');
         }
         if (typeof content === 'undefined' || content === null) {
-            throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');  // COVER:
+            throw new Error('obj에 null 또는 undefined 지정할 수 없습니다. ');
         }
         // area별 타입 검사
         if (this.area === 'DATA' && !(typeof content === 'function' || typeof content === 'object')) {
-            throw new Error('area[DATA] 가능한 타입 : object(null 제외), function');    // COVER:
+            throw new Error('area[DATA] 가능한 타입 : object(null 제외), function');
         } else if (this.area === 'HELPER' && !(typeof content === 'function')) {
-            throw new Error('area[HELPER] 가능한 타입 : function'); // COVER:
+            throw new Error('area[HELPER] 가능한 타입 : function');
         }
-
-        // TODO: this.add('별칭', out.part['sss'] 삽입시)
-        // if (obj instanceof TemplateSource) {
-        //     fullPath = obj.fullPath ?? dir + path.sep + localDir + path.sep + obj.subPath;
-        //     tarSrc = new TemplateSource(this._owner, dir, this.area, alias, filePath);
-        //     tarSrc.content = obj.content;
-        // } else {
-        //     tarSrc = new TemplateSource(this._owner, dir, this.area, alias, filePath);
-        //     tarSrc.content = obj;
-        // }
 
         tarSrc = new TemplateSource(this._owner, dir, this.area, alias, filePath);
         tarSrc.content = content;
@@ -266,10 +176,9 @@ class TemplateCollection extends PropertyCollection {
      * @param {*} collection 
      */
     addCollection(collection) {
-        
         let alias;
         
-        for (let i = 0; i < collection.count; i++) {    // COVER:
+        for (let i = 0; i < collection.count; i++) {
             // alias = collection.propertyOf(i);
             // this.add(alias, collection[i]);
             this.add(collection[i]);
@@ -282,7 +191,6 @@ class TemplateCollection extends PropertyCollection {
      * @param {*} opt TODO:: glob 옵션으로 활용
      */
     addGlob(pattern, opt) {
-        
         const _this = this;
         const sep = path.sep;
         const dirs = this._onwer.dirs;
@@ -322,7 +230,6 @@ class TemplateCollection extends PropertyCollection {
      * @returns {string} 별칭
      */
     _makeAlias(subPath) {
-        
         const delmiter = this._owner.DELIMITER[this.area];
         let fileName, dir;
         
@@ -343,12 +250,19 @@ class TemplateCollection extends PropertyCollection {
     _getPropDescriptor(idx) {
         return {
             get: function() { return this._element[idx]; },
-            set: function(val) {    // REVIEW: 컬렉션이 임의 삽입 확인필요  // COVER:
-                if (val instanceof TemplateSource && val.area === this.area) {
-                    this._element[idx].content = val.content;
-                } else {
-                    throw new Error('TemplateSource 타입만 설정할 수 있습니다.');
+            set: function(val) {
+                let content;
+                
+                if (val instanceof TemplateSource) content = val.content;
+                else content = val;
+
+                if (this.area === 'DATA' && !(typeof content === 'function' || typeof content === 'object')) {
+                    throw new Error('area[DATA] 가능한 타입 : object(null 제외), function');
+                } else if (this.area === 'HELPER' && !(typeof content === 'function')) {
+                    throw new Error('area[HELPER] 가능한 타입 : function');
                 }
+                this._element[idx].content = content;
+
             },
             enumerable: true,
             configurable: true
@@ -362,4 +276,3 @@ class TemplateCollection extends PropertyCollection {
 
 exports.TemplateSource = TemplateSource;
 exports.TemplateCollection = TemplateCollection;
-// export { TemplateSource, TemplateCollection }

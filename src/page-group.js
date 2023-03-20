@@ -49,7 +49,6 @@ class PageGroup {
      * @param {object | array} obj 배열 또는 객체
      */
     add(obj, defArgs) {
-        
         let arr = [];
         let pageObj, src, alias, context;
 
@@ -101,11 +100,12 @@ class PageGroup {
 
     // build(data, owner = this._owner) {
     build(data = {}) {
-        if (typeof data !== 'object') throw new Error('[data] Object 타입만 설정할 수 있습니다.');
         // const owner = this._owner;
         const used = this._template.used;
         let page, src, context, subPath;
         let argfix, prefix, suffix, dir;
+
+        if (typeof data !== 'object') throw new Error('[data] Object 타입만 설정할 수 있습니다.');
 
         prefix = data['prefix'] || this.prefix;
         suffix = data['suffix'] || this.suffix;
@@ -238,7 +238,7 @@ class PageGroupCollection extends PropertyCollection {
      * @param {*} cSrc 
      * @override
      */
-    remove(alias) {  // COVER:
+    remove(alias) {
         const pageGroup = this[alias];
         if (!(pageGroup instanceof PageGroup)) throw new Error(`${alias} pageGroup 존재하지 않습니다.`);
         if (alias === this._ALL) throw new Error(`${alias} 예약된 페이지그룹은 삭제 할 수 없습니다.`);
