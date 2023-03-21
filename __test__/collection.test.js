@@ -13,6 +13,7 @@ let autoTask1, autoTask2
 describe("main  ", () => {
     // 객체 생성에서 제어하기
     it("[ task로 설정 mod1, mod2 생성 ]", () => {
+        jest.resetModules();
         autoTask1 = AutoTask.create(dirname1);
         autoTask1.isLog = false;
         autoTask2 = AutoTask.create(dirname2);
@@ -360,7 +361,7 @@ describe("< 컬렉션 전체 설정 후 publish >", () => {
         it("- autoTemplate.group : 검사 ", () => {
             const template1 = autoTask1.entry;
             expect(template1.group['double']).toBeDefined();
-            expect(template1.group['all']._pages.length === 3).toBeDefined();
+            expect(template1.group['all']._pages.length).toBe(3);
         });
     });
 
@@ -434,6 +435,7 @@ describe("< 컬렉션 전체 설정 후 publish >", () => {
 // 초기화
 describe("task :: clear", () => {
     it("[ 생성 및 do_clear(1) ]", () => {
+        jest.resetModules();
         autoTask = AutoTask.create(dirname1);
         autoTask.isLog = false;
         autoTask.do_clear(1);   // 강제 클리어
@@ -486,235 +488,7 @@ describe("task :: clear", () => {
     });
 });
 
-/**
- * pageGroup 의 기본값의 설정
- * 대상만 빌드함
- */
-describe("< PageGroup 기본값 변경 >", () => {
-    beforeAll(() => {
-        jest.resetModules();
-        autoTask2 = AutoTask.create(dirname2, "noneTemplate.js");
-        autoTask2.isLog = false;
-        const template2 = autoTask2.entry;
-        template2.group['all'].prefix = 'n_';
-        template2.group['all'].suffix = '_n';
-        template2.group['double'].prefix = 'nn_';
-        template2.group['double'].suffix = '_nn';
-        template2.group['double'].argfix = ['_NN', 'NN'];
-        template2.group['all'].build();
-        template2.group['double'].build();
-        // autoTask2.do_publish();
-        template2._saveBuildFile();
-        // console.log('ee');
-        
-    });
-    describe("< prfix, sufix  => pg.build() >", () => {
-        it("- 파일 유무 : src/n_p1_n.html", () => {
-            const fullPath = path.join(dirname2, "src/n_p1_n.html");
-            expect(fs.existsSync(fullPath)).toBeTruthy();
-        });
-        it("- 파일 유무 : src/n_p2_n.html", () => {
-            const fullPath = path.join(dirname2, "src/n_p2_n.html");
-            expect(fs.existsSync(fullPath)).toBeTruthy();
-        });
-        it("- 파일 유무 : src/n_p3_n.html", () => {
-            const fullPath = path.join(dirname2, "src/n_p3_n.html");
-            expect(fs.existsSync(fullPath)).toBeTruthy();
-        });
-    });
-    describe("< prefix, suffix, argfix => pg.build() >", () => {
-        it("- 파일 유무 : src/group_NN/NN/nn_p1_nn.html", () => {
-            const fullPath = path.join(dirname2, "src/group_NN/NN/nn_p1_nn.html");
-            expect(fs.existsSync(fullPath)).toBeTruthy();
-        });
-        it("- 파일 유무 : src/group_NN/nn_p2_nn.html", () => {
-            const fullPath = path.join(dirname2, "src/group_NN/nn_p2_nn.html");
-            expect(fs.existsSync(fullPath)).toBeTruthy();
-        });              
-    });
 
-    // 초기화
-    describe("task :: clear", () => {
-        it("[ 생성 및 do_clear(1) ]", () => {
-            autoTask2.do_clear(1);   // 강제 클리어
-        });
-        describe("< 생성 파일 지우기 >", ()=>{
-            it("- 파일 유무 : src/n_p1_n.html (X)", () => {
-                const fullPath = path.join(dirname1, "src/n_p1_n.html");
-                expect(fs.existsSync(fullPath)).toBeFalsy();
-            });
-            it("- 파일 유무 : src/n_p2_n.html (X)", () => {
-                const fullPath = path.join(dirname1, "src/n_p2_n.html");
-                expect(fs.existsSync(fullPath)).toBeFalsy();
-            });
-            it("- 파일 유무 : src/n_p3_n.html (X)", () => {
-                const fullPath = path.join(dirname1, "src/n_p3_n.html");
-                expect(fs.existsSync(fullPath)).toBeFalsy();
-            });
-            it("- 파일 유무 : src/group_NN/NN/nn_p1_nn.html (X)", () => {
-                const fullPath = path.join(dirname1, "src/group_NN/NN/nn_p1_nn.html");
-                expect(fs.existsSync(fullPath)).toBeFalsy();
-            });
-            it("- 파일 유무 : src/group_NN/nn_p2_nn.html (X)", () => {
-                const fullPath = path.join(dirname1, "src/group_NN/nn_p2_nn.html");
-                expect(fs.existsSync(fullPath)).toBeFalsy();
-            });
-        });
-    });
-});
-
-/**
- * 페이지 그룹을 수동으로 추가하고
- * double 는 재거 후 등록 하고
- * 빌드
- */
-describe("< PageGroup page 교체 >", () => {
-    beforeAll(() => {
-        jest.resetModules();
-        autoTask2 = AutoTask.create(dirname2, "noneTemplate.js");
-        autoTask2.isLog = false;
-        const template2 = autoTask2.entry;
-        template2.group['double'].remove('p1.html');
-        template2.group['double'].add({ page: 'p3.html' });
-        // template2.group['all'].build();
-        template2.group['double'].build();
-        // autoTask2.do_publish();
-        template2._saveBuildFile();
-    });
-    
-    describe("< p1.html >> p3.html 교체후 => pg.build() >", () => {
-        it("- 파일 유무 : src/group/p2.html", () => {
-            const fullPath = path.join(dirname2, "src/group/p2.html");
-            expect(fs.existsSync(fullPath)).toBeTruthy();
-        });
-        it("- 파일 유무 : src/p3.html", () => {
-            const fullPath = path.join(dirname2, "src/p3.html");
-            expect(fs.existsSync(fullPath)).toBeTruthy();
-        });              
-    });
-
-    // 초기화
-    describe("task :: clear", () => {
-        it("[ 생성 및 do_clear(1) ]", () => {
-            autoTask2.do_clear(1);   // 강제 클리어
-        });
-        describe("< 생성 파일 지우기 >", ()=>{
-            it("- 파일 유무 : src/group/p1.html (X)", () => {
-                const fullPath = path.join(dirname1, "src/group/p1.html");
-                expect(fs.existsSync(fullPath)).toBeFalsy();
-            });
-            it("- 파일 유무 : src/p2.html (X)", () => {
-                const fullPath = path.join(dirname1, "src/p2.html");
-                expect(fs.existsSync(fullPath)).toBeFalsy();
-            });
-        });
-    });
-});
-
-describe("< PageGroup group 추가 및 제거 >", () => {
-    beforeAll(() => {
-        jest.resetModules();
-        autoTask2 = AutoTask.create(dirname2, "noneTemplate.js");
-        autoTask2.isLog = false;
-        const template2 = autoTask2.entry;
-
-        template2.group.add('three', [
-            { page: 'p2.html' },
-            { page: 'p3.html' },
-        ]);
-
-        template2.group.remove('double');
-
-
-        template2.group['three'].build();
-        // autoTask2.do_publish();
-        template2._saveBuildFile();
-    });
-    
-    it("- 그룹 유무 : all, three", () => {
-        const template2 = autoTask2.entry;
-        expect(template2.group['three']).toBeDefined();
-        expect(template2.group['all']).toBeDefined();   // 기존꺼 유지
-        expect(template2.group.count).toBe(2);
-    });
-    
-    it("- autoTemplate.group.remove('all') 예약어 : 예외", () => {
-        const template2 = autoTask2.entry;
-        expect(() => template2.group.remove('all')).toThrow(/예약된/);
-    });
-    it("- autoTemplate.group.remove('noGroup') : 예외", () => {
-        const template2 = autoTask2.entry;
-        expect(() => template2.group.remove('noGroup')).toThrow(/존재하지/);
-    });
-
-    describe("< three 그룹 >", () => {
-        it("- 파일 유무 : src/p2.html", () => {
-            const fullPath = path.join(dirname2, "src/p2.html");
-            expect(fs.existsSync(fullPath)).toBeTruthy();
-        });
-        it("- 파일 유무 : src/p3.html", () => {
-            const fullPath = path.join(dirname2, "src/p3.html");
-            expect(fs.existsSync(fullPath)).toBeTruthy();
-        });              
-    });
-
-    // 초기화
-    describe("task :: clear", () => {
-        it("[ 생성 및 do_clear(1) ]", () => {
-            autoTask2.do_clear(1);   // 강제 클리어
-        });
-        describe("< 생성 파일 지우기 >", ()=>{
-            it("- 파일 유무 : src/p2.html (X)", () => {
-                const fullPath = path.join(dirname1, "src/p2.html");
-                expect(fs.existsSync(fullPath)).toBeFalsy();
-            });
-            it("- 파일 유무 : src/p3.html (X)", () => {
-                const fullPath = path.join(dirname1, "src/p3.html");
-                expect(fs.existsSync(fullPath)).toBeFalsy();
-            });
-        });
-    });
-});
-
-/**
- * 예외처리
- */
-describe("< PageGroup 예외 >", () => {
-    beforeAll(() => {
-        jest.resetModules();
-        autoTask2 = AutoTask.create(dirname2, "noneTemplate.js");
-        autoTask2.isLog = false;
-        // const template2 = autoTask2.entry;
-        // template2.group['double'].remove('p1.html');
-        // template2.group['double'].add({ page: 'p3.html' });
-        // // template2.group['all'].build();
-        // template2.group['double'].build();
-        // // autoTask2.do_publish();
-        // template2._saveBuildFile();
-    });
-    
-    it("- autoTemplate.group['double'] = not_p3.html : 예외", () => {
-        const template2 = autoTask2.entry;
-        expect(() => template2.group['double'].add({ page: 'not_p3.html' })).toThrow(/존재하지 않습니다./);
-    });
-    it("- autoTemplate.group.add(0) : 예외", () => {
-        const template2 = autoTask2.entry;
-        expect(() => template2.group.add(0)).toThrow(/alias에 string/);
-    });
-    it("- autoTemplate.group.add('all') 예약어 : 예외", () => {
-        const template2 = autoTask2.entry;
-        // template2.group.add('all', [{page: 'p3.html'}])
-        expect(() => template2.group.add('all', [{page: 'p3.html'}])).toThrow(/예약어/);
-    });
-    it("- autoTemplate.group.add('three', {page: 'p3.html'} ) 배열아님 : 예외", () => {
-        const template2 = autoTask2.entry;
-        expect(() => template2.group.add('three', {page: 'p3.html'})).toThrow(/pages array<object> 만/);
-    });
-    it("- autoTemplate.group.add('three', [page: 'p3.html'], 'notArray' ) 배열아님 : 예외", () => {
-        const template2 = autoTask2.entry;
-        expect(() => template2.group.add('three', [{page: 'p3.html'}], 'notArray')).toThrow(/deffix 는 array<object>/);
-    });
-});
 
 describe("< 단독 빌드 >", () => {
     beforeAll(() => {
@@ -855,45 +629,117 @@ describe("< add() >> 속성 덮어쓰기 및 예외 처리 >", () => {
         const template2 = autoTask2.entry;
         expect(() => template2.part['inc/footer'] = {}).toThrow(/타입 : string, function/);
     });
+});
 
+/**
+ * p2를 복제해서 만들고 새로운 오버라이딩을 진행
+ */
+describe("< p2.html >> p2_clone.html 복제후 지역 설정 >", () => {
+    beforeAll(() => {
+        jest.resetModules();
+        autoTask2 = AutoTask.create(dirname2);
+        autoTask2.isLog = false;
+        const template2 = autoTask2.entry;
+    });
+    it("- template2.page.count = 4 ", () => {
+        const template2 = autoTask2.entry;
+        template2.page.add('p2_clone.html', template2.page['p2.html']);
+        expect(template2.page.count).toBe(4);
+    });
+    it("- 지역 partials 등록 ", () => {
+        const template2 = autoTask2.entry;
+        template2.page['p2_clone.html'].partials({
+            'inc/footer': `<footer><!--part/inc/footer -->
+            <p>clone footer. </p>
+            $entity.Table={{ entity.Table }}$
+            </footer>`
+        });
+        expect(template2.part['inc/footer'].content).not.toMatch(/clone/);
+    });
+    it("- 지역 helpers 등록 ", () => {
+        const template2 = autoTask2.entry;
+        template2.page['p2_clone.html'].helpers({
+            'bold': function(options) {
+                // return new Handlebars.SafeString('<div class="clone_bold">' + options.fn(this) + "</div>");
+                return '<div class="clone_bold">' + options.fn(this) + "</div>";
+            }
+        });
+    });
+    it("- 지역 data 등록 ", () => {
+        const template2 = autoTask2.entry;
+        template2.page['p2_clone.html'].data({
+            'entity': {
+                "Table": "-1",
+                "Tables": [-10, -20]
+            }
+        });
+        expect(template2.data['entity'].content).not.toEqual({
+            "Table": "-1",
+            "Tables": [-10, -20]
+        });
+    });
 
+    describe("< group[all] 출판 >", () => {
+        beforeAll(() => {
+            const template2 = autoTask2.entry;
+            template2.group['all'].build();
+        });
+        it("- 파일 유무 : src/p1.html", () => {
+            const fullPath = path.join(dirname2, "src/p1.html");
+            expect(fs.existsSync(fullPath)).toBeTruthy();
+        });
+        it("- 파일 유무 : src/p2.html", () => {
+            const fullPath = path.join(dirname2, "src/p2.html");
+            expect(fs.existsSync(fullPath)).toBeTruthy();
+        });
+        it("- 파일 유무 : src/p3.html", () => {
+            const fullPath = path.join(dirname2, "src/p3.html");
+            expect(fs.existsSync(fullPath)).toBeTruthy();
+        });
+        it("- 파일 유무 : src/p2_clone.html", () => {
+            const fullPath = path.join(dirname2, "src/p2_clone.html");
+            expect(fs.existsSync(fullPath)).toBeTruthy();
+        });
+        it("- 파일 검사 : src/p2.html", () => {
+            const fullPath = path.join(dirname2, "src/p2.html");
+            const data = fs.readFileSync(fullPath,"utf-8");
+            expect(data).not.toMatch(/clone_bold/);
+            expect(data).not.toMatch(/clone.footer/);
+            expect(data).not.toMatch(/-10/);
+            expect(data).toMatchSnapshot();
 
-    // it("- temp2.part['inc/footer'] = 'overwrite' ", () => {
-    //     const template1 = autoTask1.entry;
-    //     const template2 = autoTask2.entry;
-    //     template2.part['inc/footer'] = "inc/footer :: overwrite";
-    //     expect(template2.part['inc/footer'].content).toMatch(/overwrite/);
-    // });
-    // it("- temp2.part['inc/footer'] = 다른객체, 다른타입 : 예외 ", () => {
-    //     const template1 = autoTask1.entry;
-    //     const template2 = autoTask2.entry;
-    //     expect(() => template2.part['inc/footer'] = {}).toThrow(/타입 : function/);
-        
-    //     expect(template2.part['inc/footer'].content).toMatch(/overwrite/);
-    // });
+        });
+        it("- 파일 검사 : src/p2_clone.html", () => {
+            const fullPath = path.join(dirname2, "src/p2_clone.html");
+            const data = fs.readFileSync(fullPath,"utf-8");
+            expect(data).toMatch(/clone_bold/);
+            expect(data).toMatch(/clone.footer/);
+            expect(data).toMatch(/-1/);
+            expect(data).toMatchSnapshot();
+        });
+    });
 
+    // 초기화
+    describe("task :: clear", () => {
+        it("[ 생성 및 do_clear(1) ]", () => {
+            autoTask2.do_clear(1);   // 강제 클리어
+        });
+        it("- 파일 유무 : src/p1.html (X)", () => {
+            const fullPath = path.join(dirname2, "src/p1.html");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+        it("- 파일 유무 : src/p2.html (X)", () => {
+            const fullPath = path.join(dirname2, "src/p2.html");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+        it("- 파일 유무 : src/p3.html (X)", () => {
+            const fullPath = path.join(dirname2, "src/p3.html");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+        it("- 파일 유무 : src/p2_clone.html (X)", () => {
+            const fullPath = path.join(dirname2, "src/p2_clone.html");
+            expect(fs.existsSync(fullPath)).toBeFalsy();
+        });
+    });
 
-    // it("- part['inc/header'].build()", () => {
-    //     const fullPath = path.join(dirname2, "/template/part/inc/header");
-    //     const template = autoTask2.entry;
-    //     template.part['inc/header'].build();
-    //     expect(fs.existsSync(fullPath)).toBeTruthy();
-
-    // });
-    // // 초기화
-    // describe("task :: clear", () => {
-    //     it("[ 생성 및 do_clear(1) ]", () => {
-    //         autoTask2.do_clear(1);   // 강제 클리어
-    //     });
-    //     describe("< 생성 파일 지우기 >", ()=>{
-    //         it("- 파일 유무 : src/page/p1.html (X)", () => {
-    //             const fullPath = path.join(dirname1, "src/page/p1.html");
-    //             expect(fs.existsSync(fullPath)).toBeFalsy();
-    //         });
-    //         it("- 파일 유무 : src/part/inc/header (X)", () => {
-    //             const fullPath = path.join(dirname1, "src/part/inc/header");
-    //             expect(fs.existsSync(fullPath)).toBeFalsy();
-    //         });
-    //     });
-    // });
 });

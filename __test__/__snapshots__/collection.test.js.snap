@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`< p2.html >> p2_clone.html 복제후 지역 설정 > < group[all] 출판 > - 파일 검사 : src/p2.html 1`] = `
+"<p2><!--page/p2.html-->
+    # footer 조각 가져오기
+    <footer><!--part/inc/footer-->
+        <p>기본 footer. </p>
+        $entity.Table=1$
+    </footer>
+
+    # helper 가져오기
+    $<div class="mybold">BOLD</div>$
+</p2>"
+`;
+
+exports[`< p2.html >> p2_clone.html 복제후 지역 설정 > < group[all] 출판 > - 파일 검사 : src/p2_clone.html 1`] = `
+"<p2><!--page/p2.html-->
+    # footer 조각 가져오기
+    <footer><!--part/inc/footer -->
+                <p>clone footer. </p>
+                $entity.Table=-1$
+                </footer>
+    # helper 가져오기
+    $<div class="clone_bold">BOLD</div>$
+</p2>"
+`;

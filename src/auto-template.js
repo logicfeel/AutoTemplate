@@ -8,6 +8,7 @@ const { PageGroupCollection, PageGroup }    = require('./page-group');
 
 /**
  * TODO: semver 버전 정보 검사
+ * TODO: import 별칭 기능
  */
 
 /**
@@ -251,7 +252,7 @@ class AutoTemplate {
          * @param {*} oriPath 
          * @returns 
          */
-        function checkChangeFile(tarPath, oriPath) {
+        function compareFile(tarPath, oriPath) {
             let oriData, tarData;
             // return true; 디버깅용
             // if (opt === 1) return true;
@@ -273,9 +274,9 @@ class AutoTemplate {
          * @param {*} dir 
          * @returns 
          */
-        function delEmptyDir(dir) {
+        function rmDir(dir) {
             try {
-                let paths, file, isRecursive = false;
+                let paths, isRecursive = false;
                 
                 if (!fs.existsSync(dir)) return; // 폴더가 없으면 리턴
                 
@@ -288,9 +289,9 @@ class AutoTemplate {
                 }
                 
                 for (let i = 0; i < paths.length; i++) {
-                    file = paths[i];
+                    const file = paths[i];
                     if (file.isDirectory()) {
-                        delEmptyDir(path.join(dir, file.name));
+                        rmDir(path.join(dir, file.name));
                         isRecursive = true;
                     }
                 }
@@ -304,7 +305,6 @@ class AutoTemplate {
                         return;
                     }
                 }
-
               } catch(e) {
                   return console.error('Delete Error', e);  // COVER:
               }
@@ -317,7 +317,7 @@ class AutoTemplate {
 
             if (opt === 1) {    // 강제 삭제
                 if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-            } else if (checkChangeFile(filePath, oriPath)) {
+            } else if (compareFile(filePath, oriPath)) {
                 fs.unlinkSync(filePath);
             // 파일이 한쪽에라도 존재할 경우만 저장
             } else if (fs.existsSync(filePath) || fs.existsSync(oriPath)) {
@@ -336,7 +336,7 @@ class AutoTemplate {
 
             if (opt === 1) {    // 강제 삭제
                 if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-            } else if (checkChangeFile(filePath, oriPath)) {
+            } else if (compareFile(filePath, oriPath)) {
                 fs.unlinkSync(filePath);
             // 파일이 한쪽에라도 존재할 경우만 저장
             } else if (fs.existsSync(filePath) || fs.existsSync(oriPath)) {
@@ -377,7 +377,7 @@ class AutoTemplate {
                 areaDir = areaDirs.find(arrDir => delDir.indexOf(arrDir) > -1 );
                 subDir = delDir.substring(areaDir.length + 1);
                 arr = subDir.split(path.sep);
-                delEmptyDir(path.join(areaDir, arr[0]));
+                rmDir(path.join(areaDir, arr[0]));
             }
         });
 
@@ -520,7 +520,7 @@ class AutoTemplate {
             alias = this.part[i].alias;
             obj['part'][alias] =  this.part[i].content;
         }
-        // page 로딩 (part)
+        // page 로딩 (part) (compile)
         for (let i = 0; i < this.page.count; i++) {
             delimiter = this.DELIMITER.PART;
             alias = this.page[i].alias;
@@ -546,7 +546,7 @@ class AutoTemplate {
                 return isSave === true ? '' : content + '\n';
             }
         }
-        // group 로딩 (part)
+        // group 로딩 (part) (compile)
         for (let i = 0; i < this.group.count; i++) {
             delimiter = this.DELIMITER.PART;
             alias = this.group[i].alias;
@@ -597,7 +597,7 @@ class AutoTemplate {
         for(let i = 0; i < this.namespace.count; i++) {
             outTemplate = this.namespace[i];
             alias = this.namespace.propertyOf(i);
-            // ns.part
+            // ns.part (compile)
             for (let ii = 0; ii < outTemplate.part.count; ii++) {
                 if (outTemplate.part[ii].isPublic == true) {
                     delimiter = outTemplate.DELIMITER.PART;
@@ -615,7 +615,7 @@ class AutoTemplate {
                     }
                 }
             }
-            // ns.page
+            // ns.page (compile)
             for (let ii = 0; ii < outTemplate.page.count; ii++) {
                 if (outTemplate.page[ii].isPublic == true) {
                     delimiter = outTemplate.DELIMITER.PART;
@@ -643,7 +643,7 @@ class AutoTemplate {
                     }
                 }
             }
-            // ns.group
+            // ns.group (compile)
             for (let ii = 0; ii < outTemplate.group.count; ii++) {
                 if (outTemplate.group[ii].isPublic == true) {
                     delimiter = outTemplate.DELIMITER.PART;

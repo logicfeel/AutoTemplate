@@ -82,15 +82,15 @@ class CompileSource extends TemplateSource {
     }
 
     partials(pattern, opt) {
-        this.#part.push({glob: pattern, opt: opt});     // COVER:
+        this.#part.push({glob: pattern, opt: opt});
     }
 
     helpers(pattern, opt) {
-        this.#helper.push({glob: pattern, opt: opt});   // COVER:
+        this.#helper.push({glob: pattern, opt: opt});
     }
     
     data(pattern, opt) {
-        this.#data.push({glob: pattern, opt: opt});     // COVER:
+        this.#data.push({glob: pattern, opt: opt});
     }
     
     /**
@@ -105,7 +105,7 @@ class CompileSource extends TemplateSource {
     }
 
     /**
-     * 
+     * 템플릿 컴파일
      * @param {*} data 데이터
      * @param {*} isSave 저장유무
      * @returns 
@@ -135,11 +135,14 @@ class CompileSource extends TemplateSource {
         this.#part.forEach(val => this._wax.partials(val.glob, val.opt));
         this.#helper.forEach(val => this._wax.helpers(val.glob, val.opt));
         this.#data.forEach(val => this._wax.data(val.glob, val.opt));
-
+        
+// console.log(this.alias);
         // 템플릿 컴파일
         template = this._wax.compile(this.content);
         content = template(data);
-        
+
+// console.log(content);
+
         // 파일저장
         if (isSave === true) {
             dirname = path.dirname(this.savePath);
@@ -286,12 +289,20 @@ class CompileCollection extends PropertyCollection {
         } else alias = obj;
 
         // content = obj instanceof TemplateSource ? obj.content : obj;
-        if (value instanceof TemplateSource) {
-            content = function(data, hb) {
-                return value._compile(data, false);
-            }
-        } else content = value;
 
+        // if (value instanceof TemplateSource) {
+        //     content = function(data, hb) {
+        //         return value._compile(data, false);
+        //     }
+        // } else content = value;
+        if (value instanceof TemplateSource) {
+            if (value.dir !== this._owner.dir) {
+                content = function(data, hb) {
+                    return value._compile(data, false);
+                }
+            } else content = value.content;
+        } else content = value;
+        
         // 유효성 검사
         if (typeof alias !== 'string' || alias.length === 0) {
             throw new Error('alias에 string 만 지정할 수 있습니다.');
@@ -303,7 +314,6 @@ class CompileCollection extends PropertyCollection {
         if (!(typeof content === 'function' || typeof content === 'string')) {
             throw new Error('가능한 타입 : string, function');
         }
-
 
         // 별칭 규칙 검사
         if (this.area === 'PART') {
