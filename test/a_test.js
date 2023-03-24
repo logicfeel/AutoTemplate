@@ -22,7 +22,7 @@ class C extends B {
 
 var a = new C();
 
-console.log(a)
+console.log(a);
 
 
 
